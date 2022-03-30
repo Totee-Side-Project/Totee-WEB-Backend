@@ -4,8 +4,35 @@
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
-/.gradle/
+### Java template
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.bin
+
+# Compliled files
+/target/
+**/target
+
+/example/
+
+# Gradle
+.gradle
 /build/
+.gradletasknamecache
+
+# IntelliJ project files
+.idea
+.idea/*.xml
+*.iml
+out
+gen
+build
+rebel.xml
+
 /build/classes/java/main/
 /.idea/
-/src/main/resources/
+/src/main/resources/application.properties
