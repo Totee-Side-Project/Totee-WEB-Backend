@@ -1,21 +1,27 @@
 package com.study.totee.service;
 
 import com.study.totee.model.UserEntity;
+import com.study.totee.model.UserInfoEntity;
+import com.study.totee.persistence.UserInfoRepository;
 import com.study.totee.persistence.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserInfoRepository userInfoRepository;
 
-    public UserEntity create(final UserEntity userEntity) {
-        if(userEntity == null || userEntity.getEmail() == null ) {
+    public void create(final UserEntity userEntity, final UserInfoEntity userInfoEntity) {
+        if(userEntity == null || userInfoEntity == null || userEntity.getEmail() == null ) {
             throw new RuntimeException("Invalid arguments");
         }
         final String email = userEntity.getEmail();
@@ -24,7 +30,8 @@ public class UserService {
             throw new RuntimeException("Email already exists");
         }
 
-        return userRepository.save(userEntity);
+        userRepository.save(userEntity);
+        userInfoRepository.save(userInfoEntity);
     }
 
     public UserEntity getByCredentials(final String email, final String password, final PasswordEncoder encoder) {
@@ -35,5 +42,9 @@ public class UserService {
             return originalUser;
         }
         return null;
+    }
+
+    public Optional<UserEntity> getUserId(final String id){
+        return userRepository.findById(id);
     }
 }
