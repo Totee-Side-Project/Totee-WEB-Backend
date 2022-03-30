@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserInfoDTO {
+    private String username;
     private String gender;
     private String phone;
     private String major;
