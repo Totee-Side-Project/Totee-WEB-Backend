@@ -2,6 +2,7 @@ package com.study.totee.controller;
 
 import com.study.totee.dto.ApiResponse;
 import com.study.totee.dto.UserDTO;
+import com.study.totee.dto.UserInfoDTO;
 import com.study.totee.model.UserEntity;
 import com.study.totee.model.UserInfoEntity;
 import com.study.totee.persistence.UserRefreshTokenRepository;
@@ -64,17 +65,16 @@ public class AuthController {
         if(user != null) {
             // 토큰 생성
             final String token = tokenProvider.create(user);
-//            final UserDTO responseUserDTO = UserDTO.builder()
-//                    .email(user.getEmail())
-//                    .id(user.getId())
-//                    .username(user.getUsername())
-//                    .token(token)
-//                    .build();
-            return ApiResponse.success("token", token);
+
+            final UserDTO responseUserDTO = UserDTO.builder()
+                    .email(user.getEmail())
+                    .id(user.getId())
+                    .username(user.getUsername())
+                    .token(token)
+                    .build();
+            return ApiResponse.success("data", responseUserDTO);
         } else {
             return ApiResponse.fail("message","Login failed");
         }
     }
-
-
 }
