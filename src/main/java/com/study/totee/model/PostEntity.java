@@ -14,7 +14,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Data
 @Builder
@@ -23,6 +22,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
+@Table(name = "POST_ENTITY")
 public class PostEntity {
     @Id
     @Column(name = "POST_ID")
