@@ -21,6 +21,4 @@ public class PostDTO {
     private String content;
     @ApiModelProperty(example = "썸네일 소개")
     private String intro;
-    @ApiModelProperty(example = "모집마감여부 Post 작성시 기입 X")
-    private boolean status;
 }

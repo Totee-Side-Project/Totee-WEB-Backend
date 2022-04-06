@@ -2,13 +2,11 @@ package com.study.totee.controller;
 
 import com.study.totee.dto.ApiResponse;
 import com.study.totee.dto.UserInfoDTO;
-import com.study.totee.model.UserEntity;
 import com.study.totee.model.UserInfoEntity;
 import com.study.totee.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
