@@ -14,11 +14,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ public class PostController {
         try {
             Optional<UserEntity> user = userService.getUserId(id);
             PostEntity postEntity = PostEntity.builder()
-                    .content(postDTO.getTitle())
+                    .content(postDTO.getContent())
                     .intro(postDTO.getIntro())
                     .title(postDTO.getTitle())
                     .status(false)
@@ -62,5 +63,57 @@ public class PostController {
     public ApiResponse findPostAll( @PageableDefault(size = 16 ,sort = "postId",direction = Sort.Direction.DESC ) Pageable pageable){
         Page post = postService.findPostAll(pageable);
         return ApiResponse.success("data", post);
+    }
+
+    @ApiOperation(value = "post 상세보기",
+            notes = "PostId로 상세보기\n" +
+                    "api 주소에 PathVariable 주면 됩니다.")
+    @GetMapping("/api/v1/post/{postId}")
+    public ApiResponse findByPostId(@PathVariable Long postId, HttpServletRequest request, HttpServletResponse response){
+        Cookie oldCookie = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("postView")) {
+                    oldCookie = cookie;
+                }
+            }
+        }
+
+        if (oldCookie != null) {
+            if (!oldCookie.getValue().contains("[" + postId.toString() + "]")) {
+                postService.updateView(postId);
+                oldCookie.setValue(oldCookie.getValue() + "_[" + postId + "]");
+                oldCookie.setPath("/");
+                oldCookie.setMaxAge(60 * 60 * 24);
+                response.addCookie(oldCookie);
+            }
+        } else {
+            postService.updateView(postId);
+            Cookie newCookie = new Cookie("postView","[" + postId + "]");
+            newCookie.setPath("/");
+            newCookie.setMaxAge(60 * 60 * 24);
+            response.addCookie(newCookie);
+        }
+        return ApiResponse.success("data",postService.findByPostId(postId));
+    }
+
+    @ApiOperation(value = "post 업데이트", notes = "게시글을 수정합니다")
+    @PutMapping("/api/v1/post/{postId}")
+    public ApiResponse postUpdate(@AuthenticationPrincipal String userId, @RequestBody PostDTO postDTO, @PathVariable Long postId){
+        PostEntity post = postService.update(postDTO, postId, userId);
+        PostDTO response = PostDTO.builder()
+                .title(post.getTitle())
+                .content(post.getContent())
+                .intro(post.getIntro())
+                .build();
+        return ApiResponse.success("data", response);
+    }
+
+    @ApiOperation(value = "post 삭제" , notes = "게시글을 삭제합니다")
+    @DeleteMapping("/api/v1/post/{postId}")
+    public ApiResponse deletePost(@AuthenticationPrincipal String userId, @PathVariable Long postId){
+        postService.delete(postId, userId);
+        return ApiResponse.success("message" , "SUCCESS");
     }
 }
