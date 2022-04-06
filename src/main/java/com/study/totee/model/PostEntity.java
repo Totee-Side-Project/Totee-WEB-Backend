@@ -51,6 +51,16 @@ public class PostEntity {
     private LocalDateTime created_at;
 
     @ManyToOne(optional = false , cascade = CascadeType.ALL)
-    @JoinColumn(name = "USER_ID" , nullable = false)
+    @JoinColumn(name = "USER_USERNAME" , nullable = false)
     private UserEntity user;
+
+    @Column
+    @ApiModelProperty(example = "조회수 기본 0")
+    @NotNull
+    private int view;
+
+    @ApiModelProperty(example = "자유게시판")
+    @OneToOne
+    @JoinColumn
+    private CategoryEntity category;
 }
