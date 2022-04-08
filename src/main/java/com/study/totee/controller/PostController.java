@@ -61,8 +61,20 @@ public class PostController {
                     "임시저장글은 불러오지 않음\n")
     @GetMapping("/api/v1/post/list")
     public ApiResponse findPostAll( @PageableDefault(size = 16 ,sort = "postId",direction = Sort.Direction.DESC ) Pageable pageable){
-        Page post = postService.findPostAll(pageable);
-        return ApiResponse.success("data", post);
+        Page<PostEntity> page = postService.findPostAll(pageable);
+        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getTitle(), post.getContent()
+                , post.getIntro(), post.getCategory().getCategoryName()));
+        return ApiResponse.success("data", map);
+    }
+
+    @ApiOperation(value = "카테고리 별 글 목록 불러오기", notes = "카테고리 별 모든 게시글을 조회합니다.")
+    @GetMapping("/api/v1/post/list/{categoryName}")
+    public ApiResponse findPostAllByCategoryName(@PathVariable String categoryName, @PageableDefault
+            (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
+        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getTitle(), post.getContent()
+                , post.getIntro(), post.getCategory().getCategoryName()));
+        return ApiResponse.success("data", map);
     }
 
     @ApiOperation(value = "post 상세보기",
@@ -95,7 +107,19 @@ public class PostController {
             newCookie.setMaxAge(60 * 60 * 24);
             response.addCookie(newCookie);
         }
-        return ApiResponse.success("data",postService.findByPostId(postId));
+        PostEntity post = postService.findByPostId(postId);
+        UserEntity user = post.getUser();
+
+        PostDTO postDTO = PostDTO
+                .builder()
+                .title(post.getTitle())
+                .intro(post.getIntro())
+                .username(user.getUsername())
+                .content(post.getContent())
+                .categoryName(post.getCategory().getCategoryName())
+                .build();
+
+        return ApiResponse.success("data",postDTO);
     }
 
     @ApiOperation(value = "post 업데이트", notes = "게시글을 수정합니다")
@@ -106,6 +130,7 @@ public class PostController {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .intro(post.getIntro())
+                .categoryName(post.getCategory().getCategoryName())
                 .build();
         return ApiResponse.success("data", response);
     }
