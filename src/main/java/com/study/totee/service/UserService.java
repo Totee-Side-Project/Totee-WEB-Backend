@@ -46,4 +46,8 @@ public class UserService {
     public Optional<UserEntity> getUserId(final String id){
         return userRepository.findById(id);
     }
+    public String getUserName(final String id) {
+        Optional<UserEntity> user = userRepository.findById(id);
+        return user.get().getUsername();
+    }
 }

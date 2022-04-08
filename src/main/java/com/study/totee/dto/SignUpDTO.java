@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class SignUpDTO {
     @ApiModelProperty(example = "기입 X")
     private String token;
     @ApiModelProperty(example = "기입 X")

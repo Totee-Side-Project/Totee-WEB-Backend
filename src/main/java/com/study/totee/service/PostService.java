@@ -1,8 +1,10 @@
 package com.study.totee.service;
 
 import com.study.totee.dto.PostDTO;
+import com.study.totee.model.CategoryEntity;
 import com.study.totee.model.PostEntity;
 import com.study.totee.model.UserEntity;
+import com.study.totee.persistence.CategoryRepository;
 import com.study.totee.persistence.PostRepository;
 import com.study.totee.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +23,18 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
     @Transactional
     public void save(PostEntity postEntity) throws IOException {
         postRepository.save(postEntity);
     }
 
     @Transactional(readOnly = true)
-    public Page findPostAll(final Pageable pageable){
+    public Page<PostEntity> findPostAll(final Pageable pageable){
         return postRepository.findAll(pageable);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PostEntity findByPostId(long postId){
         return postRepository.findByPostId(postId);
     }
@@ -57,5 +60,13 @@ public class PostService {
         Optional<UserEntity> user = userRepository.findById(userId);
         PostEntity post = postRepository.findByPostIdAndUser(postId, user.get());
         postRepository.delete(post);
+    }
+
+    // 모든 게시글 카테고리 별 조회
+    @Transactional(readOnly = true)
+    public Page<PostEntity> findPostAllByCategoryName(String categoryName, final Pageable pageable){
+        Optional<CategoryEntity> category = Optional.of(categoryRepository.findByCategoryName(categoryName).orElseThrow(
+                () -> new IllegalArgumentException("찾을 수 없는 카테고리 입니다.")));
+        return postRepository.findAllByCategory_CategoryName(categoryName, pageable);
     }
 }

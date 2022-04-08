@@ -1,11 +1,10 @@
 package com.study.totee.controller;
 
 import com.study.totee.dto.ApiResponse;
-import com.study.totee.dto.UserDTO;
-import com.study.totee.dto.UserInfoDTO;
+import com.study.totee.dto.SignInDTO;
+import com.study.totee.dto.SignUpDTO;
 import com.study.totee.model.UserEntity;
 import com.study.totee.model.UserInfoEntity;
-import com.study.totee.persistence.UserRefreshTokenRepository;
 import com.study.totee.security.TokenProvider;
 import com.study.totee.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -30,19 +29,19 @@ public class AuthController {
 
     @ApiOperation(value = "회원가입", notes = "유저의 정보로 회원가입합니다.")
     @PostMapping("/signup")
-    public ApiResponse registerUser(@RequestBody UserDTO userDTO){
+    public ApiResponse registerUser(@RequestBody SignUpDTO signUpDTO){
         // 요청을 이용해 저장할 사용자 만들기
         UserEntity userEntity = UserEntity.builder()
-                .email(userDTO.getEmail())
-                .username(userDTO.getUsername())
-                .password(passwordEncoder.encode(userDTO.getPassword()))
+                .email(signUpDTO.getEmail())
+                .username(signUpDTO.getUsername())
+                .password(passwordEncoder.encode(signUpDTO.getPassword()))
                 .build();
 
         UserInfoEntity userInfoEntity = UserInfoEntity.builder()
-                .gender(userDTO.getGender())
-                .phone(userDTO.getPhone())
-                .major(userDTO.getMajor())
-                .studentId(userDTO.getStudentId())
+                .gender(signUpDTO.getGender())
+                .phone(signUpDTO.getPhone())
+                .major(signUpDTO.getMajor())
+                .studentId(signUpDTO.getStudentId())
                 .user(userEntity)
                 .build();
 
@@ -56,23 +55,22 @@ public class AuthController {
 
     @ApiOperation(value = "로그인", notes = "이메일과 비밀번호로 로그인합니다.")
     @PostMapping("/signin")
-    public ApiResponse authenticate(@RequestBody UserDTO userDTO) {
+    public ApiResponse authenticate(@RequestBody SignInDTO signInDTO) {
         UserEntity user = userService.getByCredentials(
-                userDTO.getEmail(),
-                userDTO.getPassword(),
+                signInDTO.getEmail(),
+                signInDTO.getPassword(),
                 passwordEncoder);
 
         if(user != null) {
             // 토큰 생성
             final String token = tokenProvider.create(user);
 
-            final UserDTO responseUserDTO = UserDTO.builder()
+            final SignInDTO responseSignInDTO = SignInDTO.builder()
                     .email(user.getEmail())
-                    .id(user.getId())
                     .username(user.getUsername())
                     .token(token)
                     .build();
-            return ApiResponse.success("data", responseUserDTO);
+            return ApiResponse.success("data", responseSignInDTO);
         } else {
             return ApiResponse.fail("message","Login failed");
         }
