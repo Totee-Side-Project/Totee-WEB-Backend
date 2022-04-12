@@ -2,8 +2,10 @@ package com.study.totee.controller;
 
 import com.study.totee.dto.ApiResponse;
 import com.study.totee.dto.PostDTO;
+import com.study.totee.model.CategoryEntity;
 import com.study.totee.model.PostEntity;
 import com.study.totee.model.UserEntity;
+import com.study.totee.service.CategoryService;
 import com.study.totee.service.PostService;
 import com.study.totee.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -30,18 +32,21 @@ public class PostController {
 
     private final PostService postService;
     private final UserService userService;
+    private final CategoryService categoryService;
 
     @ApiOperation(value = "포스트 등록" , notes = "포스트를 등록합니다")
     @PostMapping("/api/v1/post")
     public ApiResponse getUserInfo(@AuthenticationPrincipal String id, @RequestBody PostDTO postDTO){
         try {
             Optional<UserEntity> user = userService.getUserId(id);
+            Optional<CategoryEntity> category = categoryService.findByCategoryName(postDTO.getCategoryName());
             PostEntity postEntity = PostEntity.builder()
                     .content(postDTO.getContent())
                     .intro(postDTO.getIntro())
                     .title(postDTO.getTitle())
                     .status(false)
                     .user(user.get())
+                    .category(category.get())
                     .build();
 
             postService.save(postEntity);
@@ -137,8 +142,8 @@ public class PostController {
 
     @ApiOperation(value = "post 삭제" , notes = "게시글을 삭제합니다")
     @DeleteMapping("/api/v1/post/{postId}")
-    public ApiResponse deletePost(@AuthenticationPrincipal String userId, @PathVariable Long postId){
+    public ApiResponse deletePost(@AuthenticationPrincipal String userId, @PathVariable Long postId) {
         postService.delete(postId, userId);
-        return ApiResponse.success("message" , "SUCCESS");
+        return ApiResponse.success("message", "SUCCESS");
     }
 }

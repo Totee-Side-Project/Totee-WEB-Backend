@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<CategoryEntity, String> {
     Optional<CategoryEntity> findByCategoryName(String name);
+    void deleteByCategoryName(String id);
 }
