@@ -27,11 +27,6 @@ import java.time.LocalDateTime;
 public class CategoryEntity {
 
     @Id
-    @JsonIgnore
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Category_ID")
-    private int categoryId;
-
     @Column(name = "Category_Name" , length = 30 , nullable = false, unique = true)
     private String categoryName;
 

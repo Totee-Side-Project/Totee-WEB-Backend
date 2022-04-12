@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -19,13 +21,14 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public void save(CategoryEntity categoryEntity) throws IOException {
-        categoryRepository.save(categoryEntity);
+    public void save(CategoryEntity category) throws IOException {
+        categoryRepository.save(category);
     }
 
     @Transactional
     public void delete(CategoryEntity category){
-        categoryRepository.delete(category);
+
+        categoryRepository.deleteByCategoryName(category.getCategoryName());
     }
 
     @Transactional
@@ -35,6 +38,15 @@ public class CategoryService {
 
         validateDuplicateCategoryName(categoryDTO.getCategoryName());
         category.setCategoryName(categoryDTO.getCategoryName());
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoryEntity> categoryEntityList(){
+        return categoryRepository.findAll();
+    }
+
+    public Optional<CategoryEntity> findByCategoryName(String name){
+        return categoryRepository.findByCategoryName(name);
     }
 
     private void validateDuplicateCategoryName(String categoryName) {
