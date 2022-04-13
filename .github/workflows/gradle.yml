@@ -3,8 +3,9 @@ name: 	cli-user
 on:
   push:
     branches: [ main ] # main에 push될 때 CD가 일어나도록 핸들링
-  workflow_dispatch: # 수동 실행
 
+env:
+  S3_BUCKET_NAME: elasticbeanstalk-us-west-2-973896840050
 jobs:
   build:
     runs-on: ubuntu-latest
