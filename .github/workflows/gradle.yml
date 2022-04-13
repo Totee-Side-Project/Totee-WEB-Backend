@@ -44,5 +44,5 @@ jobs:
           existing_bucket_name: elasticbeanstalk-us-west-2-973896840050
           version_label: Github Action-${{steps.current-time.outputs.formattedTime}} # 배포 버전은 타임스탬프를 이용하여 구분
           region: us-west-2
-          deployment_package: ./build/libs/${{env.artifact}}
+          deployment_package: ./build/libs/tootee-webservice-1.0.0-SNAPSHOT.jar
           wait_for_environment_recovery: 180 # default wait time은 30초이며, 필자의 EB가 느려서 180초로 지정했습니다(지정 안하면 간혹 timeout 발생).
