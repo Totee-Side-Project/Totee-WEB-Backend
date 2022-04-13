@@ -21,13 +21,15 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public void save(CategoryEntity category) throws IOException {
+    public void save(CategoryEntity category) {
+        validateDuplicateCategoryName(category.getCategoryName());
         categoryRepository.save(category);
     }
 
     @Transactional
-    public void delete(CategoryEntity category){
-
+    public void delete(CategoryDTO categoryDTO){
+        CategoryEntity category = categoryRepository.findByCategoryName(categoryDTO.getCategoryName()).orElseThrow(
+                ()-> new IllegalArgumentException("찾을 수 없는 카테고리 입니다."));
         categoryRepository.deleteByCategoryName(category.getCategoryName());
     }
 
