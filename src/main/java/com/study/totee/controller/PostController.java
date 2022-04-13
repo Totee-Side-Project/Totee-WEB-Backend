@@ -67,7 +67,7 @@ public class PostController {
     @GetMapping("/api/v1/post/list")
     public ApiResponse findPostAll( @PageableDefault(size = 16 ,sort = "postId",direction = Sort.Direction.DESC ) Pageable pageable){
         Page<PostEntity> page = postService.findPostAll(pageable);
-        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getTitle(), post.getContent()
+        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getTitle(), post.getContent()
                 , post.getIntro(), post.getCategory().getCategoryName()));
         return ApiResponse.success("data", map);
     }
@@ -77,7 +77,7 @@ public class PostController {
     public ApiResponse findPostAllByCategoryName(@PathVariable String categoryName, @PageableDefault
             (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
         Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
-        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getTitle(), post.getContent()
+        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getTitle(), post.getContent()
                 , post.getIntro(), post.getCategory().getCategoryName()));
         return ApiResponse.success("data", map);
     }
@@ -117,6 +117,8 @@ public class PostController {
 
         PostDTO postDTO = PostDTO
                 .builder()
+                .postId(post.getPostId())
+                .view(post.getView())
                 .title(post.getTitle())
                 .intro(post.getIntro())
                 .username(user.getUsername())
@@ -132,6 +134,8 @@ public class PostController {
     public ApiResponse postUpdate(@AuthenticationPrincipal String userId, @RequestBody PostDTO postDTO, @PathVariable Long postId){
         PostEntity post = postService.update(postDTO, postId, userId);
         PostDTO response = PostDTO.builder()
+                .postId(post.getPostId())
+                .view(post.getView())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .intro(post.getIntro())

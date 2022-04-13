@@ -17,6 +17,10 @@ import javax.validation.constraints.NotNull;
 public class PostDTO {
     @ApiModelProperty(example = "작성자, 기입X")
     private String username;
+    @ApiModelProperty(example = "조회수, 기입X")
+    private int view;
+    @ApiModelProperty(example = "포스트번호, 기입X")
+    private Long postId;
     @ApiModelProperty(example = "제목")
     private String title;
     @ApiModelProperty(example = "내용")
