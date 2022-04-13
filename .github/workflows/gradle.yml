@@ -4,8 +4,6 @@ on:
   push:
     branches: [ main ] # main에 push될 때 CD가 일어나도록 핸들링
 
-env:
-  S3_BUCKET_NAME: elasticbeanstalk-us-west-2-973896840050
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -43,6 +41,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # github secrets로 등록한 값 사용
           application_name: Totee-WEB-Backend # EB application 이름
           environment_name: PROD-TOTEE-WEB-BACKEND # EB environment 이름
+          S3_BUCKET_NAME: elasticbeanstalk-us-west-2-973896840050
           version_label: Github Action-${{steps.current-time.outputs.formattedTime}} # 배포 버전은 타임스탬프를 이용하여 구분
           region: us-west-2
           deployment_package: ./build/libs/${{env.artifact}}
