@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -51,7 +52,7 @@ public class PostEntity {
     private LocalDateTime created_at;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "USER_USERNAME" , nullable = false)
+    @JoinColumn(name = "USER_ID", nullable = false)
     private UserEntity user;
 
     @Column
@@ -63,4 +64,7 @@ public class PostEntity {
     @OneToOne
     @JoinColumn(name = "CATEGORY_NAME", nullable = false)
     private CategoryEntity category;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<LikeEntity> like;
 }
