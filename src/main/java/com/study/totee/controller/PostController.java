@@ -68,7 +68,7 @@ public class PostController {
     public ApiResponse findPostAll( @PageableDefault(size = 16 ,sort = "postId",direction = Sort.Direction.DESC ) Pageable pageable){
         Page<PostEntity> page = postService.findPostAll(pageable);
         Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getTitle(), post.getContent()
-                , post.getIntro(), post.getCategory().getCategoryName()));
+                , post.getIntro(), post.getCategory().getCategoryName(), post.getLike()));
         return ApiResponse.success("data", map);
     }
 
@@ -78,7 +78,7 @@ public class PostController {
             (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
         Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
         Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getTitle(), post.getContent()
-                , post.getIntro(), post.getCategory().getCategoryName()));
+                , post.getIntro(), post.getCategory().getCategoryName(), post.getLike()));
         return ApiResponse.success("data", map);
     }
 
@@ -124,6 +124,7 @@ public class PostController {
                 .username(user.getUsername())
                 .content(post.getContent())
                 .categoryName(post.getCategory().getCategoryName())
+                .likeEntityList(post.getLike())
                 .build();
 
         return ApiResponse.success("data",postDTO);
@@ -140,6 +141,7 @@ public class PostController {
                 .content(post.getContent())
                 .intro(post.getIntro())
                 .categoryName(post.getCategory().getCategoryName())
+                .likeEntityList(post.getLike())
                 .build();
         return ApiResponse.success("data", response);
     }

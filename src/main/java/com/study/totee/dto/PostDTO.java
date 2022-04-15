@@ -1,5 +1,6 @@
 package com.study.totee.dto;
 
+import com.study.totee.model.LikeEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Builder
@@ -29,4 +31,6 @@ public class PostDTO {
     private String intro;
     @ApiModelProperty(example = "카테고리")
     private String categoryName;
+    @ApiModelProperty(example = "좋아요 리스트")
+    private List<LikeEntity> likeEntityList;
 }
