@@ -1,16 +1,20 @@
 package com.study.totee.controller;
 
 import com.study.totee.dto.ApiResponse;
+import com.study.totee.dto.CommentDTO;
 import com.study.totee.dto.PostDTO;
 import com.study.totee.model.CategoryEntity;
+import com.study.totee.model.CommentEntity;
 import com.study.totee.model.PostEntity;
 import com.study.totee.model.UserEntity;
 import com.study.totee.service.CategoryService;
+import com.study.totee.service.CommentService;
 import com.study.totee.service.PostService;
 import com.study.totee.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,7 +27,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -32,11 +38,13 @@ public class PostController {
 
     private final PostService postService;
     private final UserService userService;
+    private final CommentService commentService;
     private final CategoryService categoryService;
+    private final ModelMapper modelMapper;
 
     @ApiOperation(value = "포스트 등록" , notes = "포스트를 등록합니다")
     @PostMapping("/api/v1/post")
-    public ApiResponse getUserInfo(@AuthenticationPrincipal String id, @RequestBody PostDTO postDTO){
+    public ApiResponse savePost(@AuthenticationPrincipal String id, @RequestBody PostDTO postDTO){
         try {
             Optional<UserEntity> user = userService.getUserId(id);
             Optional<CategoryEntity> category = categoryService.findByCategoryName(postDTO.getCategoryName());
@@ -68,7 +76,7 @@ public class PostController {
     public ApiResponse findPostAll( @PageableDefault(size = 16 ,sort = "postId",direction = Sort.Direction.DESC ) Pageable pageable){
         Page<PostEntity> page = postService.findPostAll(pageable);
         Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getTitle(), post.getContent()
-                , post.getIntro(), post.getCategory().getCategoryName(), post.getLike()));
+                , post.getIntro(), post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
         return ApiResponse.success("data", map);
     }
 
@@ -78,7 +86,7 @@ public class PostController {
             (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
         Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
         Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getTitle(), post.getContent()
-                , post.getIntro(), post.getCategory().getCategoryName(), post.getLike()));
+                , post.getIntro(), post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
         return ApiResponse.success("data", map);
     }
 
@@ -113,6 +121,9 @@ public class PostController {
             response.addCookie(newCookie);
         }
         PostEntity post = postService.findByPostId(postId);
+        List<CommentEntity> commentEntities = commentService.CommentListByPostId(postId);
+        List<CommentDTO> commentDTOList = commentEntities.stream().map(commentEntity ->
+                        modelMapper.map(commentEntity, CommentDTO.class)).collect(Collectors.toList());
         UserEntity user = post.getUser();
 
         PostDTO postDTO = PostDTO
@@ -124,7 +135,9 @@ public class PostController {
                 .username(user.getUsername())
                 .content(post.getContent())
                 .categoryName(post.getCategory().getCategoryName())
-                .likeEntityList(post.getLike())
+                .likeCount(post.getLike().size())
+                .commentCount(post.getComment().size())
+                .commentDTOList(commentDTOList)
                 .build();
 
         return ApiResponse.success("data",postDTO);
@@ -141,7 +154,8 @@ public class PostController {
                 .content(post.getContent())
                 .intro(post.getIntro())
                 .categoryName(post.getCategory().getCategoryName())
-                .likeEntityList(post.getLike())
+                .likeCount(post.getLike().size())
+                .commentCount(post.getComment().size())
                 .build();
         return ApiResponse.success("data", response);
     }

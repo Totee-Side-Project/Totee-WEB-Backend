@@ -38,6 +38,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     annotationProcessor 'org.projectlombok:lombok'
     runtimeOnly 'mysql:mysql-connector-java'
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
 }
 
 test {

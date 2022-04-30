@@ -1,5 +1,6 @@
 package com.study.totee.dto;
 
+import com.study.totee.model.CommentEntity;
 import com.study.totee.model.LikeEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,10 @@ public class PostDTO {
     private String intro;
     @ApiModelProperty(example = "카테고리")
     private String categoryName;
-    @ApiModelProperty(example = "좋아요 리스트")
-    private List<LikeEntity> likeEntityList;
+    @ApiModelProperty(example = "좋아요 수")
+    private int likeCount;
+    @ApiModelProperty(example = "댓글 수")
+    private int commentCount;
+    @ApiModelProperty(example = "댓글리스트 정보")
+    private List<CommentDTO> commentDTOList;
 }
