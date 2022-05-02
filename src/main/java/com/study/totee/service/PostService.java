@@ -49,7 +49,6 @@ public class PostService {
     public PostEntity update(PostDTO postDTO, Long postId, String userId){
         Optional<UserEntity> user = userRepository.findById(userId);
         PostEntity post = postRepository.findByPostIdAndUser(postId, user.get());
-        post.setIntro(postDTO.getIntro());
         post.setContent(postDTO.getContent());
         post.setTitle(postDTO.getTitle());
         return post;

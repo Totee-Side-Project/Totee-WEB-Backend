@@ -28,8 +28,6 @@ public class PostDTO {
     private String title;
     @ApiModelProperty(example = "내용")
     private String content;
-    @ApiModelProperty(example = "썸네일 소개")
-    private String intro;
     @ApiModelProperty(example = "카테고리")
     private String categoryName;
     @ApiModelProperty(example = "좋아요 수")
