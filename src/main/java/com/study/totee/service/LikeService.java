@@ -8,8 +8,11 @@ import com.study.totee.persistence.PostRepository;
 import com.study.totee.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,5 +38,11 @@ public class LikeService {
             log.info( userId + " dislike " + postId);
         }
 
+    }
+
+    public Page<PostEntity> findAllByLikedPost(String userId, final Pageable pageable){
+        Optional<UserEntity> user = userRepository.findById(userId);
+        Page<PostEntity> likeEntityList = likeRepository.findAllByLikedPost(user.get(), pageable);
+        return likeEntityList;
     }
 }
