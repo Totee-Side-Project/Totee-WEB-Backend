@@ -34,10 +34,6 @@ public class PostEntity {
     @ApiModelProperty(example = "제목")
     String title;
 
-    @Column
-    @ApiModelProperty(example = "썸네일 소개")
-    String intro;
-
     @Lob
     @ApiModelProperty(example = "내용")
     String content;

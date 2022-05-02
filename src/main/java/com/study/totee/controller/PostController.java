@@ -20,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -50,7 +49,6 @@ public class PostController {
             Optional<CategoryEntity> category = categoryService.findByCategoryName(postDTO.getCategoryName());
             PostEntity postEntity = PostEntity.builder()
                     .content(postDTO.getContent())
-                    .intro(postDTO.getIntro())
                     .title(postDTO.getTitle())
                     .status(false)
                     .user(user.get())
@@ -76,7 +74,7 @@ public class PostController {
     public ApiResponse findPostAll( @PageableDefault(size = 16 ,sort = "postId",direction = Sort.Direction.DESC ) Pageable pageable){
         Page<PostEntity> page = postService.findPostAll(pageable);
         Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getTitle(), post.getContent()
-                , post.getIntro(), post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
+                , post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
         return ApiResponse.success("data", map);
     }
 
@@ -86,7 +84,7 @@ public class PostController {
             (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
         Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
         Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getTitle(), post.getContent()
-                , post.getIntro(), post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
+                , post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
         return ApiResponse.success("data", map);
     }
 
@@ -131,7 +129,6 @@ public class PostController {
                 .postId(post.getPostId())
                 .view(post.getView())
                 .title(post.getTitle())
-                .intro(post.getIntro())
                 .username(user.getUsername())
                 .content(post.getContent())
                 .categoryName(post.getCategory().getCategoryName())
@@ -152,7 +149,6 @@ public class PostController {
                 .view(post.getView())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .intro(post.getIntro())
                 .categoryName(post.getCategory().getCategoryName())
                 .likeCount(post.getLike().size())
                 .commentCount(post.getComment().size())
