@@ -36,3 +36,4 @@ rebel.xml
 /build/classes/java/main/
 /.idea/
 /src/main/resources/application.properties
+/src/main/resources/application.yml
