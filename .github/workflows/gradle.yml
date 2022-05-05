@@ -21,7 +21,7 @@ jobs:
         shell: bash
 
       - name: Build with Gradle
-        run: ./gradlew clean build -x=jar
+        run: ./gradlew clean bootjar -Pprofile=prod
         shell: bash
 
       - name: Get current time
