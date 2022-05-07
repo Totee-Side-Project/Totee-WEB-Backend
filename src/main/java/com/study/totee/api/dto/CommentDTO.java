@@ -16,7 +16,7 @@ public class CommentDTO {
     @ApiModelProperty(example = "댓글 번호, 기입X")
     private Long commentId;
 
-    @ApiModelProperty(example = "게시글 번호, 기입X")
+    @ApiModelProperty(example = "게시글 번호")
     private Long postId;
 
     @ApiModelProperty(example = "내용")
