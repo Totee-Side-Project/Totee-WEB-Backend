@@ -64,6 +64,29 @@ public class PostController {
         }
     }
 
+    @ApiOperation(value = "post 업데이트", notes = "게시글을 수정합니다")
+    @PutMapping("/api/v1/post/{postId}")
+    public ApiResponse postUpdate(@AuthenticationPrincipal User principal, @RequestBody PostDTO postDTO, @PathVariable Long postId){
+        PostEntity post = postService.update(postDTO, postId, principal.getUsername());
+        PostDTO response = PostDTO.builder()
+                .postId(post.getPostId())
+                .view(post.getView())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .categoryName(post.getCategory().getCategoryName())
+                .likeCount(post.getLike().size())
+                .commentCount(post.getComment().size())
+                .build();
+        return ApiResponse.success("data", response);
+    }
+
+    @ApiOperation(value = "post 삭제" , notes = "게시글을 삭제합니다")
+    @DeleteMapping("/api/v1/post/{postId}")
+    public ApiResponse deletePost(@AuthenticationPrincipal User principal, @PathVariable Long postId) {
+        postService.delete(postId, principal.getUsername());
+        return ApiResponse.success("message", "SUCCESS");
+    }
+
     @ApiOperation(value = "post 글 목록 불러오기",
             notes = "글 목록 불러오기 ex : api/v1/post/list?page=0&size=5&sort=postId.desc\n" +
                     "page : 몇번째 page 불러올건지\n" +
@@ -122,7 +145,7 @@ public class PostController {
         PostEntity post = postService.findByPostId(postId);
         List<CommentEntity> commentEntities = commentService.CommentListByPostId(postId);
         List<CommentDTO> commentDTOList = commentEntities.stream().map(commentEntity ->
-                        modelMapper.map(commentEntity, CommentDTO.class)).collect(Collectors.toList());
+                modelMapper.map(commentEntity, CommentDTO.class)).collect(Collectors.toList());
         UserEntity user = post.getUser();
 
         PostDTO postDTO = PostDTO
@@ -139,28 +162,5 @@ public class PostController {
                 .build();
 
         return ApiResponse.success("data",postDTO);
-    }
-
-    @ApiOperation(value = "post 업데이트", notes = "게시글을 수정합니다")
-    @PutMapping("/api/v1/post/{postId}")
-    public ApiResponse postUpdate(@AuthenticationPrincipal String userId, @RequestBody PostDTO postDTO, @PathVariable Long postId){
-        PostEntity post = postService.update(postDTO, postId, userId);
-        PostDTO response = PostDTO.builder()
-                .postId(post.getPostId())
-                .view(post.getView())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .categoryName(post.getCategory().getCategoryName())
-                .likeCount(post.getLike().size())
-                .commentCount(post.getComment().size())
-                .build();
-        return ApiResponse.success("data", response);
-    }
-
-    @ApiOperation(value = "post 삭제" , notes = "게시글을 삭제합니다")
-    @DeleteMapping("/api/v1/post/{postId}")
-    public ApiResponse deletePost(@AuthenticationPrincipal String userId, @PathVariable Long postId) {
-        postService.delete(postId, userId);
-        return ApiResponse.success("message", "SUCCESS");
     }
 }
