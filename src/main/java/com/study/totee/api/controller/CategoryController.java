@@ -1,5 +1,6 @@
 package com.study.totee.api.controller;
 
+
 import com.study.totee.common.ApiResponse;
 import com.study.totee.api.dto.CategoryDTO;
 import com.study.totee.api.model.CategoryEntity;
@@ -7,10 +8,14 @@ import com.study.totee.api.service.CategoryService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -18,18 +23,21 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final ModelMapper modelMapper;
 
-    @ApiOperation(value = "카테고리 목록" , notes = "카테고리 목록 보기 ")
+    @ApiOperation(value = "카테고리 목록" , notes = "카테고리 목록 보기")
     @GetMapping("api/v1/category")
-    public ApiResponse<List<CategoryEntity>> categoryList(){
-        return ApiResponse.success("data", categoryService.categoryEntityList());
+    public ApiResponse categoryList(){
+        List<CategoryEntity> entityList = categoryService.categoryEntityList();
+        List<CategoryDTO> dtoList = Arrays.asList(modelMapper.map(entityList, CategoryDTO[].class));
+        return ApiResponse.success("data", dtoList);
     }
 
-    @ApiOperation(value = "카테고리 추가" , notes = "카테고리 넣기 ")
+    @ApiOperation(value = "카테고리 추가" , notes = "카테고리 넣기")
     @PostMapping("api/v1/category/add")
-    public ApiResponse addCategory(@RequestBody CategoryDTO categoryDTO) throws IOException {
+    public ApiResponse addCategory(@ModelAttribute @Valid @RequestBody CategoryDTO categoryDTO) throws IOException {
         CategoryEntity categoryEntity = CategoryEntity.builder().categoryName(categoryDTO.getCategoryName()).build();
-        categoryService.save(categoryEntity);
+        categoryService.save(categoryEntity, categoryDTO.getCategoryImage());
         return ApiResponse.success("message", "Success");
     }
 
@@ -42,7 +50,7 @@ public class CategoryController {
 
     @ApiOperation(value = "카테고리 업데이트" , notes = "카테고리를 업데이트 업데이트를 할 경우 포스트가 자동으로 변경 된 값을 참조함.")
     @PutMapping("api/v1/category/update")
-    public ApiResponse updateCategory(@RequestBody CategoryDTO categoryDTO) {
+    public ApiResponse updateCategory(@RequestBody CategoryDTO categoryDTO) throws IOException {
         categoryService.update(categoryDTO);
 
         return ApiResponse.success("message", "Success");

@@ -1,5 +1,6 @@
 package com.study.totee.api.service;
 
+
 import com.study.totee.api.dto.CategoryDTO;
 import com.study.totee.api.model.CategoryEntity;
 import com.study.totee.api.persistence.CategoryRepository;
@@ -7,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,10 +19,14 @@ import java.util.Optional;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final AwsS3Service awsS3Service;
 
     @Transactional
-    public void save(CategoryEntity category) {
+    public void save(CategoryEntity category, MultipartFile multipartFile) throws IOException {
         validateDuplicateCategoryName(category.getCategoryName());
+        if(multipartFile != null){
+            category.setImageUrl(awsS3Service.upload(multipartFile, "static"));
+        }
         categoryRepository.save(category);
     }
 
@@ -28,16 +34,23 @@ public class CategoryService {
     public void delete(CategoryDTO categoryDTO){
         CategoryEntity category = categoryRepository.findByCategoryName(categoryDTO.getCategoryName()).orElseThrow(
                 ()-> new IllegalArgumentException("찾을 수 없는 카테고리 입니다."));
-        categoryRepository.deleteByCategoryName(category.getCategoryName());
+        if(category.getImageUrl() != null){
+            awsS3Service.fileDelete(category.getImageUrl());
+        }
+        categoryRepository.delete(category);
     }
 
     @Transactional
-    public void update(CategoryDTO categoryDTO){
+    public void update(CategoryDTO categoryDTO) throws IOException {
         CategoryEntity category = categoryRepository.findByCategoryName(categoryDTO.getCategoryName()).orElseThrow(
                 ()-> new IllegalArgumentException("찾을 수 없는 카테고리 입니다."));
 
         validateDuplicateCategoryName(categoryDTO.getCategoryName());
         category.setCategoryName(categoryDTO.getCategoryName());
+        if(categoryDTO.getCategoryImage() != null){
+            awsS3Service.fileDelete(category.getImageUrl());
+            category.setImageUrl(awsS3Service.upload(categoryDTO.getCategoryImage(), "static"));
+        }
     }
 
     @Transactional(readOnly = true)
