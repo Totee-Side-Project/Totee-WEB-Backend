@@ -30,6 +30,10 @@ public class CategoryEntity {
     @Column(name = "CATEGORY_NAME" , length = 30 , nullable = false, unique = true)
     private String categoryName;
 
+    @Column
+    @ApiModelProperty(name = "IMAGE_PATH")
+    private String imageUrl;
+
     @Column(name = "CREATED_AT")
     @CreationTimestamp
     @JsonSerialize(using = LocalDateTimeSerializer.class)
