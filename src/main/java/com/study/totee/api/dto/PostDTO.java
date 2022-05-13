@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -19,6 +20,10 @@ public class PostDTO {
     private int view;
     @ApiModelProperty(example = "포스트번호, 기입X")
     private Long postId;
+    @ApiModelProperty(example = "작성날짜, 기입X")
+    private LocalDateTime createdAt;
+    @ApiModelProperty(example = "전공")
+    private String major;
     @ApiModelProperty(example = "제목")
     private String title;
     @ApiModelProperty(example = "내용")

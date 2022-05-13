@@ -97,8 +97,9 @@ public class PostController {
     @GetMapping("/api/v1/post/list")
     public ApiResponse findPostAll( @PageableDefault(size = 16 ,sort = "postId",direction = Sort.Direction.DESC ) Pageable pageable){
         Page<PostEntity> page = postService.findPostAll(pageable);
-        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getTitle(), post.getContent()
-                , post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
+        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getCreated_at(),
+                post.getUser().getUserInfo().getMajor(), post.getTitle(), post.getContent(),
+                post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
         return ApiResponse.success("data", map);
     }
 
@@ -107,8 +108,9 @@ public class PostController {
     public ApiResponse findPostAllByCategoryName(@PathVariable String categoryName, @PageableDefault
             (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
         Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
-        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getTitle(), post.getContent()
-                , post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
+        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getCreated_at(),
+                post.getUser().getUserInfo().getMajor(), post.getTitle(), post.getContent(),
+                post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
         return ApiResponse.success("data", map);
     }
 
@@ -159,6 +161,8 @@ public class PostController {
                 .likeCount(post.getLike().size())
                 .commentCount(post.getComment().size())
                 .commentDTOList(commentDTOList)
+                .createdAt(post.getCreated_at())
+                .major(post.getUser().getUserInfo().getMajor())
                 .build();
 
         return ApiResponse.success("data",postDTO);
