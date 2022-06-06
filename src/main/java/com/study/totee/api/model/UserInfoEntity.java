@@ -28,16 +28,13 @@ public class UserInfoEntity {
     @JsonIgnore
     private UserEntity user;
 
-    @Column(nullable = false)
-    private String gender;
+    @Column
+    private String nickname;
 
-    @Column(nullable = false)
-    private String phone;
-
-    @Column(nullable = false)
+    @Column
     private String major;
 
-    @Column(nullable = false)
-    private String studentId;
+    @Column
+    private String grade;
 
 }

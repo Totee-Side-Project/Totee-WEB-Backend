@@ -13,14 +13,12 @@ import lombok.NoArgsConstructor;
 public class SignUpDTO {
     @ApiModelProperty(example = "기입 X")
     private String token;
-    @ApiModelProperty(example = "기입 X")
-    private String id;
 
+    private String id;
     private String email;
     private String username;
     private String password;
-    private String gender;
-    private String phone;
+    private String nickname;
+    private String grade;
     private String major;
-    private String studentId;
 }

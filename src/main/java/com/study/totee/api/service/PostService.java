@@ -49,8 +49,11 @@ public class PostService {
     public PostEntity update(PostDTO postDTO, Long postId, String userId){
         UserEntity user = userRepository.findById(userId);
         PostEntity post = postRepository.findByPostIdAndUser(postId, user);
+        Optional<CategoryEntity> category = categoryRepository.findByCategoryName(postDTO.getCategoryName());
         post.setContent(postDTO.getContent());
         post.setTitle(postDTO.getTitle());
+        post.setStatus(postDTO.getStatus());
+        post.setCategory(category.get());
         return post;
     }
 
@@ -67,5 +70,19 @@ public class PostService {
         Optional<CategoryEntity> category = Optional.of(categoryRepository.findByCategoryName(categoryName).orElseThrow(
                 () -> new IllegalArgumentException("찾을 수 없는 카테고리 입니다.")));
         return postRepository.findAllByCategory_CategoryName(categoryName, pageable);
+    }
+
+    // 모든 게시글 모집중인 글만 조회
+    @Transactional(readOnly = true)
+    public Page<PostEntity> findPostAllByStatus(Pageable pageable){
+        return postRepository.findAllByStatus("Y", pageable);
+    }
+
+    // 모든 게시글 카테고리 별, 모집중인 글만 조회
+    @Transactional(readOnly = true)
+    public Page<PostEntity> findAllByCategory_CategoryNameAndStatus(String categoryName, Pageable pageable){
+        Optional<CategoryEntity> category = Optional.of(categoryRepository.findByCategoryName(categoryName).orElseThrow(
+                () -> new IllegalArgumentException("찾을 수 없는 카테고리 입니다.")));
+        return postRepository.findAllByCategory_CategoryNameAndStatus(categoryName, "Y", pageable);
     }
 }

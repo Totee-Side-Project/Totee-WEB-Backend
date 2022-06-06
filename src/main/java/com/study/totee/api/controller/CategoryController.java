@@ -15,7 +15,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -33,7 +32,7 @@ public class CategoryController {
         return ApiResponse.success("data", dtoList);
     }
 
-    @ApiOperation(value = "카테고리 추가" , notes = "카테고리 넣기")
+    @ApiOperation(value = "카테고리 추가" , notes = "카테고리 넣기 폼데이터 형식으로 보내야됨 필수!")
     @PostMapping("api/v1/category/add")
     public ApiResponse addCategory(@ModelAttribute @Valid @RequestBody CategoryDTO categoryDTO) throws IOException {
         CategoryEntity categoryEntity = CategoryEntity.builder().categoryName(categoryDTO.getCategoryName()).build();
