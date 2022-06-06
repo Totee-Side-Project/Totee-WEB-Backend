@@ -51,7 +51,7 @@ public class PostController {
             PostEntity postEntity = PostEntity.builder()
                     .content(postDTO.getContent())
                     .title(postDTO.getTitle())
-                    .status(false)
+                    .status("Y")
                     .user(user)
                     .category(category.get())
                     .build();
@@ -76,6 +76,7 @@ public class PostController {
                 .categoryName(post.getCategory().getCategoryName())
                 .likeCount(post.getLike().size())
                 .commentCount(post.getComment().size())
+                .status(post.getStatus())
                 .build();
         return ApiResponse.success("data", response);
     }
@@ -87,7 +88,7 @@ public class PostController {
         return ApiResponse.success("message", "SUCCESS");
     }
 
-    @ApiOperation(value = "post 글 목록 불러오기",
+    @ApiOperation(value = "전체 글 목록 불러오기",
             notes = "글 목록 불러오기 ex : api/v1/post/list?page=0&size=5&sort=postId.desc\n" +
                     "page : 몇번째 page 불러올건지\n" +
                     "size : 1페이지 당 개수\n" +
@@ -99,7 +100,7 @@ public class PostController {
         Page<PostEntity> page = postService.findPostAll(pageable);
         Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getCreated_at(),
                 post.getUser().getUserInfo().getMajor(), post.getTitle(), post.getContent(),
-                post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
+                post.getCategory().getCategoryName(), post.getLike().size(), post.getStatus(), post.getComment().size(), null));
         return ApiResponse.success("data", map);
     }
 
@@ -110,7 +111,7 @@ public class PostController {
         Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
         Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getCreated_at(),
                 post.getUser().getUserInfo().getMajor(), post.getTitle(), post.getContent(),
-                post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
+                post.getCategory().getCategoryName(), post.getLike().size(), post.getStatus(), post.getComment().size(), null));
         return ApiResponse.success("data", map);
     }
 
@@ -162,6 +163,7 @@ public class PostController {
                 .commentCount(post.getComment().size())
                 .commentDTOList(commentDTOList)
                 .createdAt(post.getCreated_at())
+                .status(post.getStatus())
                 .major(post.getUser().getUserInfo().getMajor())
                 .build();
 

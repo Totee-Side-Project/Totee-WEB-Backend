@@ -36,7 +36,7 @@ public class LikeController {
         Page<PostEntity> page = likeService.findAllByLikedPost(principal.getUsername(), pageable);
         Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getCreated_at(),
                 post.getUser().getUserInfo().getMajor(), post.getTitle(), post.getContent(),
-                post.getCategory().getCategoryName(), post.getLike().size(), post.getComment().size(), null));
+                post.getCategory().getCategoryName(), post.getLike().size(), post.getStatus(), post.getComment().size(), null));
         return ApiResponse.success("data", map);
     }
 }

@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserInfoDTO {
     private String username;
-    private String gender;
-    private String phone;
+    private String grade;
+    private String nickname;
     private String major;
-    private String studentId;
 }

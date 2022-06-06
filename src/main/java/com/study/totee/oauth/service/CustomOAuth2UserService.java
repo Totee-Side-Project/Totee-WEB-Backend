@@ -84,6 +84,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 now,
                 userInfoEntity
         );
+        userInfoEntity.setUser(user);
 
         return userRepository.saveAndFlush(user);
     }

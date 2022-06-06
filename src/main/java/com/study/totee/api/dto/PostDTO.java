@@ -22,7 +22,7 @@ public class PostDTO {
     private Long postId;
     @ApiModelProperty(example = "작성날짜, 기입X")
     private LocalDateTime createdAt;
-    @ApiModelProperty(example = "전공")
+    @ApiModelProperty(example = "전공, 기입X")
     private String major;
     @ApiModelProperty(example = "제목")
     private String title;
@@ -30,10 +30,12 @@ public class PostDTO {
     private String content;
     @ApiModelProperty(example = "카테고리")
     private String categoryName;
-    @ApiModelProperty(example = "좋아요 수")
+    @ApiModelProperty(example = "좋아요 수, 기입X")
     private int likeCount;
-    @ApiModelProperty(example = "댓글 수")
+    @ApiModelProperty(example = "모집 상태 (Y or N), 수정시 만 기입")
+    private String status;
+    @ApiModelProperty(example = "댓글 수, 기입X")
     private int commentCount;
-    @ApiModelProperty(example = "댓글리스트 정보")
+    @ApiModelProperty(example = "댓글리스트 정보, 기입X")
     private List<CommentDTO> commentDTOList;
 }

@@ -18,6 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,17 +38,17 @@ public class PostEntity {
 
     @Column(name = "TITLE")
     @ApiModelProperty(example = "제목")
-    String title;
+    private String title;
 
     @Column(name = "CONTENT")
     @Lob
     @ApiModelProperty(example = "내용")
-    String content;
+    private String content;
 
-    @Column(name = "STATUS")
-    @ApiModelProperty(example = "모집마감여부 0")
+    @Column(name = "STATUS", length = 1)
     @NotNull
-    private boolean status;
+    @Size(min = 1, max = 1)
+    private String status;
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp
