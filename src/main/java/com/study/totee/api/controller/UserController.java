@@ -27,6 +27,8 @@ public class UserController {
                 .grade(userInfoEntity.getGrade())
                 .major(userInfoEntity.getMajor())
                 .nickname(userInfoEntity.getNickname())
+                .roleType(user.getRoleType())
+                .profileImageUrl(user.getProfileImageUrl())
                 .build();
         return ApiResponse.success("data" , userInfoDTO);
     }

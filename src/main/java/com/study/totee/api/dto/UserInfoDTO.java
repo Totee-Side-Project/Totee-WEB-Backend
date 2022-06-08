@@ -1,5 +1,6 @@
 package com.study.totee.api.dto;
 
+import com.study.totee.oauth.entity.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,4 +15,6 @@ public class UserInfoDTO {
     private String grade;
     private String nickname;
     private String major;
+    private String profileImageUrl;
+    private RoleType roleType;
 }
