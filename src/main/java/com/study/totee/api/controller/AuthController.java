@@ -1,5 +1,6 @@
 package com.study.totee.api.controller;
 
+import com.study.totee.api.dto.SignInDTO;
 import com.study.totee.api.model.UserRefreshToken;
 import com.study.totee.api.dto.auth.AuthReqModel;
 import com.study.totee.api.persistence.UserRefreshTokenRepository;
@@ -50,39 +51,40 @@ public class AuthController {
     private final static long THREE_DAYS_MSEC = 259200000;
     private final static String REFRESH_TOKEN = "refresh_token";
 
-//    @ApiOperation(value = "회원가입", notes = "유저의 정보로 회원가입합니다.")
-//    @PostMapping("/signup")
-//    public ApiResponse registerUser(@RequestBody SignUpDTO signUpDTO){
-//        // 요청을 이용해 저장할 사용자 만들기
-//        LocalDateTime now = LocalDateTime.now();
-//
-//        UserEntity userEntity = UserEntity.builder()
-//                .id(signUpDTO.getId())
-//                .email(signUpDTO.getEmail())
-//                .username(signUpDTO.getUsername())
-//                .password(passwordEncoder.encode(signUpDTO.getPassword()))
-//                .providerType(ProviderType.LOCAL)
-//                .roleType(RoleType.USER)
-//                .emailVerifiedYn("N")
-//                .profileImageUrl("www")
-//                .createdAt(now)
-//                .modifiedAt(now)
-//                .build();
-//
-//        UserInfoEntity userInfoEntity = UserInfoEntity.builder()
-//                .major(signUpDTO.getMajor())
-//                .grade(signUpDTO.getGrade())
-//                .user(userEntity)
-//                .build();
-//
-//        userEntity.setUserInfo(userInfoEntity);
-//
-//        // 서비스를 이용해 리포지토리에 사용자 저장
-//        userService.create(userEntity, userInfoEntity);
-//
-//        return ApiResponse.success("message" , "SUCCESS");
-//    }
+    @ApiOperation(value = "회원가입", notes = "유저의 정보로 회원가입합니다.")
+    @PostMapping("/signup")
+    public ApiResponse registerUser(@RequestBody SignUpDTO signUpDTO){
+        // 요청을 이용해 저장할 사용자 만들기
+        LocalDateTime now = LocalDateTime.now();
 
+        UserEntity userEntity = UserEntity.builder()
+                .id(signUpDTO.getId())
+                .email(signUpDTO.getEmail())
+                .username(signUpDTO.getUsername())
+                .password(passwordEncoder.encode(signUpDTO.getPassword()))
+                .providerType(ProviderType.LOCAL)
+                .roleType(RoleType.USER)
+                .emailVerifiedYn("N")
+                .profileImageUrl("www")
+                .createdAt(now)
+                .modifiedAt(now)
+                .build();
+
+        UserInfoEntity userInfoEntity = UserInfoEntity.builder()
+                .major(signUpDTO.getMajor())
+                .grade(signUpDTO.getGrade())
+                .nickname(signUpDTO.getNickname())
+                .user(userEntity)
+                .build();
+
+        userEntity.setUserInfo(userInfoEntity);
+
+        // 서비스를 이용해 리포지토리에 사용자 저장
+        userService.create(userEntity, userInfoEntity);
+
+        return ApiResponse.success("message" , "SUCCESS");
+    }
+//
 //    @ApiOperation(value = "로그인", notes = "이메일과 비밀번호로 로그인합니다.")
 //    @PostMapping("/signin")
 //    public ApiResponse authenticate(@RequestBody SignInDTO signInDTO) {
