@@ -8,10 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,8 +19,9 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
 @Builder
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,12 +35,10 @@ public class PostEntity {
     private Long postId;
 
     @Column(name = "TITLE")
-    @ApiModelProperty(example = "제목")
     private String title;
 
     @Column(name = "CONTENT")
     @Lob
-    @ApiModelProperty(example = "내용")
     private String content;
 
     @Column(name = "STATUS", length = 1)
@@ -66,11 +62,9 @@ public class PostEntity {
     private UserEntity user;
 
     @Column(name = "VIEW")
-    @ApiModelProperty(example = "조회수 기본 0")
     @NotNull
     private int view;
 
-    @ApiModelProperty(example = "자유게시판")
     @OneToOne
     @JoinColumn(name = "CATEGORY_NAME", nullable = false)
     private CategoryEntity category;
@@ -80,4 +74,18 @@ public class PostEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<CommentEntity> comment;
+
+    @Column(name = "IMAGE_URL")
+    @ApiModelProperty(example = "썸네일 이미지 URL")
+    private String imageUrl;
+
+    @Column(name = "ONLINE_OR_OFFLINE")
+    private String onlineOrOffline;
+
+    @Column(name = "PERIOD")
+    private int period;
+
+    @Column(name = "TARGET")
+    private String target;
+
 }
