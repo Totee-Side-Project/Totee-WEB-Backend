@@ -1,6 +1,5 @@
-package com.study.totee.api.dto;
+package com.study.totee.api.dto.auth;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignUpDTO {
-    @ApiModelProperty(example = "기입 X")
+public class SignupDto {
     private String token;
 
     private String id;
