@@ -1,6 +1,6 @@
 package com.study.totee.api.service;
 
-import com.study.totee.api.dto.PostDTO;
+import com.study.totee.api.dto.post.PostRequestDto;
 import com.study.totee.api.model.CategoryEntity;
 import com.study.totee.api.model.PostEntity;
 import com.study.totee.api.model.UserEntity;
@@ -24,43 +24,53 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-    @Transactional
-    public void save(PostEntity postEntity) throws IOException {
-        postRepository.save(postEntity);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<PostEntity> findPostAll(final Pageable pageable){
-        return postRepository.findAll(pageable);
-    }
-
-    @Transactional(readOnly = true)
-    public PostEntity findByPostId(long postId){
-        return postRepository.findByPostId(postId);
-    }
+    private final AwsS3Service awsS3Service;
 
     @Transactional
-    public void updateView(Long postId){
-        PostEntity post = postRepository.findByPostId(postId);
-        post.setView(post.getView()+1);
+    public void save(String userId, PostRequestDto postRequestDto) throws IOException {
+        CategoryEntity category = categoryRepository.findByCategoryName(postRequestDto.getCategoryName())
+                .orElseThrow(()-> new IllegalArgumentException("찾을 수 없는 카테고리 입니다."));
+        UserEntity user = userRepository.findById(userId);
+
+        PostEntity post = PostEntity.builder()
+            .status("Y").category(category).title(postRequestDto.getTitle()).user(user)
+            .content(postRequestDto.getContent()).onlineOrOffline(postRequestDto.getOnlineOrOffline())
+            .period(postRequestDto.getPeriod()).target(postRequestDto.getTarget()).view(0).build();
+
+        if(postRequestDto.getPostImage() != null){
+            post.setImageUrl(awsS3Service.upload(postRequestDto.getPostImage(), "static"));
+        }
+
+        postRepository.save(post);
     }
 
     @Transactional
-    public PostEntity update(PostDTO postDTO, Long postId, String userId){
+    public void update(String userId, PostRequestDto postRequestDto, Long postId) throws IOException {
+        CategoryEntity category = categoryRepository.findByCategoryName(postRequestDto.getCategoryName())
+                .orElseThrow(()-> new IllegalArgumentException("찾을 수 없는 카테고리 입니다."));
         UserEntity user = userRepository.findById(userId);
         PostEntity post = postRepository.findByPostIdAndUser(postId, user);
-        Optional<CategoryEntity> category = categoryRepository.findByCategoryName(postDTO.getCategoryName());
-        post.setContent(postDTO.getContent());
-        post.setTitle(postDTO.getTitle());
-        post.setStatus(postDTO.getStatus());
-        post.setCategory(category.get());
-        return post;
+
+        post.setContent(postRequestDto.getContent());
+        post.setTitle(postRequestDto.getTitle());
+        post.setStatus(postRequestDto.getStatus());
+        post.setOnlineOrOffline(postRequestDto.getOnlineOrOffline());
+        post.setPeriod(postRequestDto.getPeriod());
+        post.setTarget(postRequestDto.getTarget());
+        post.setCategory(category);
+        if(postRequestDto.getPostImage() != null){
+            awsS3Service.fileDelete(post.getImageUrl());
+            post.setImageUrl(awsS3Service.upload(postRequestDto.getPostImage(), "static"));
+        }
     }
 
     @Transactional
     public void delete(Long postId, String userId){
         UserEntity user = userRepository.findById(userId);
         PostEntity post = postRepository.findByPostIdAndUser(postId, user);
+        if(post.getImageUrl() != null){
+            awsS3Service.fileDelete(post.getImageUrl());
+        }
         postRepository.delete(post);
     }
 
@@ -84,5 +94,21 @@ public class PostService {
         Optional<CategoryEntity> category = Optional.of(categoryRepository.findByCategoryName(categoryName).orElseThrow(
                 () -> new IllegalArgumentException("찾을 수 없는 카테고리 입니다.")));
         return postRepository.findAllByCategory_CategoryNameAndStatus(categoryName, "Y", pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostEntity> findPostAll(final Pageable pageable){
+        return postRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public PostEntity findByPostId(long postId){
+        return postRepository.findByPostId(postId);
+    }
+
+    @Transactional
+    public void updateView(Long postId){
+        PostEntity post = postRepository.findByPostId(postId);
+        post.setView(post.getView()+1);
     }
 }

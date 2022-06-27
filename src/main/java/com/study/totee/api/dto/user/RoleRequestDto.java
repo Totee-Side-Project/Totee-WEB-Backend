@@ -1,6 +1,7 @@
-package com.study.totee.api.dto;
+package com.study.totee.api.dto.user;
 
 import com.study.totee.oauth.entity.RoleType;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfoDTO {
-    private String username;
-    private String grade;
+public class RoleRequestDto {
+    @ApiModelProperty(example = "닉네임")
     private String nickname;
-    private String major;
-    private String profileImageUrl;
+    @ApiModelProperty(example = "유저 등급")
     private RoleType roleType;
 }

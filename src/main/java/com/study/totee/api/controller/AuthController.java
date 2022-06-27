@@ -1,13 +1,12 @@
 package com.study.totee.api.controller;
 
-import com.study.totee.api.dto.SignInDTO;
+import com.study.totee.api.dto.auth.SignupDto;
+import com.study.totee.api.model.UserEntity;
+import com.study.totee.api.model.UserInfoEntity;
 import com.study.totee.api.model.UserRefreshToken;
 import com.study.totee.api.dto.auth.AuthReqModel;
 import com.study.totee.api.persistence.UserRefreshTokenRepository;
 import com.study.totee.common.ApiResponse;
-import com.study.totee.api.dto.SignUpDTO;
-import com.study.totee.api.model.UserEntity;
-import com.study.totee.api.model.UserInfoEntity;
 import com.study.totee.config.properties.AppProperties;
 import com.study.totee.oauth.entity.ProviderType;
 import com.study.totee.oauth.entity.RoleType;
@@ -18,6 +17,7 @@ import com.study.totee.api.service.UserService;
 import com.study.totee.utils.CookieUtil;
 import com.study.totee.utils.HeaderUtil;
 import io.jsonwebtoken.Claims;
+
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -47,13 +48,12 @@ public class AuthController {
     private final AuthTokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
-    // private final TokenProvider tokenProvider;
     private final static long THREE_DAYS_MSEC = 259200000;
     private final static String REFRESH_TOKEN = "refresh_token";
 
-    @ApiOperation(value = "회원가입", notes = "유저의 정보로 회원가입합니다.")
+    @ApiOperation(value = "회원가입", notes = "서버 테스트용 삭제예정")
     @PostMapping("/signup")
-    public ApiResponse registerUser(@RequestBody SignUpDTO signUpDTO){
+    public ApiResponse registerUser(@RequestBody SignupDto signUpDTO){
         // 요청을 이용해 저장할 사용자 만들기
         LocalDateTime now = LocalDateTime.now();
 
@@ -84,29 +84,6 @@ public class AuthController {
 
         return ApiResponse.success("message" , "SUCCESS");
     }
-//
-//    @ApiOperation(value = "로그인", notes = "이메일과 비밀번호로 로그인합니다.")
-//    @PostMapping("/signin")
-//    public ApiResponse authenticate(@RequestBody SignInDTO signInDTO) {
-//        UserEntity user = userService.getByCredentials(
-//                signInDTO.getEmail(),
-//                signInDTO.getPassword(),
-//                passwordEncoder);
-//
-//        if(user != null) {
-//            // 토큰 생성
-//            final String token = tokenProvider.create(user);
-//
-//            final SignInDTO responseSignInDTO = SignInDTO.builder()
-//                    .email(user.getEmail())
-//                    .username(user.getUsername())
-//                    .token(token)
-//                    .build();
-//            return ApiResponse.success("data", responseSignInDTO);
-//        } else {
-//            return ApiResponse.fail("message","Login failed");
-//        }
-//    }
 
     @PostMapping("/login")
     public ApiResponse login(

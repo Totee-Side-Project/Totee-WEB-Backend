@@ -1,9 +1,8 @@
 package com.study.totee.api.controller;
 
-import com.study.totee.api.dto.RoleDTO;
+import com.study.totee.api.dto.user.RoleRequestDto;
 import com.study.totee.api.service.AdminService;
 import com.study.totee.common.ApiResponse;
-import com.study.totee.oauth.entity.RoleType;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,12 +15,10 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @ApiOperation(value = "권한변경", notes = "권한 등급을 변경함.")
+    @ApiOperation(value = "권한변경", notes = "유저의 권한 등급을 변경합니다.")
     @PutMapping("/api/v1/admin/update/role")
-    public ApiResponse updateRole(@RequestBody RoleDTO roleDTO){
-        String id = roleDTO.getId();
-        RoleType role = roleDTO.getRoleType();
-        adminService.updateRole(id, role);
+    public ApiResponse updateRole(@RequestBody RoleRequestDto roleRequestDto){
+        adminService.updateRole(roleRequestDto);
         return ApiResponse.success("message", "Success");
     }
 }

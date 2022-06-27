@@ -1,4 +1,4 @@
-package com.study.totee.api.dto;
+package com.study.totee.api.dto.category;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -11,11 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryDTO {
+public class CategoryRequestDto {
     @ApiModelProperty(example = "카테고리 이름")
     private String categoryName;
+
     @ApiModelProperty(example = "카테고리 이미지")
     private MultipartFile categoryImage;
-    @ApiModelProperty(example = "카테고리 이미지 URL, 기입X")
-    private String imageUrl;
 }

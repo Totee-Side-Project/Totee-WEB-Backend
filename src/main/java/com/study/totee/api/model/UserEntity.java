@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.study.totee.oauth.entity.ProviderType;
 import com.study.totee.oauth.entity.RoleType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -19,14 +16,15 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "email")}, name = "USER_ENTITY")
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "id")}, name = "USER_ENTITY")
 public class UserEntity {
     @JsonIgnore
     @Id
@@ -44,7 +42,7 @@ public class UserEntity {
     @Size(max = 100)
     private String username;
 
-    @Column(name = "EMAIL", length = 512, unique = true)
+    @Column(name = "EMAIL", length = 512)
     @NotNull
     @Size(max = 512)
     private String email;
