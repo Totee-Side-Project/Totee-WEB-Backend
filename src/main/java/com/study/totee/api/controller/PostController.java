@@ -1,16 +1,14 @@
 package com.study.totee.api.controller;
 
+import com.study.totee.api.dto.comment.CommentResponseDto;
+import com.study.totee.api.dto.post.PostRequestDto;
+import com.study.totee.api.dto.post.PostResponseDto;
 import com.study.totee.common.ApiResponse;
-import com.study.totee.api.dto.CommentDTO;
-import com.study.totee.api.dto.PostDTO;
-import com.study.totee.api.model.CategoryEntity;
 import com.study.totee.api.model.CommentEntity;
 import com.study.totee.api.model.PostEntity;
 import com.study.totee.api.model.UserEntity;
-import com.study.totee.api.service.CategoryService;
 import com.study.totee.api.service.CommentService;
 import com.study.totee.api.service.PostService;
-import com.study.totee.api.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +24,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,48 +35,22 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private final PostService postService;
-    private final UserService userService;
     private final CommentService commentService;
-    private final CategoryService categoryService;
     private final ModelMapper modelMapper;
 
     @ApiOperation(value = "포스트 등록" , notes = "포스트를 등록합니다")
     @PostMapping("/api/v1/post")
-    public ApiResponse savePost(@AuthenticationPrincipal User principal, @RequestBody PostDTO postDTO){
-        try {
-            UserEntity user = userService.getUser(principal.getUsername());
-            Optional<CategoryEntity> category = categoryService.findByCategoryName(postDTO.getCategoryName());
-            PostEntity postEntity = PostEntity.builder()
-                    .content(postDTO.getContent())
-                    .title(postDTO.getTitle())
-                    .status("Y")
-                    .user(user)
-                    .category(category.get())
-                    .build();
-
-            postService.save(postEntity);
-            return ApiResponse.success("message" , "SUCCESS");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ApiResponse.fail("message", "Failed");
-        }
+    public ApiResponse savePost(@AuthenticationPrincipal User principal, @ModelAttribute @Valid @RequestBody PostRequestDto postRequestDto) throws IOException {
+        postService.save(principal.getUsername(), postRequestDto);
+        return ApiResponse.success("message" , "SUCCESS");
     }
 
     @ApiOperation(value = "post 업데이트", notes = "게시글을 수정합니다")
     @PutMapping("/api/v1/post/{postId}")
-    public ApiResponse postUpdate(@AuthenticationPrincipal User principal, @RequestBody PostDTO postDTO, @PathVariable Long postId){
-        PostEntity post = postService.update(postDTO, postId, principal.getUsername());
-        PostDTO response = PostDTO.builder()
-                .postId(post.getPostId())
-                .view(post.getView())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .categoryName(post.getCategory().getCategoryName())
-                .likeCount(post.getLike().size())
-                .commentCount(post.getComment().size())
-                .status(post.getStatus())
-                .build();
-        return ApiResponse.success("data", response);
+    public ApiResponse postUpdate(@AuthenticationPrincipal User principal, @RequestBody @ModelAttribute @Valid PostRequestDto postRequestDto, @PathVariable Long postId) throws IOException {
+        postService.update(principal.getUsername(), postRequestDto, postId);
+
+        return ApiResponse.success("data", "SUCCESS");
     }
 
     @ApiOperation(value = "post 삭제" , notes = "게시글을 삭제합니다")
@@ -98,9 +70,11 @@ public class PostController {
     @GetMapping("/api/v1/post/list")
     public ApiResponse findPostAll( @PageableDefault(size = 16 ,sort = "postId",direction = Sort.Direction.DESC ) Pageable pageable){
         Page<PostEntity> page = postService.findPostAll(pageable);
-        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getCreated_at(),
-                post.getUser().getUserInfo().getMajor(), post.getTitle(), post.getContent(),
-                post.getCategory().getCategoryName(), post.getLike().size(), post.getStatus(), post.getComment().size(), null));
+        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
+                        post.getUser().getUserInfo().getNickname(), post.getView(), post.getLike().size(), post.getComment().size(),
+                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getTarget(), post.getStatus(), post.getCategory().getCategoryName()));
+
         return ApiResponse.success("data", map);
     }
 
@@ -109,9 +83,11 @@ public class PostController {
     public ApiResponse findPostAllByCategoryName(@PathVariable String categoryName, @PageableDefault
             (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
         Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
-        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getCreated_at(),
-                post.getUser().getUserInfo().getMajor(), post.getTitle(), post.getContent(),
-                post.getCategory().getCategoryName(), post.getLike().size(), post.getStatus(), post.getComment().size(), null));
+        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
+                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLike().size(), post.getComment().size(),
+                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getTarget(), post.getStatus(), post.getCategory().getCategoryName()));
+
         return ApiResponse.success("data", map);
     }
 
@@ -147,16 +123,16 @@ public class PostController {
         }
         PostEntity post = postService.findByPostId(postId);
         List<CommentEntity> commentEntities = commentService.CommentListByPostId(postId);
-        List<CommentDTO> commentDTOList = commentEntities.stream().map(commentEntity ->
-                modelMapper.map(commentEntity, CommentDTO.class)).collect(Collectors.toList());
+        List<CommentResponseDto> commentDTOList = commentEntities.stream().map(commentEntity ->
+                modelMapper.map(commentEntity, CommentResponseDto.class)).collect(Collectors.toList());
         UserEntity user = post.getUser();
 
-        PostDTO postDTO = PostDTO
+        PostResponseDto postResponseDto = PostResponseDto
                 .builder()
                 .postId(post.getPostId())
                 .view(post.getView())
                 .title(post.getTitle())
-                .username(user.getUsername())
+                .author(user.getUserInfo().getNickname())
                 .content(post.getContent())
                 .categoryName(post.getCategory().getCategoryName())
                 .likeCount(post.getLike().size())
@@ -164,9 +140,12 @@ public class PostController {
                 .commentDTOList(commentDTOList)
                 .createdAt(post.getCreated_at())
                 .status(post.getStatus())
-                .major(post.getUser().getUserInfo().getMajor())
+                .target(post.getTarget())
+                .imageUrl(post.getImageUrl())
+                .onlineOrOffline(post.getOnlineOrOffline())
+                .period(post.getPeriod())
                 .build();
 
-        return ApiResponse.success("data",postDTO);
+        return ApiResponse.success("data", postResponseDto);
     }
 }

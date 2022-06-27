@@ -1,7 +1,8 @@
 package com.study.totee.api.service;
 
 
-import com.study.totee.api.dto.CategoryDTO;
+import com.study.totee.api.dto.category.CategoryRequestDto;
+import com.study.totee.api.dto.category.CategoryUpdateDto;
 import com.study.totee.api.model.CategoryEntity;
 import com.study.totee.api.persistence.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +23,19 @@ public class CategoryService {
     private final AwsS3Service awsS3Service;
 
     @Transactional
-    public void save(CategoryEntity category, MultipartFile multipartFile) throws IOException {
-        validateDuplicateCategoryName(category.getCategoryName());
-        if(multipartFile != null){
-            category.setImageUrl(awsS3Service.upload(multipartFile, "static"));
+    public void save(CategoryRequestDto categoryRequestDto) throws IOException {
+        validateDuplicateCategoryName(categoryRequestDto.getCategoryName());
+        CategoryEntity category = CategoryEntity.builder().categoryName(categoryRequestDto.getCategoryName())
+                .build();
+        if(categoryRequestDto.getCategoryImage() != null){
+            category.setImageUrl(awsS3Service.upload(categoryRequestDto.getCategoryImage(), "static"));
         }
         categoryRepository.save(category);
     }
 
     @Transactional
-    public void delete(CategoryDTO categoryDTO){
-        CategoryEntity category = categoryRepository.findByCategoryName(categoryDTO.getCategoryName()).orElseThrow(
+    public void delete(CategoryRequestDto categoryRequestDto){
+        CategoryEntity category = categoryRepository.findByCategoryName(categoryRequestDto.getCategoryName()).orElseThrow(
                 ()-> new IllegalArgumentException("찾을 수 없는 카테고리 입니다."));
         if(category.getImageUrl() != null){
             awsS3Service.fileDelete(category.getImageUrl());
@@ -41,25 +44,25 @@ public class CategoryService {
     }
 
     @Transactional
-    public void update(CategoryDTO categoryDTO) throws IOException {
-        CategoryEntity category = categoryRepository.findByCategoryName(categoryDTO.getCategoryName()).orElseThrow(
+    public void update(CategoryUpdateDto categoryUpdateDto) throws IOException {
+        CategoryEntity category = categoryRepository.findByCategoryName(categoryUpdateDto.getCategoryName()).orElseThrow(
                 ()-> new IllegalArgumentException("찾을 수 없는 카테고리 입니다."));
+        if(!categoryUpdateDto.getNewCategoryName().equals(category.getCategoryName())){
+            validateDuplicateCategoryName(categoryUpdateDto.getNewCategoryName());
+            category.setCategoryName(categoryUpdateDto.getNewCategoryName());
+        }
 
-        validateDuplicateCategoryName(categoryDTO.getCategoryName());
-        category.setCategoryName(categoryDTO.getCategoryName());
-        if(categoryDTO.getCategoryImage() != null){
-            awsS3Service.fileDelete(category.getImageUrl());
-            category.setImageUrl(awsS3Service.upload(categoryDTO.getCategoryImage(), "static"));
+        if(categoryUpdateDto.getCategoryImage() != null){
+            if(category.getImageUrl() != null){
+                awsS3Service.fileDelete(category.getImageUrl());
+            }
+            category.setImageUrl(awsS3Service.upload(categoryUpdateDto.getCategoryImage(), "static"));
         }
     }
 
     @Transactional(readOnly = true)
     public List<CategoryEntity> categoryEntityList(){
         return categoryRepository.findAll();
-    }
-
-    public Optional<CategoryEntity> findByCategoryName(String name){
-        return categoryRepository.findByCategoryName(name);
     }
 
     private void validateDuplicateCategoryName(String categoryName) {

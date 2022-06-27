@@ -1,7 +1,8 @@
 package com.study.totee.api.controller;
 
+import com.study.totee.api.dto.post.PostResponseDto;
+import com.study.totee.api.model.UserEntity;
 import com.study.totee.common.ApiResponse;
-import com.study.totee.api.dto.PostDTO;
 import com.study.totee.api.model.PostEntity;
 import com.study.totee.api.service.LikeService;
 import io.swagger.annotations.ApiOperation;
@@ -23,9 +24,10 @@ public class LikeController {
     private final LikeService likeService;
 
     @ApiOperation(value = "좋아요!", notes = "이미 좋아요 되어있으면 좋아요는 취소됩니다.")
-    @PostMapping("/api/v1/post/{postId}/like")
+    @PostMapping("/api/v1/post/like/{postId}")
     public ApiResponse like(@AuthenticationPrincipal User principal , @PathVariable Long postId){
         likeService.like(principal.getUsername(), postId);
+
         return ApiResponse.success("message","SUCCESS");
     }
 
@@ -34,9 +36,13 @@ public class LikeController {
     public ApiResponse myLikePost(@AuthenticationPrincipal User principal, @PageableDefault
             (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
         Page<PostEntity> page = likeService.findAllByLikedPost(principal.getUsername(), pageable);
-        Page<PostDTO> map = page.map(post -> new PostDTO(post.getUser().getUsername(), post.getView(), post.getPostId(), post.getCreated_at(),
-                post.getUser().getUserInfo().getMajor(), post.getTitle(), post.getContent(),
-                post.getCategory().getCategoryName(), post.getLike().size(), post.getStatus(), post.getComment().size(), null));
+
+        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
+                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLike().size(), post.getComment().size(),
+                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getTarget(), post.getStatus(), post.getCategory().getCategoryName()));
+
+
         return ApiResponse.success("data", map);
     }
 }

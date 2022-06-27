@@ -40,12 +40,10 @@ public class CommentEntity {
 
     @Column(name = "CONTENT")
     @Lob
-    @ApiModelProperty(example = "내용")
     String content;
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp
-    @ApiModelProperty(example = "2022-01-06 14:57:42.777000 ---Insert 시 자동 삽입 넣지말아요")
     private LocalDateTime created_at;
 
     @Column(name = "MODIFIED_AT")

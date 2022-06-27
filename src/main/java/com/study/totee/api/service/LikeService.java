@@ -26,7 +26,7 @@ public class LikeService {
         LikeEntity like = likeRepository.findByUser_IdAndPost_PostId(userId , postId);
         if(like == null){
             PostEntity post = postRepository.findByPostId(postId);
-            UserEntity userEntity = userRepository.findById(userId);
+            UserEntity userEntity = getUser(userId);
             LikeEntity newLike = new LikeEntity();
             newLike.setUser(userEntity);
             newLike.setPost(post);
@@ -40,8 +40,12 @@ public class LikeService {
     }
 
     public Page<PostEntity> findAllByLikedPost(String userId, final Pageable pageable){
-        UserEntity user = userRepository.findById(userId);
+        UserEntity user = getUser(userId);
         Page<PostEntity> likeEntityList = likeRepository.findAllByLikedPost(user, pageable);
         return likeEntityList;
+    }
+
+    public UserEntity getUser(String userId){
+        return userRepository.findById(userId);
     }
 }

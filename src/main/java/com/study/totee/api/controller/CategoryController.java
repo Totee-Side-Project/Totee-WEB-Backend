@@ -1,8 +1,10 @@
 package com.study.totee.api.controller;
 
 
+import com.study.totee.api.dto.category.CategoryRequestDto;
+import com.study.totee.api.dto.category.CategoryResponseDto;
+import com.study.totee.api.dto.category.CategoryUpdateDto;
 import com.study.totee.common.ApiResponse;
-import com.study.totee.api.dto.CategoryDTO;
 import com.study.totee.api.model.CategoryEntity;
 import com.study.totee.api.service.CategoryService;
 import io.swagger.annotations.ApiOperation;
@@ -28,29 +30,28 @@ public class CategoryController {
     @GetMapping("api/v1/category")
     public ApiResponse categoryList(){
         List<CategoryEntity> entityList = categoryService.categoryEntityList();
-        List<CategoryDTO> dtoList = Arrays.asList(modelMapper.map(entityList, CategoryDTO[].class));
+        List<CategoryResponseDto> dtoList = Arrays.asList(modelMapper.map(entityList, CategoryResponseDto[].class));
         return ApiResponse.success("data", dtoList);
     }
 
-    @ApiOperation(value = "카테고리 추가" , notes = "카테고리 넣기 폼데이터 형식으로 보내야됨 필수!")
-    @PostMapping("api/v1/category/add")
-    public ApiResponse addCategory(@ModelAttribute @Valid @RequestBody CategoryDTO categoryDTO) throws IOException {
-        CategoryEntity categoryEntity = CategoryEntity.builder().categoryName(categoryDTO.getCategoryName()).build();
-        categoryService.save(categoryEntity, categoryDTO.getCategoryImage());
+    @ApiOperation(value = "카테고리 추가" , notes = "카테고리 추가, 폼데이터 형식으로 보내야됩니다. 필수!")
+    @PostMapping("api/v1/category")
+    public ApiResponse addCategory(@ModelAttribute @Valid @RequestBody CategoryRequestDto categoryRequestDto) throws IOException {
+        categoryService.save(categoryRequestDto);
         return ApiResponse.success("message", "Success");
     }
 
     @ApiOperation(value = "카테고리 삭제" , notes = "카테고리 삭제, 포스트가 해당 카테고리를 사용하고 있지 않아야 합니다.")
-    @DeleteMapping("api/v1/category/delete")
-    public ApiResponse deleteCategory(@RequestBody CategoryDTO categoryDTO) {
-        categoryService.delete(categoryDTO);
+    @DeleteMapping("api/v1/category")
+    public ApiResponse deleteCategory(@RequestBody CategoryRequestDto categoryRequestDto) {
+        categoryService.delete(categoryRequestDto);
         return ApiResponse.success("message", "Success");
     }
 
-    @ApiOperation(value = "카테고리 업데이트" , notes = "카테고리를 업데이트 업데이트를 할 경우 포스트가 자동으로 변경 된 값을 참조함.")
-    @PutMapping("api/v1/category/update")
-    public ApiResponse updateCategory(@RequestBody CategoryDTO categoryDTO) throws IOException {
-        categoryService.update(categoryDTO);
+    @ApiOperation(value = "카테고리 업데이트" , notes = "카테고리 업데이트, 업데이트를 할 경우 포스트가 자동으로 변경 된 값을 참조함.")
+    @PutMapping("api/v1/category")
+    public ApiResponse updateCategory(@ModelAttribute @Valid @RequestBody CategoryUpdateDto categoryUpdateDto) throws IOException {
+        categoryService.update(categoryUpdateDto);
 
         return ApiResponse.success("message", "Success");
     }

@@ -1,6 +1,6 @@
 package com.study.totee.api.service;
 
-import com.study.totee.api.dto.CommentDTO;
+import com.study.totee.api.dto.comment.CommentRequestDto;
 import com.study.totee.api.model.CommentEntity;
 import com.study.totee.api.model.PostEntity;
 import com.study.totee.api.model.UserEntity;
@@ -22,18 +22,28 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostService postService;
+
     @Transactional
-    public void save(CommentEntity commentEntity){
-        PostEntity post = postService.findByPostId(commentEntity.getPost().getPostId());
+    public void save(CommentRequestDto commentRequestDto, String userId){
+        UserEntity user = userRepository.findById(userId);
+        PostEntity post = postService.findByPostId(commentRequestDto.getPostId());
+
+        CommentEntity commentEntity = CommentEntity.builder()
+                .content(commentRequestDto.getContent())
+                .user(user)
+                .username(user.getUsername())
+                .post(post)
+                .build();
+
         post.getComment().add(commentEntity);
         commentRepository.save(commentEntity);
     }
 
     @Transactional
-    public void update(CommentDTO commentDTO, String userId){
+    public void update(CommentRequestDto commentRequestDto, String userId, Long commentId){
         UserEntity user = userRepository.findById(userId);
-        CommentEntity commentEntity = commentRepository.findByCommentIdAndUser(commentDTO.getCommentId(), user);
-        commentEntity.setContent(commentDTO.getContent());
+        CommentEntity commentEntity = commentRepository.findByCommentIdAndUser(commentId, user);
+        commentEntity.setContent(commentRequestDto.getContent());
     }
 
     @Transactional
