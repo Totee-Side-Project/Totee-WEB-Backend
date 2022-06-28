@@ -96,6 +96,12 @@ public class PostService {
         return postRepository.findAllByCategory_CategoryNameAndStatus(categoryName, "Y", pageable);
     }
 
+    // 게시글 제목 검색
+    @Transactional
+    public Page<PostEntity> searchTitle(String keyword, Pageable pageable){
+        return postRepository.findAllByTitleContaining(keyword, pageable);
+    }
+
     @Transactional(readOnly = true)
     public Page<PostEntity> findPostAll(final Pageable pageable){
         return postRepository.findAll(pageable);

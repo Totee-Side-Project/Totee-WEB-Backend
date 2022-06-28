@@ -91,6 +91,19 @@ public class PostController {
         return ApiResponse.success("data", map);
     }
 
+    @ApiOperation(value = "게시물 제목 검색합니다.", notes = "제목에 해당하는 게시글을 조회합니다. 빈 검색어 보내면 안됩니다")
+    @GetMapping("/api/v1/post/search/{title}")
+    public ApiResponse findPostAllByTitle(@PathVariable String title, @PageableDefault
+            (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<PostEntity> page = postService.searchTitle(title, pageable);
+        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
+                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLike().size(), post.getComment().size(),
+                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getTarget(), post.getStatus(), post.getCategory().getCategoryName()));
+
+        return ApiResponse.success("data", map);
+    }
+
 
     @ApiOperation(value = "post 상세보기",
             notes = "PostId로 상세보기\n" +

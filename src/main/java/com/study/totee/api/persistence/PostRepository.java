@@ -13,4 +13,5 @@ public interface PostRepository extends JpaRepository<PostEntity, String> {
     Page<PostEntity> findAllByStatus(String status, Pageable pageable);
     Page<PostEntity> findAllByCategory_CategoryName(String categoryName, Pageable pageable);
     Page<PostEntity> findAllByCategory_CategoryNameAndStatus(String categoryName, String status, Pageable pageable);
+    Page<PostEntity> findAllByTitleContaining(String keyword, Pageable pageable);
 }
