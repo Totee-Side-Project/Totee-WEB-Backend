@@ -1,5 +1,6 @@
 package com.study.totee.api.dto.user;
 
+import com.study.totee.api.Type.PositionType;
 import com.study.totee.oauth.entity.RoleType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,8 +18,8 @@ public class UserInfoRequestDto {
     private String grade;
     @ApiModelProperty(example = "닉네임")
     private String nickname;
-    @ApiModelProperty(example = "직종, 예를 들어 BACKEND, FRONT, DESIGN")
-    private String major;
+    @ApiModelProperty(example = "포지션 ex) DESIGN, BACKEND, FRONTEND, ML, GAME, IOS, ANDROID, OTHERS")
+    private PositionType position;
     @ApiModelProperty(example = "유저 프로필 이미지")
     private MultipartFile profileImage;
 }

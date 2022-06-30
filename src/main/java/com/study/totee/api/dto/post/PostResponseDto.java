@@ -33,10 +33,10 @@ public class PostResponseDto {
     private int view;
 
     @ApiModelProperty(example = "좋아요 수")
-    private int likeCount;
+    private int likeNum;
 
     @ApiModelProperty(example = "댓글 수")
-    private int commentCount;
+    private int commentNum;
 
     @ApiModelProperty(example = "댓글리스트 정보")
     private List<CommentResponseDto> commentDTOList;
