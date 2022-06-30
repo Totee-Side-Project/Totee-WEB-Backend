@@ -27,7 +27,7 @@ import java.util.List;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
-@Table(name = "POST_ENTITY")
+@Table(name = "TB_POST")
 public class PostEntity {
     @Id
     @Column(name = "POST_ID")
@@ -66,7 +66,7 @@ public class PostEntity {
     private int view;
 
     @OneToOne
-    @JoinColumn(name = "CATEGORY_NAME", nullable = false)
+    @JoinColumn(name = "CATEGORY_ID", nullable = false)
     private CategoryEntity category;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
@@ -87,5 +87,11 @@ public class PostEntity {
 
     @Column(name = "TARGET")
     private String target;
+
+    @Column(name = "commentNum")
+    private int commentNum;
+
+    @Column(name = "likeNum")
+    private int likeNum;
 
 }

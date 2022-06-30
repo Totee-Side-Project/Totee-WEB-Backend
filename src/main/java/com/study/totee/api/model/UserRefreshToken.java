@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "USER_REFRESH_TOKEN")
+@Table(name = "TB_USER_REFRESH_TOKEN")
 public class UserRefreshToken {
     /*@JsonIgnore
     @Id

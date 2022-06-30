@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "id")}, name = "USER_ENTITY")
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "id")}, name = "TB_USER")
 public class UserEntity {
     @JsonIgnore
     @Id

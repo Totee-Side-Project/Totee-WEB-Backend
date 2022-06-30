@@ -34,15 +34,17 @@ public class CommentService {
                 .username(user.getUsername())
                 .post(post)
                 .build();
-
+        post.setCommentNum(post.getCommentNum() + 1);
         post.getComment().add(commentEntity);
         commentRepository.save(commentEntity);
     }
 
     @Transactional
     public void update(CommentRequestDto commentRequestDto, String userId, Long commentId){
+        PostEntity post = postService.findByPostId(commentRequestDto.getPostId());
         UserEntity user = userRepository.findById(userId);
         CommentEntity commentEntity = commentRepository.findByCommentIdAndUser(commentId, user);
+        post.setCommentNum(post.getCommentNum() - 1);
         commentEntity.setContent(commentRequestDto.getContent());
     }
 
@@ -50,6 +52,8 @@ public class CommentService {
     public void delete(Long commentId, String userId){
         UserEntity user = userRepository.findById(userId);
         CommentEntity commentEntity = commentRepository.findByCommentIdAndUser(commentId, user);
+        PostEntity post = postService.findByPostId(commentEntity.getPost().getPostId());
+        post.setCommentNum(post.getCommentNum() - 1);
         commentRepository.delete(commentEntity);
     }
 

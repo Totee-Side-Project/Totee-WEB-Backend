@@ -38,7 +38,7 @@ public class PostController {
     private final CommentService commentService;
     private final ModelMapper modelMapper;
 
-    @ApiOperation(value = "포스트 등록" , notes = "포스트를 등록합니다")
+    @ApiOperation(value = "포스트 등록" , notes = "포스트를 등록합니다 (폼데이터 형식 필수)")
     @PostMapping("/api/v1/post")
     public ApiResponse savePost(@AuthenticationPrincipal User principal, @ModelAttribute @Valid @RequestBody PostRequestDto postRequestDto) throws IOException {
         postService.save(principal.getUsername(), postRequestDto);
@@ -71,7 +71,33 @@ public class PostController {
     public ApiResponse findPostAll( @PageableDefault(size = 16 ,sort = "postId",direction = Sort.Direction.DESC ) Pageable pageable){
         Page<PostEntity> page = postService.findPostAll(pageable);
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
-                        post.getUser().getUserInfo().getNickname(), post.getView(), post.getLike().size(), post.getComment().size(),
+                        post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
+                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getTarget(), post.getStatus(), post.getCategory().getCategoryName()));
+
+        return ApiResponse.success("data", map);
+    }
+
+    // 댓글 많은 순서로 불러오기
+    @ApiOperation(value = "댓글 순 글 목록 불러오기", notes = "댓글 많은 순으로 모든 게시글을 조회합니다")
+    @GetMapping("/api/v1/post/list/all/comment")
+    public ApiResponse findAllOrderByCommentNum(@PageableDefault(size = 16, sort = "commentNum", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PostEntity> page = postService.findPostAll(pageable);
+        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
+                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
+                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getTarget(), post.getStatus(), post.getCategory().getCategoryName()));
+
+        return ApiResponse.success("data", map);
+    }
+
+    // 좋아요 많은 순서로 불러오기
+    @ApiOperation(value = "좋아요 순 글 목록 불러오기", notes = "좋아요 많은 순으로 모든 게시글을 조회합니다")
+    @GetMapping("/api/v1/post/list/all/like")
+    public ApiResponse findAllOrderByLikeNum(@PageableDefault(size = 16, sort = "likeNum", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PostEntity> page = postService.findPostAll(pageable);
+        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
+                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
                 null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
                 post.getTarget(), post.getStatus(), post.getCategory().getCategoryName()));
 
@@ -84,12 +110,55 @@ public class PostController {
             (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
         Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
-                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLike().size(), post.getComment().size(),
+                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
                 null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
                 post.getTarget(), post.getStatus(), post.getCategory().getCategoryName()));
 
         return ApiResponse.success("data", map);
     }
+
+    // 카테고리 별 좋아요 순 글 목록 불러오기
+    @ApiOperation(value = "카테고리 별 좋아요 순 글 목록 불러오기", notes = "카테고리 별 좋아요 많은 순으로 모든 게시글을 조회합니다.")
+    @GetMapping("/api/v1/post/list/{categoryName}/like")
+    public ApiResponse findPostAllByCategoryNameOrderByLikeNum(@PathVariable String categoryName, @PageableDefault
+            (size = 16, sort = "likeNum", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
+        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
+                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
+                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getTarget(), post.getStatus(), post.getCategory().getCategoryName()));
+
+        return ApiResponse.success("data", map);
+    }
+
+    // 카테고리별 댓글 많은 순 글 목록 불러오기
+    @ApiOperation(value = "카테고리 별 댓글 순 글 목록 불러오기", notes = "카테고리 별 댓글 많은 순으로 모든 게시글을 조회합니다.")
+    @GetMapping("/api/v1/post/list/{categoryName}/comment")
+    public ApiResponse findPostAllByCategoryNameOrderByCommentNum(@PathVariable String categoryName, @PageableDefault
+            (size = 16, sort = "commentNum", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
+        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
+                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
+                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getTarget(), post.getStatus(), post.getCategory().getCategoryName()));
+
+        return ApiResponse.success("data", map);
+    }
+
+
+    @ApiOperation(value = "게시물 제목 검색합니다.", notes = "제목에 해당하는 게시글을 조회합니다. 빈 검색어 보내면 안됩니다")
+    @GetMapping("/api/v1/post/search/{title}")
+    public ApiResponse findPostAllByTitle(@PathVariable String title, @PageableDefault
+            (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<PostEntity> page = postService.searchTitle(title, pageable);
+        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
+                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
+                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getTarget(), post.getStatus(), post.getCategory().getCategoryName()));
+
+        return ApiResponse.success("data", map);
+    }
+
 
     @ApiOperation(value = "post 상세보기",
             notes = "PostId로 상세보기\n" +
@@ -135,8 +204,8 @@ public class PostController {
                 .author(user.getUserInfo().getNickname())
                 .content(post.getContent())
                 .categoryName(post.getCategory().getCategoryName())
-                .likeCount(post.getLike().size())
-                .commentCount(post.getComment().size())
+                .likeNum(post.getLikeNum())
+                .commentNum(post.getCommentNum())
                 .commentDTOList(commentDTOList)
                 .createdAt(post.getCreated_at())
                 .status(post.getStatus())

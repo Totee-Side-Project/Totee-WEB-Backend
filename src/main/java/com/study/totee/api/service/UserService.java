@@ -7,11 +7,9 @@ import com.study.totee.api.persistence.UserInfoRepository;
 import com.study.totee.api.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -35,10 +33,9 @@ public class UserService {
         UserEntity user = userRepository.findById(userId);
         UserInfoEntity userInfoEntity = user.getUserInfo();
         if (userInfoRequestDto.getProfileImage() == null){
-            userInfoEntity.getUser().setProfileImageUrl("https://lh3.googleusercontent.com/a-/AOh14Gg_jYj1ka2KSZcYgcxXxasvl8_rytXHtszA-SzRwg=s96-c");
+            user.setProfileImageUrl("https://lh3.googleusercontent.com/a-/AOh14Gg_jYj1ka2KSZcYgcxXxasvl8_rytXHtszA-SzRwg=s96-c");
         }
-        userInfoEntity.setGrade(userInfoRequestDto.getGrade());
-        userInfoEntity.setMajor(userInfoRequestDto.getMajor());
+        userInfoEntity.setPosition(userInfoRequestDto.getPosition());
         userInfoEntity.setNickname(userInfoRequestDto.getNickname());
         user.setUserInfo(userInfoEntity);
     }
