@@ -24,15 +24,17 @@ public class LikeService {
 
     public void like(String userId, Long postId){
         LikeEntity like = likeRepository.findByUser_IdAndPost_PostId(userId , postId);
+        PostEntity post = postRepository.findByPostId(postId);
         if(like == null){
-            PostEntity post = postRepository.findByPostId(postId);
             UserEntity userEntity = getUser(userId);
             LikeEntity newLike = new LikeEntity();
+            post.setLikeNum(post.getLikeNum() + 1);
             newLike.setUser(userEntity);
             newLike.setPost(post);
             likeRepository.save(newLike);
             log.info( userId + " like " + postId);
         }else {
+            post.setLikeNum(post.getLikeNum() - 1);
             likeRepository.delete(like);
             log.info( userId + " dislike " + postId);
         }
