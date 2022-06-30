@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "LIKE_ENTITY")
+@Table(name = "TB_LIKE")
 public class LikeEntity {
 
     @Id

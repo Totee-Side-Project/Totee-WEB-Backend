@@ -1,6 +1,7 @@
 package com.study.totee.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.study.totee.api.Type.PositionType;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "USER_INFO_ENTITY")
+@Table(name = "TB_USER_INFO")
 public class UserInfoEntity {
 
     @Id
@@ -30,9 +31,6 @@ public class UserInfoEntity {
     private String nickname;
 
     @Column
-    private String major;
-
-    @Column
-    private String grade;
+    private PositionType position;
 
 }
