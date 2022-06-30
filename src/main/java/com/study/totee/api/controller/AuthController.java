@@ -71,8 +71,6 @@ public class AuthController {
                 .build();
 
         UserInfoEntity userInfoEntity = UserInfoEntity.builder()
-                .major(signUpDTO.getMajor())
-                .grade(signUpDTO.getGrade())
                 .nickname(signUpDTO.getNickname())
                 .user(userEntity)
                 .build();
