@@ -29,8 +29,7 @@ public class UserController {
         UserInfoEntity userInfoEntity = user.getUserInfo();
 
         UserInfoResponseDto userInfoResponseDto = UserInfoResponseDto.builder()
-                .grade(userInfoEntity.getGrade())
-                .major(userInfoEntity.getMajor())
+                .position(userInfoEntity.getPosition())
                 .nickname(userInfoEntity.getNickname())
                 .roleType(user.getRoleType())
                 .email(user.getEmail())
