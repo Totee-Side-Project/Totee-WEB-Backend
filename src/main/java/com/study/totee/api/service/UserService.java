@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+
 
 @Slf4j
 @Service
@@ -18,6 +20,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserInfoRepository userInfoRepository;
+    private final AwsS3Service awsS3Service;
 
     public UserEntity getUser(final String id){
         return userRepository.findById(id);
@@ -29,11 +32,14 @@ public class UserService {
     }
 
     @Transactional
-    public void createUserInfo(String userId, UserInfoRequestDto userInfoRequestDto){
+    public void createUserInfo(String userId, UserInfoRequestDto userInfoRequestDto) throws IOException {
         UserEntity user = userRepository.findById(userId);
         UserInfoEntity userInfoEntity = user.getUserInfo();
         if (userInfoRequestDto.getProfileImage() == null){
             user.setProfileImageUrl("https://lh3.googleusercontent.com/a-/AOh14Gg_jYj1ka2KSZcYgcxXxasvl8_rytXHtszA-SzRwg=s96-c");
+        }
+        else{
+            user.setProfileImageUrl(awsS3Service.upload(userInfoRequestDto.getProfileImage(), "static"));
         }
         userInfoEntity.setPosition(userInfoRequestDto.getPosition());
         userInfoEntity.setNickname(userInfoRequestDto.getNickname());

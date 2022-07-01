@@ -9,12 +9,13 @@ import com.study.totee.api.model.UserInfoEntity;
 import com.study.totee.api.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,7 +42,7 @@ public class UserController {
 
     @ApiOperation(value = "유저 정보 저장하기", notes = "신규유저의 유저 관련 정보를 저장합니다.")
     @PostMapping("/api/v1/info")
-    public ApiResponse createUserInfo(@AuthenticationPrincipal User principal, @RequestBody UserInfoRequestDto userInfoRequestDto){
+    public ApiResponse createUserInfo(@AuthenticationPrincipal User principal, @ModelAttribute @Valid @RequestBody UserInfoRequestDto userInfoRequestDto) throws IOException {
 
         userService.createUserInfo(principal.getUsername(), userInfoRequestDto);
         return ApiResponse.success("data", "SUCCESS");
