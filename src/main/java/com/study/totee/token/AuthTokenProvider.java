@@ -1,6 +1,6 @@
-package com.study.totee.oauth.token;
+package com.study.totee.token;
 
-import com.study.totee.oauth.exception.TokenValidFailedException;
+import com.study.totee.exption.TokenValidFailedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
-package com.study.totee.oauth.info.impl;
+package com.study.totee.api.info.impl;
 
-import com.study.totee.oauth.info.OAuth2UserInfo;
+import com.study.totee.api.info.OAuth2UserInfo;
 
 import java.util.Map;
 

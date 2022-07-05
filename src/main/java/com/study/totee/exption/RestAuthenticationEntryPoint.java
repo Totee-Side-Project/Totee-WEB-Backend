@@ -1,4 +1,4 @@
-package com.study.totee.oauth.exception;
+package com.study.totee.exption;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;

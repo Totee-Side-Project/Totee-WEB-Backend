@@ -1,4 +1,4 @@
-package com.study.totee.oauth.info;
+package com.study.totee.api.info;
 
 import java.util.Map;
 

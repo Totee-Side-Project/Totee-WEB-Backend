@@ -1,4 +1,4 @@
-package com.study.totee.oauth.entity;
+package com.study.totee.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

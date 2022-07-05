@@ -1,15 +1,15 @@
-package com.study.totee.oauth.handler;
+package com.study.totee.handler;
 
 import com.study.totee.api.model.UserRefreshToken;
 import com.study.totee.api.persistence.UserRefreshTokenRepository;
 import com.study.totee.config.properties.AppProperties;
-import com.study.totee.oauth.entity.ProviderType;
-import com.study.totee.oauth.entity.RoleType;
-import com.study.totee.oauth.info.OAuth2UserInfo;
-import com.study.totee.oauth.info.OAuth2UserInfoFactory;
-import com.study.totee.oauth.repostiory.OAuth2AuthorizationRequestBasedOnCookieRepository;
-import com.study.totee.oauth.token.AuthToken;
-import com.study.totee.oauth.token.AuthTokenProvider;
+import com.study.totee.type.ProviderType;
+import com.study.totee.type.RoleType;
+import com.study.totee.api.info.OAuth2UserInfo;
+import com.study.totee.api.info.OAuth2UserInfoFactory;
+import com.study.totee.api.persistence.OAuth2AuthorizationRequestBasedOnCookieRepository;
+import com.study.totee.token.AuthToken;
+import com.study.totee.token.AuthTokenProvider;
 import com.study.totee.utils.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 
-import static com.study.totee.oauth.repostiory.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+import static com.study.totee.api.persistence.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REFRESH_TOKEN;
 
 @Component

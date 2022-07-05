@@ -1,8 +1,8 @@
-package com.study.totee.oauth.service;
+package com.study.totee.api.service;
 
 import com.study.totee.api.model.UserEntity;
 import com.study.totee.api.persistence.UserRepository;
-import com.study.totee.oauth.entity.UserPrincipal;
+import com.study.totee.type.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

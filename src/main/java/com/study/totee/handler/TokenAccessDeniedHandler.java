@@ -1,4 +1,4 @@
-package com.study.totee.oauth.handler;
+package com.study.totee.handler;
 
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;

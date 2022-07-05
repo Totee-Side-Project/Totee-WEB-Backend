@@ -1,4 +1,4 @@
-package com.study.totee.oauth.entity;
+package com.study.totee.type;
 
 import com.study.totee.api.model.UserEntity;
 import lombok.AllArgsConstructor;

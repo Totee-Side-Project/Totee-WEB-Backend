@@ -1,7 +1,7 @@
-package com.study.totee.oauth.filter;
+package com.study.totee.filter;
 
-import com.study.totee.oauth.token.AuthToken;
-import com.study.totee.oauth.token.AuthTokenProvider;
+import com.study.totee.token.AuthToken;
+import com.study.totee.token.AuthTokenProvider;
 import com.study.totee.utils.HeaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

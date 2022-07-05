@@ -1,4 +1,4 @@
-package com.study.totee.oauth.exception;
+package com.study.totee.exption;
 
 public class TokenValidFailedException extends RuntimeException {
 

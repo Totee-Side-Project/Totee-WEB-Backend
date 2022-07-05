@@ -1,14 +1,14 @@
-package com.study.totee.oauth.service;
+package com.study.totee.api.service;
 
 import com.study.totee.api.model.UserEntity;
 import com.study.totee.api.model.UserInfoEntity;
 import com.study.totee.api.persistence.UserRepository;
-import com.study.totee.oauth.entity.ProviderType;
-import com.study.totee.oauth.entity.RoleType;
-import com.study.totee.oauth.entity.UserPrincipal;
-import com.study.totee.oauth.exception.OAuthProviderMissMatchException;
-import com.study.totee.oauth.info.OAuth2UserInfo;
-import com.study.totee.oauth.info.OAuth2UserInfoFactory;
+import com.study.totee.type.ProviderType;
+import com.study.totee.type.RoleType;
+import com.study.totee.type.UserPrincipal;
+import com.study.totee.exption.OAuthProviderMissMatchException;
+import com.study.totee.api.info.OAuth2UserInfo;
+import com.study.totee.api.info.OAuth2UserInfoFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -18,15 +18,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
+
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

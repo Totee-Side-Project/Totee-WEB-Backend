@@ -1,10 +1,10 @@
-package com.study.totee.oauth.info;
+package com.study.totee.api.info;
 
-import com.study.totee.oauth.entity.ProviderType;
-import com.study.totee.oauth.info.impl.FacebookOAuth2UserInfo;
-import com.study.totee.oauth.info.impl.GoogleOAuth2UserInfo;
-import com.study.totee.oauth.info.impl.KakaoOAuth2UserInfo;
-import com.study.totee.oauth.info.impl.NaverOAuth2UserInfo;
+import com.study.totee.type.ProviderType;
+import com.study.totee.api.info.impl.FacebookOAuth2UserInfo;
+import com.study.totee.api.info.impl.GoogleOAuth2UserInfo;
+import com.study.totee.api.info.impl.KakaoOAuth2UserInfo;
+import com.study.totee.api.info.impl.NaverOAuth2UserInfo;
 
 import java.util.Map;
 

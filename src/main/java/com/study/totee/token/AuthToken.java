@@ -1,4 +1,4 @@
-package com.study.totee.oauth.token;
+package com.study.totee.token;
 
 import io.jsonwebtoken.*;
 import lombok.Getter;

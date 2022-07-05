@@ -19,20 +19,20 @@ public class CommentController {
     @PostMapping("/api/v1/comment")
     public ApiResponse saveComment(@AuthenticationPrincipal User principal, @RequestBody CommentRequestDto commentRequestDto) {
         commentService.save(commentRequestDto, principal.getUsername());
-        return ApiResponse.success("message" , "SUCCESS");
+        return ApiResponse.success("message" , "댓글을 성공적으로 등록했습니다.");
     }
 
     @ApiOperation(value = "댓글 수정", notes = "댓글을 수정합니다")
     @PutMapping("/api/v1/comment/{commentId}")
     public ApiResponse updateComment(@AuthenticationPrincipal User principal, @PathVariable Long commentId, CommentRequestDto commentRequestDto){
         commentService.update(commentRequestDto, principal.getUsername(), commentId);
-        return ApiResponse.success("message", "SUCCESS");
+        return ApiResponse.success("message", "댓글을 성공적으로 수정했습니다.");
     }
 
     @ApiOperation(value = "댓글 삭제", notes = "댓글을 삭제합니다")
     @DeleteMapping("/api/v1/comment/{commentId}")
     public ApiResponse deleteComment(@AuthenticationPrincipal User principal, @PathVariable Long commentId){
         commentService.delete(commentId, principal.getUsername());
-        return ApiResponse.success("message", "SUCCESS");
+        return ApiResponse.success("message", "댓글을 성공적으로 삭제했습니다.");
     }
 }
