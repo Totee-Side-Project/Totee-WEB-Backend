@@ -53,12 +53,15 @@ public class PostResponseDto {
     @ApiModelProperty(name = "예상 기간 (월 단위)")
     private int period;
 
-    @ApiModelProperty(name = "모집 대상 (디자이너, 개발자)")
-    private String target;
-
     @ApiModelProperty(example = "모집 상태 (Y or N)")
     private String status;
 
     @ApiModelProperty(example = "카테고리")
     private String categoryName;
+
+    @ApiModelProperty(example = "모집 대상 포지션 리스트 (ex Designer, Front_End..)")
+    private List<String> positionList;
+
+    @ApiModelProperty(example = "모집 인원 수")
+    private int recruitNum;
 }

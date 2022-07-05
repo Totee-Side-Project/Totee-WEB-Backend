@@ -6,6 +6,10 @@ import com.study.totee.api.model.UserEntity;
 import com.study.totee.api.persistence.LikeRepository;
 import com.study.totee.api.persistence.PostRepository;
 import com.study.totee.api.persistence.UserRepository;
+import com.study.totee.exption.BadRequestException;
+import com.study.totee.exption.ErrorCode;
+import com.study.totee.exption.ForbiddenException;
+import com.study.totee.exption.NoAuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,10 +27,19 @@ public class LikeService {
     private final PostRepository postRepository;
 
     public void like(String userId, Long postId){
-        LikeEntity like = likeRepository.findByUser_IdAndPost_PostId(userId , postId);
         PostEntity post = postRepository.findByPostId(postId);
+        UserEntity userEntity = getUser(userId);
+        // 포스트가 존재하지 않거나 로그인이 되어 있지 않으면 예외를 던짐
+        if (post == null) {
+            log.error("Can not find post by postId: {}", postId);
+            throw new ForbiddenException(ErrorCode.NO_POST_ERROR);
+        }
+        else if (userEntity == null){
+            throw new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR);
+        }
+
+        LikeEntity like = likeRepository.findByUser_IdAndPost_PostId(userId , postId);
         if(like == null){
-            UserEntity userEntity = getUser(userId);
             LikeEntity newLike = new LikeEntity();
             post.setLikeNum(post.getLikeNum() + 1);
             newLike.setUser(userEntity);
@@ -39,6 +52,16 @@ public class LikeService {
             log.info( userId + " dislike " + postId);
         }
 
+    }
+
+    public boolean isLike(String userId, Long postId){
+        PostEntity post = postRepository.findByPostId(postId);
+        if (post == null) {
+            log.error("Can not find post by postId: {}", postId);
+            throw new ForbiddenException(ErrorCode.NO_POST_ERROR);
+        }
+        LikeEntity like = likeRepository.findByUser_IdAndPost_PostId(userId , postId);
+        return like != null;
     }
 
     public Page<PostEntity> findAllByLikedPost(String userId, final Pageable pageable){

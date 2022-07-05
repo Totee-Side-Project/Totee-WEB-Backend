@@ -5,6 +5,8 @@ import com.study.totee.api.dto.category.CategoryRequestDto;
 import com.study.totee.api.dto.category.CategoryUpdateDto;
 import com.study.totee.api.model.CategoryEntity;
 import com.study.totee.api.persistence.CategoryRepository;
+import com.study.totee.exption.BadRequestException;
+import com.study.totee.exption.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,9 +26,14 @@ public class CategoryService {
 
     @Transactional
     public void save(CategoryRequestDto categoryRequestDto) throws IOException {
-        validateDuplicateCategoryName(categoryRequestDto.getCategoryName());
+        // 카테고리 이름 중복 체크
+        categoryRepository.findByCategoryName(categoryRequestDto.getCategoryName())
+                .ifPresent(m-> {
+                    throw new BadRequestException(ErrorCode.ALREADY_EXIST_CATEGORY_ERROR);
+                });
         CategoryEntity category = CategoryEntity.builder().categoryName(categoryRequestDto.getCategoryName())
                 .build();
+        // 카테고리 요청 dto 에 이미지가 있으면 s3에 이미지 업로드, 없으면 null 처리
         if(categoryRequestDto.getCategoryImage() != null){
             category.setImageUrl(awsS3Service.upload(categoryRequestDto.getCategoryImage(), "static"));
         }
@@ -36,7 +43,8 @@ public class CategoryService {
     @Transactional
     public void delete(CategoryRequestDto categoryRequestDto){
         CategoryEntity category = categoryRepository.findByCategoryName(categoryRequestDto.getCategoryName()).orElseThrow(
-                ()-> new IllegalArgumentException("찾을 수 없는 카테고리 입니다."));
+                ()-> new BadRequestException(ErrorCode.NO_CATEGORY_ERROR));
+        // 카테고리 entity 에 이미지가 있으면 s3에서 이미지 삭제
         if(category.getImageUrl() != null){
             awsS3Service.fileDelete(category.getImageUrl());
         }
@@ -46,16 +54,19 @@ public class CategoryService {
     @Transactional
     public void update(CategoryUpdateDto categoryUpdateDto) throws IOException {
         CategoryEntity category = categoryRepository.findByCategoryName(categoryUpdateDto.getCategoryName()).orElseThrow(
-                ()-> new IllegalArgumentException("찾을 수 없는 카테고리 입니다."));
+                ()-> new BadRequestException(ErrorCode.NO_CATEGORY_ERROR));
+        // 기존 카테고리 이름과 새로운 이름이 같으면 업데이트 하지 않는다.
         if(!categoryUpdateDto.getNewCategoryName().equals(category.getCategoryName())){
-            validateDuplicateCategoryName(categoryUpdateDto.getNewCategoryName());
+            categoryUpdateDto.getNewCategoryName();
             category.setCategoryName(categoryUpdateDto.getNewCategoryName());
         }
-
+        // 카테고리 요청 dto 에 이미지가 있으면 s3에 이미지 업로드, 없으면 null 처리
         if(categoryUpdateDto.getCategoryImage() != null){
+            // 기존 이미지가 있으면 s3에서 이미지 삭제
             if(category.getImageUrl() != null){
                 awsS3Service.fileDelete(category.getImageUrl());
             }
+            // 새로운 이미지 업로드
             category.setImageUrl(awsS3Service.upload(categoryUpdateDto.getCategoryImage(), "static"));
         }
     }
@@ -65,10 +76,4 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    private void validateDuplicateCategoryName(String categoryName) {
-        categoryRepository.findByCategoryName(categoryName)
-                .ifPresent(m-> {
-                    throw new IllegalStateException("이미 존재하는 카테고리 입니다.");
-                });
-    }
 }

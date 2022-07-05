@@ -4,6 +4,9 @@ import com.study.totee.api.dto.user.RoleRequestDto;
 import com.study.totee.api.model.UserEntity;
 import com.study.totee.api.model.UserInfoEntity;
 import com.study.totee.api.persistence.UserInfoRepository;
+import com.study.totee.exption.BadRequestException;
+import com.study.totee.exption.ErrorCode;
+import com.study.totee.type.RoleType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,20 +23,12 @@ public class AdminService {
     @Transactional
     public void updateRole(RoleRequestDto roleRequestDto){
         UserInfoEntity userinfo = userInfoRepository.findByNickname(roleRequestDto.getNickname()).orElseThrow(
-                ()-> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        validate(userinfo.getUser());
-        userinfo.getUser().setRoleType(roleRequestDto.getRoleType());
-    }
-
-    private void validate(final UserEntity user){
-        if(user == null){
-            log.warn("Domain cannot be null.");
-            throw new RuntimeException("Domain cannot be null");
-        }
-
-        if(user.getUsername() == null){
-            log.warn("없는 사용자 입니다.");
-            throw new RuntimeException("없는 사용자 입니다.");
+                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+        // 맞지 않는 타입 예외
+        try {
+            userinfo.getUser().setRoleType(roleRequestDto.getRoleType());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(ErrorCode.NO_ROLE_TYPE_ERROR);
         }
     }
 }

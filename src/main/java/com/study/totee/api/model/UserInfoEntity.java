@@ -1,11 +1,13 @@
 package com.study.totee.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.study.totee.api.Type.PositionType;
+import com.study.totee.type.PositionType;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Builder
 @Entity
@@ -32,5 +34,8 @@ public class UserInfoEntity {
 
     @Column
     private PositionType position;
+
+    @OneToMany(mappedBy = "userInfo")
+    private Set<PositionEntity> positionList;
 
 }

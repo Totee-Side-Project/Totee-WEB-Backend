@@ -17,7 +17,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Builder
 @Getter
@@ -85,13 +87,19 @@ public class PostEntity {
     @Column(name = "PERIOD")
     private int period;
 
-    @Column(name = "TARGET")
-    private String target;
-
     @Column(name = "commentNum")
     private int commentNum;
 
     @Column(name = "likeNum")
     private int likeNum;
 
+    @OneToMany(mappedBy = "post")
+    private Set<PositionEntity> positionList;
+
+    public void updatePositionList(List<PositionEntity> positionList) {
+        this.positionList = new HashSet<>(positionList);
+    }
+
+    @Column
+    private int recruitNum;
 }
