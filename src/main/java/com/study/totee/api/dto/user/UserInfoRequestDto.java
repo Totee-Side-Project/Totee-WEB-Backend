@@ -14,8 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserInfoRequestDto {
-    @ApiModelProperty(example = "학년")
-    private String grade;
     @ApiModelProperty(example = "닉네임")
     private String nickname;
     @ApiModelProperty(example = "포지션 ex) DESIGN, BACKEND, FRONTEND, ML, GAME, IOS, ANDROID, OTHERS")
