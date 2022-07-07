@@ -2,17 +2,15 @@ package com.study.totee.config.security;
 
 import com.study.totee.api.persistence.UserRefreshTokenRepository;
 import com.study.totee.config.properties.AppProperties;
-import com.study.totee.config.properties.CorsProperties;
-import com.study.totee.oauth.entity.RoleType;
-import com.study.totee.oauth.exception.RestAuthenticationEntryPoint;
-import com.study.totee.oauth.filter.TokenAuthenticationFilter;
-import com.study.totee.oauth.handler.OAuth2AuthenticationFailureHandler;
-import com.study.totee.oauth.handler.OAuth2AuthenticationSuccessHandler;
-import com.study.totee.oauth.handler.TokenAccessDeniedHandler;
-import com.study.totee.oauth.repostiory.OAuth2AuthorizationRequestBasedOnCookieRepository;
-import com.study.totee.oauth.service.CustomOAuth2UserService;
-import com.study.totee.oauth.service.CustomUserDetailsService;
-import com.study.totee.oauth.token.AuthTokenProvider;
+import com.study.totee.exption.RestAuthenticationEntryPoint;
+import com.study.totee.filter.TokenAuthenticationFilter;
+import com.study.totee.handler.OAuth2AuthenticationFailureHandler;
+import com.study.totee.handler.OAuth2AuthenticationSuccessHandler;
+import com.study.totee.handler.TokenAccessDeniedHandler;
+import com.study.totee.api.persistence.OAuth2AuthorizationRequestBasedOnCookieRepository;
+import com.study.totee.api.service.CustomOAuth2UserService;
+import com.study.totee.api.service.CustomUserDetailsService;
+import com.study.totee.token.AuthTokenProvider;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +23,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsUtils;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
-import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor

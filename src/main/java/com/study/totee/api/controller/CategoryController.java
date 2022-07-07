@@ -38,14 +38,14 @@ public class CategoryController {
     @PostMapping("/api/v1/category")
     public ApiResponse addCategory(@ModelAttribute @Valid @RequestBody CategoryRequestDto categoryRequestDto) throws IOException {
         categoryService.save(categoryRequestDto);
-        return ApiResponse.success("message", "Success");
+        return ApiResponse.success("message", "카테고리가 성공적으로 추가되었습니다.");
     }
 
     @ApiOperation(value = "카테고리 삭제" , notes = "카테고리 삭제, 포스트가 해당 카테고리를 사용하고 있지 않아야 합니다.")
     @DeleteMapping("/api/v1/category")
     public ApiResponse deleteCategory(@RequestBody CategoryRequestDto categoryRequestDto) {
         categoryService.delete(categoryRequestDto);
-        return ApiResponse.success("message", "Success");
+        return ApiResponse.success("message", "카테고리가 성공적으로 삭제되었습니다.");
     }
 
     @ApiOperation(value = "카테고리 업데이트" , notes = "카테고리 업데이트, 업데이트를 할 경우 포스트가 자동으로 변경 된 값을 참조함.")
@@ -53,6 +53,6 @@ public class CategoryController {
     public ApiResponse updateCategory(@ModelAttribute @Valid @RequestBody CategoryUpdateDto categoryUpdateDto) throws IOException {
         categoryService.update(categoryUpdateDto);
 
-        return ApiResponse.success("message", "Success");
+        return ApiResponse.success("message", "카테고리가 성공적으로 업데이트되었습니다.");
     }
 }

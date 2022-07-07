@@ -1,6 +1,6 @@
 package com.study.totee.api.dto.user;
 
-import com.study.totee.oauth.entity.RoleType;
+import com.study.totee.type.RoleType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

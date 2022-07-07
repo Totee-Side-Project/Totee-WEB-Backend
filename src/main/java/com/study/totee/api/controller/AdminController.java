@@ -19,6 +19,6 @@ public class AdminController {
     @PutMapping("/api/v1/admin/update/role")
     public ApiResponse updateRole(@RequestBody RoleRequestDto roleRequestDto){
         adminService.updateRole(roleRequestDto);
-        return ApiResponse.success("message", "Success");
+        return ApiResponse.success("message", "유저의 권한을 성공적으로 변경했습니다.");
     }
 }

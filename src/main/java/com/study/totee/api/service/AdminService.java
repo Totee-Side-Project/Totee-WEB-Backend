@@ -1,9 +1,13 @@
 package com.study.totee.api.service;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.study.totee.api.dto.user.RoleRequestDto;
 import com.study.totee.api.model.UserEntity;
 import com.study.totee.api.model.UserInfoEntity;
 import com.study.totee.api.persistence.UserInfoRepository;
+import com.study.totee.exption.BadRequestException;
+import com.study.totee.exption.ErrorCode;
+import com.study.totee.type.RoleType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,21 +23,14 @@ public class AdminService {
     // 유저의 권한을 변경하는 로직입니다.
     @Transactional
     public void updateRole(RoleRequestDto roleRequestDto){
+        // 존재 하지 않는 유저이면 예외를 던짐.
         UserInfoEntity userinfo = userInfoRepository.findByNickname(roleRequestDto.getNickname()).orElseThrow(
-                ()-> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        validate(userinfo.getUser());
+                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+        // 맞지 않는 타입 예외
+        if(roleRequestDto.getRoleType() != RoleType.ADMIN && roleRequestDto.getRoleType() != RoleType.USER){
+            throw new BadRequestException(ErrorCode.INVALID_ROLE_TYPE_ERROR);
+        }
+
         userinfo.getUser().setRoleType(roleRequestDto.getRoleType());
-    }
-
-    private void validate(final UserEntity user){
-        if(user == null){
-            log.warn("Domain cannot be null.");
-            throw new RuntimeException("Domain cannot be null");
-        }
-
-        if(user.getUsername() == null){
-            log.warn("없는 사용자 입니다.");
-            throw new RuntimeException("없는 사용자 입니다.");
-        }
     }
 }

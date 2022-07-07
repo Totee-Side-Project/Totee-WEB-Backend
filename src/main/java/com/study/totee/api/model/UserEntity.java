@@ -3,11 +3,10 @@ package com.study.totee.api.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.study.totee.oauth.entity.ProviderType;
-import com.study.totee.oauth.entity.RoleType;
+import com.study.totee.type.ProviderType;
+import com.study.totee.type.RoleType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

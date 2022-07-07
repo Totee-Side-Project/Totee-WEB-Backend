@@ -1,6 +1,7 @@
 package com.study.totee.api.dto.post;
 
 import com.study.totee.api.dto.comment.CommentResponseDto;
+import com.study.totee.type.PositionType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,12 +54,24 @@ public class PostResponseDto {
     @ApiModelProperty(name = "예상 기간 (월 단위)")
     private int period;
 
-    @ApiModelProperty(name = "모집 대상 (디자이너, 개발자)")
-    private String target;
-
     @ApiModelProperty(example = "모집 상태 (Y or N)")
     private String status;
 
     @ApiModelProperty(example = "카테고리")
     private String categoryName;
+
+    @ApiModelProperty(example = "모집 대상 포지션 리스트 (ex Designer, Front_End..)")
+    private List<String> positionList;
+
+    @ApiModelProperty(example = "모집 인원 수")
+    private int recruitNum;
+
+    @ApiModelProperty(example = "연락 방법")
+    private String contactMethod;
+
+    @ApiModelProperty(example = "연락 링크")
+    private String contactLink;
+
+    @ApiModelProperty(example = "작성자 포지션")
+    private PositionType authorPosition;
 }

@@ -8,11 +8,11 @@ import com.study.totee.api.dto.auth.AuthReqModel;
 import com.study.totee.api.persistence.UserRefreshTokenRepository;
 import com.study.totee.common.ApiResponse;
 import com.study.totee.config.properties.AppProperties;
-import com.study.totee.oauth.entity.ProviderType;
-import com.study.totee.oauth.entity.RoleType;
-import com.study.totee.oauth.entity.UserPrincipal;
-import com.study.totee.oauth.token.AuthToken;
-import com.study.totee.oauth.token.AuthTokenProvider;
+import com.study.totee.type.ProviderType;
+import com.study.totee.type.RoleType;
+import com.study.totee.type.UserPrincipal;
+import com.study.totee.token.AuthToken;
+import com.study.totee.token.AuthTokenProvider;
 import com.study.totee.api.service.UserService;
 import com.study.totee.utils.CookieUtil;
 import com.study.totee.utils.HeaderUtil;
@@ -80,7 +80,7 @@ public class AuthController {
         // 서비스를 이용해 리포지토리에 사용자 저장
         userService.create(userEntity, userInfoEntity);
 
-        return ApiResponse.success("message" , "SUCCESS");
+        return ApiResponse.success("message" , "회원가입이 성공적으로 완료되었습니다.");
     }
 
     @PostMapping("/login")

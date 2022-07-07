@@ -5,7 +5,11 @@ import com.study.totee.api.model.CommentEntity;
 import com.study.totee.api.model.PostEntity;
 import com.study.totee.api.model.UserEntity;
 import com.study.totee.api.persistence.CommentRepository;
+import com.study.totee.api.persistence.PostRepository;
 import com.study.totee.api.persistence.UserRepository;
+import com.study.totee.exption.BadRequestException;
+import com.study.totee.exption.ErrorCode;
+import com.study.totee.exption.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,12 +25,14 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
-    private final PostService postService;
+    private final PostRepository postRepository;
 
     @Transactional
     public void save(CommentRequestDto commentRequestDto, String userId){
-        UserEntity user = userRepository.findById(userId);
-        PostEntity post = postService.findByPostId(commentRequestDto.getPostId());
+        UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+        PostEntity post = Optional.ofNullable(postRepository.findByPostId(commentRequestDto.getPostId())).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
         CommentEntity commentEntity = CommentEntity.builder()
                 .content(commentRequestDto.getContent())
@@ -41,8 +47,11 @@ public class CommentService {
 
     @Transactional
     public void update(CommentRequestDto commentRequestDto, String userId, Long commentId){
-        PostEntity post = postService.findByPostId(commentRequestDto.getPostId());
-        UserEntity user = userRepository.findById(userId);
+        UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+        PostEntity post = Optional.ofNullable(postRepository.findByPostId(commentRequestDto.getPostId())).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
+
         CommentEntity commentEntity = commentRepository.findByCommentIdAndUser(commentId, user);
         post.setCommentNum(post.getCommentNum() - 1);
         commentEntity.setContent(commentRequestDto.getContent());
@@ -50,15 +59,22 @@ public class CommentService {
 
     @Transactional
     public void delete(Long commentId, String userId){
-        UserEntity user = userRepository.findById(userId);
-        CommentEntity commentEntity = commentRepository.findByCommentIdAndUser(commentId, user);
-        PostEntity post = postService.findByPostId(commentEntity.getPost().getPostId());
+        UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+        PostEntity post = Optional.ofNullable(postRepository.findByPostId(commentId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
+        CommentEntity commentEntity = Optional.ofNullable(commentRepository.findByCommentIdAndUser(commentId, user)).
+                orElseThrow(()-> new BadRequestException(ErrorCode.NO_COMMENT_ERROR));
+
         post.setCommentNum(post.getCommentNum() - 1);
         commentRepository.delete(commentEntity);
     }
 
     @Transactional(readOnly = true)
     public List<CommentEntity> CommentListByPostId(Long postId){
+        if (postRepository.findByPostId(postId) == null) {
+            throw new BadRequestException(ErrorCode.NO_POST_ERROR);
+        }
         List<CommentEntity> commentEntities = commentRepository.findCommentEntityByPost_PostId(postId);
         return commentEntities;
     }

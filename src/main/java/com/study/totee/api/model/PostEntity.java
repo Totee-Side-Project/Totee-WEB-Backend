@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.study.totee.api.dto.post.PostRequestDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,7 +18,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Builder
 @Getter
@@ -85,13 +88,34 @@ public class PostEntity {
     @Column(name = "PERIOD")
     private int period;
 
-    @Column(name = "TARGET")
-    private String target;
-
-    @Column(name = "commentNum")
+    @Column(name = "COMMENT_NUM")
     private int commentNum;
 
-    @Column(name = "likeNum")
+    @Column(name = "LIKE_NUM")
     private int likeNum;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private Set<PositionEntity> positionList;
+
+    @Column(name = "CONTACT_METHOD")
+    private String contactMethod;
+
+    @Column(name = "CONTACT_LINK")
+    private String contactLink;
+
+    public void updatePositionList(List<PositionEntity> positionList) {
+        this.positionList = new HashSet<>(positionList);
+    }
+
+    @Column
+    private int recruitNum;
+
+    public void update(PostRequestDto postRequestDto, CategoryEntity category) {
+        this.content = postRequestDto.getContent();
+        this.title = postRequestDto.getTitle();
+        this.status = postRequestDto.getStatus();
+        this.onlineOrOffline = postRequestDto.getOnlineOrOffline();
+        this.period = postRequestDto.getPeriod();
+        this.category = category;
+    }
 }
