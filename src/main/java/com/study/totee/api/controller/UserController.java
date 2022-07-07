@@ -10,6 +10,7 @@ import com.study.totee.api.service.UserService;
 import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.ForbiddenException;
+import com.study.totee.exption.NoAuthException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,10 +30,9 @@ public class UserController {
     @ApiOperation(value = "로그인한 유저 정보" , notes = "유저 관련 정보를 확인합니다.")
     @GetMapping("/api/v1/info")
     public ApiResponse getUserInfo(@AuthenticationPrincipal User principal) {
-        if(principal == null) {
-            throw new ForbiddenException(ErrorCode.NO_USER_ERROR);
-        }
-        UserEntity user = userService.getUser(principal.getUsername());
+        String id = Optional.ofNullable(principal).orElseThrow(()->
+                new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+        UserEntity user = userService.getUser(id);
         UserInfoEntity userInfoEntity = user.getUserInfo();
 
         UserInfoResponseDto userInfoResponseDto = UserInfoResponseDto.builder()
@@ -48,8 +49,9 @@ public class UserController {
     @ApiOperation(value = "유저 정보 저장하기", notes = "신규유저의 유저 관련 정보를 저장합니다.")
     @PostMapping("/api/v1/info")
     public ApiResponse createUserInfo(@AuthenticationPrincipal User principal, @ModelAttribute @Valid @RequestBody UserInfoRequestDto userInfoRequestDto) throws IOException {
-
-        userService.createUserInfo(principal.getUsername(), userInfoRequestDto);
+        String id = Optional.ofNullable(principal).orElseThrow(()->
+                new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+        userService.createUserInfo(id, userInfoRequestDto);
         return ApiResponse.success("data", "SUCCESS");
     }
 

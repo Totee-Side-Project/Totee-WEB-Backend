@@ -17,6 +17,7 @@ public class PositionEntity {
     @Column(name = "POSITION_ID")
     private Long id;
 
+    @Column(name = "POSITION")
     @Enumerated(value = EnumType.STRING)
     private PositionType position;
 

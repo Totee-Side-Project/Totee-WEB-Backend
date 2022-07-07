@@ -29,10 +29,11 @@ public class UserInfoEntity {
     @JsonIgnore
     private UserEntity user;
 
-    @Column
+    @Column(name = "NICKNAME", length = 5)
     private String nickname;
 
-    @Column
+    @Column(name = "POSITION", length = 20)
+    @Enumerated(EnumType.STRING)
     private PositionType position;
 
     @OneToMany(mappedBy = "userInfo")

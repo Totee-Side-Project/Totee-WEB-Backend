@@ -8,8 +8,8 @@ public enum PositionType {
     BACK_END("BackEnd"),
     DESIGN("Design"),
     GAME("Game"),
-    MachineLearning("MachineLearning"),
-    ProductManagement("ProductManagement"),
+    MACHINE_LEARNING("MachineLearning"),
+    PRODUCT_MANAGER("ProductManager"),
     iOS("iOS"),
     ANDROID("Android"),
     OTHERS("Others");

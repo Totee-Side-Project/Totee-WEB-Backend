@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 @Slf4j
@@ -27,10 +28,9 @@ public class UserService {
     // 유저 상세 정보 추가
     @Transactional
     public void createUserInfo(String userId, UserInfoRequestDto userInfoRequestDto) throws IOException {
-        UserEntity user = userRepository.findById(userId);
-        if (user == null) {
-            throw new BadRequestException(ErrorCode.NO_USER_ERROR);
-        }
+        UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+
         UserInfoEntity userInfoEntity = user.getUserInfo();
         // 유저 상세 정보 dto 에 프로필 이미지가 없을 경우 디폴트 이미지로 설정
         if (userInfoRequestDto.getProfileImage() == null) {
@@ -44,7 +44,7 @@ public class UserService {
         try {
             userInfoEntity.setPosition(userInfoRequestDto.getPosition());
         } catch (IllegalArgumentException e) {
-            throw new BadRequestException(ErrorCode.NO_POSITION_TYPE_ERROR);
+            throw new BadRequestException(ErrorCode.INVALID_POSITION_TYPE_ERROR);
         }
         // 닉네임 체크 한번 더
         if(userInfoRequestDto.getNickname().length() < 2 || userInfoRequestDto.getNickname().length() > 5){

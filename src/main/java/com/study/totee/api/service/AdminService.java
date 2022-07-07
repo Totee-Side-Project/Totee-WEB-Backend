@@ -1,5 +1,6 @@
 package com.study.totee.api.service;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.study.totee.api.dto.user.RoleRequestDto;
 import com.study.totee.api.model.UserEntity;
 import com.study.totee.api.model.UserInfoEntity;
@@ -22,13 +23,14 @@ public class AdminService {
     // 유저의 권한을 변경하는 로직입니다.
     @Transactional
     public void updateRole(RoleRequestDto roleRequestDto){
+        // 존재 하지 않는 유저이면 예외를 던짐.
         UserInfoEntity userinfo = userInfoRepository.findByNickname(roleRequestDto.getNickname()).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
         // 맞지 않는 타입 예외
-        try {
-            userinfo.getUser().setRoleType(roleRequestDto.getRoleType());
-        } catch (IllegalArgumentException e) {
-            throw new BadRequestException(ErrorCode.NO_ROLE_TYPE_ERROR);
+        if(roleRequestDto.getRoleType() != RoleType.ADMIN && roleRequestDto.getRoleType() != RoleType.USER){
+            throw new BadRequestException(ErrorCode.INVALID_ROLE_TYPE_ERROR);
         }
+
+        userinfo.getUser().setRoleType(roleRequestDto.getRoleType());
     }
 }

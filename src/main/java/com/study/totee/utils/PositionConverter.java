@@ -47,16 +47,16 @@ public class PositionConverter {
                     break;
                 case "MachineLearning":
                     if (userInfo == null) {
-                        positionList.add(new PositionEntity(PositionType.MachineLearning, post));
+                        positionList.add(new PositionEntity(PositionType.MACHINE_LEARNING, post));
                     } else {
-                        positionList.add(new PositionEntity(PositionType.MachineLearning, userInfo));
+                        positionList.add(new PositionEntity(PositionType.MACHINE_LEARNING, userInfo));
                     }
                     break;
-                case "ProductManagement":
+                case "ProductManager":
                     if (userInfo == null) {
-                        positionList.add(new PositionEntity(PositionType.ProductManagement, post));
+                        positionList.add(new PositionEntity(PositionType.PRODUCT_MANAGER, post));
                     } else {
-                        positionList.add(new PositionEntity(PositionType.ProductManagement, userInfo));
+                        positionList.add(new PositionEntity(PositionType.PRODUCT_MANAGER, userInfo));
                     }
                     break;
                 case "iOS":
@@ -85,7 +85,7 @@ public class PositionConverter {
         return positionList;
     }
 
-    public  List<PositionType> convertStringToPositionType(List<String> position){
+    public  List<PositionType> convertStringToPosition(List<String> position){
         List<PositionType> positionTypeList = new ArrayList<>();
         for (String pos : position) {
             switch (pos) {
@@ -102,10 +102,10 @@ public class PositionConverter {
                     positionTypeList.add(PositionType.GAME);
                     break;
                 case "MachineLearning":
-                    positionTypeList.add(PositionType.MachineLearning);
+                    positionTypeList.add(PositionType.MACHINE_LEARNING);
                     break;
-                case "ProductManagement":
-                    positionTypeList.add(PositionType.ProductManagement);
+                case "ProductManager":
+                    positionTypeList.add(PositionType.PRODUCT_MANAGER);
                     break;
                 case "iOS":
                     positionTypeList.add(PositionType.iOS);
