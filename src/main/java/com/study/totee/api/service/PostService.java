@@ -16,6 +16,7 @@ import com.study.totee.utils.PositionConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +37,9 @@ public class PostService {
 
     @Transactional
     public void save(String userId, PostRequestDto postRequestDto) throws IOException {
-        UserEntity user = userRepository.findById(userId);
-        if (user == null){
-            throw new ForbiddenException(ErrorCode.NO_AUTHENTICATION_ERROR);
-        }
+        UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+
         CategoryEntity category = categoryRepository.findByCategoryName(postRequestDto.getCategoryName())
                 .orElseThrow(()-> new BadRequestException(ErrorCode.NO_CATEGORY_ERROR));
 
@@ -60,28 +60,33 @@ public class PostService {
 
     @Transactional
     public void update(String userId, PostRequestDto postRequestDto, Long postId) throws IOException {
+        UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
         CategoryEntity category = categoryRepository.findByCategoryName(postRequestDto.getCategoryName())
                 .orElseThrow(()-> new BadRequestException(ErrorCode.NO_CATEGORY_ERROR));
-        UserEntity user = userRepository.findById(userId);
-        PostEntity post = postRepository.findByPostIdAndUser(postId, user);
+        PostEntity post = Optional.ofNullable(postRepository.findByPostIdAndUser(postId, user)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
+        positionRepository.deleteAllByPost(post);
+        Set<String> positionStringList = new HashSet<>(postRequestDto.getPositionList());
+        List<PositionEntity> positionEntityList = positionConverter.convertStringToPositionEntity(new ArrayList<>(positionStringList), null, post);
+        post.update(postRequestDto, category);
+        post.updatePositionList(positionEntityList);
+        positionRepository.saveAll(positionEntityList);
 
-        post.setContent(postRequestDto.getContent());
-        post.setTitle(postRequestDto.getTitle());
-        post.setStatus(postRequestDto.getStatus());
-        post.setOnlineOrOffline(postRequestDto.getOnlineOrOffline());
-        post.setPeriod(postRequestDto.getPeriod());
-        post.setCategory(category);
         if(postRequestDto.getPostImage() != null){
             awsS3Service.fileDelete(post.getImageUrl());
             post.setImageUrl(awsS3Service.upload(postRequestDto.getPostImage(), "static"));
         }
-        Set<String> positionStringList = new HashSet<>(postRequestDto.getPositionList());
+
     }
 
     @Transactional
     public void delete(Long postId, String userId){
-        UserEntity user = userRepository.findById(userId);
-        PostEntity post = postRepository.findByPostIdAndUser(postId, user);
+        UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+        PostEntity post = Optional.ofNullable(postRepository.findByPostIdAndUser(postId, user)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
+
         if(post.getImageUrl() != null){
             awsS3Service.fileDelete(post.getImageUrl());
         }
@@ -92,7 +97,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public Page<PostEntity> findPostAllByCategoryName(String categoryName, final Pageable pageable){
         Optional<CategoryEntity> category = Optional.of(categoryRepository.findByCategoryName(categoryName).orElseThrow(
-                () -> new IllegalArgumentException("찾을 수 없는 카테고리 입니다.")));
+                () -> new BadRequestException(ErrorCode.NO_CATEGORY_ERROR)));
         return postRepository.findAllByCategory_CategoryName(categoryName, pageable);
     }
 
@@ -106,12 +111,12 @@ public class PostService {
     @Transactional(readOnly = true)
     public Page<PostEntity> findAllByCategory_CategoryNameAndStatus(String categoryName, Pageable pageable){
         Optional<CategoryEntity> category = Optional.of(categoryRepository.findByCategoryName(categoryName).orElseThrow(
-                () -> new IllegalArgumentException("찾을 수 없는 카테고리 입니다.")));
+                () -> new BadRequestException(ErrorCode.NO_CATEGORY_ERROR)));
         return postRepository.findAllByCategory_CategoryNameAndStatus(categoryName, "Y", pageable);
     }
 
     // 게시글 제목 검색
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<PostEntity> searchTitle(String keyword, Pageable pageable){
         if(keyword.length() < 1){
             throw new BadRequestException(ErrorCode.BAD_KEYWORD_ERROR);
@@ -133,5 +138,16 @@ public class PostService {
     public void updateView(Long postId){
         PostEntity post = postRepository.findByPostId(postId);
         post.setView(post.getView()+1);
+    }
+
+    // 로그인한 유저의 포지션과 등록된 게시글의 모집분야가 같은 글을 조회
+    @Transactional
+    public Page<PostEntity> findByPosition(String userId, Pageable pageable){
+        UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+        if (user.getUserInfo().getPosition() != null){
+            return postRepository.findAllByPosition(user.getUserInfo().getPosition(), pageable);
+        }
+        return postRepository.findAllByCategory_CategoryNameAndStatus("프로젝트", "Y", pageable);
     }
 }

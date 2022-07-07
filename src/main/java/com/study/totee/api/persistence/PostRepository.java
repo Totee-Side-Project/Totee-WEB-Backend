@@ -2,6 +2,7 @@ package com.study.totee.api.persistence;
 
 import com.study.totee.api.model.PostEntity;
 import com.study.totee.api.model.UserEntity;
+import com.study.totee.type.PositionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,7 @@ public interface PostRepository extends JpaRepository<PostEntity, String> {
     Page<PostEntity> findAllByCategory_CategoryName(String categoryName, Pageable pageable);
     Page<PostEntity> findAllByCategory_CategoryNameAndStatus(String categoryName, String status, Pageable pageable);
     Page<PostEntity> findAllByTitleContaining(String keyword, Pageable pageable);
+
+    @Query(value = "SELECT p FROM PostEntity p JOIN PositionEntity p2 ON p.postId = p2.post.postId WHERE p2.position = ?1 and p.category.categoryName = '프로젝트' and p.status = 'Y'")
+    Page<PostEntity> findAllByPosition(PositionType position, Pageable pageable);
 }

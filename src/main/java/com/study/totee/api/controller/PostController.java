@@ -81,8 +81,9 @@ public class PostController {
         Page<PostEntity> page = postService.findPostAll(pageable);
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
                 post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum()));
+                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
+                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
 
         return ApiResponse.success("data", map);
     }
@@ -94,8 +95,9 @@ public class PostController {
         Page<PostEntity> page = postService.findPostAll(pageable);
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
                 post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum()));;
+                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
+                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
 
         return ApiResponse.success("data", map);
     }
@@ -107,8 +109,9 @@ public class PostController {
         Page<PostEntity> page = postService.findPostAll(pageable);
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
                 post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum()));
+                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
+                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
 
         return ApiResponse.success("data", map);
     }
@@ -120,8 +123,9 @@ public class PostController {
         Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
                 post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum()));
+                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
+                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
 
         return ApiResponse.success("data", map);
     }
@@ -134,8 +138,9 @@ public class PostController {
         Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
                 post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum()));
+                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
+                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
 
         return ApiResponse.success("data", map);
     }
@@ -148,8 +153,9 @@ public class PostController {
         Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
                 post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum()));
+                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
+                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
 
         return ApiResponse.success("data", map);
     }
@@ -162,8 +168,23 @@ public class PostController {
         Page<PostEntity> page = postService.searchTitle(title, pageable);
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
                 post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum()));
+                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
+                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
+
+        return ApiResponse.success("data", map);
+    }
+
+    @ApiOperation(value = "추천 게시물 목록 불러오기", notes = "로그인한 유저의 포지션과 등록된 게시글의 모집분야가 같은 글을 조회합니다.")
+    @GetMapping("/api/v1/post/recommend")
+    public ApiResponse findPostRecommend(@AuthenticationPrincipal User principal, @PageableDefault(size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
+        // 로그인 안한 유저도 추천 게시물 이외의 다른 게시물을 불러와야하기에 예외처리를 하지 않습니다.
+        Page<PostEntity> page = postService.findByPosition(principal.getUsername(), pageable);
+        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
+                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
+                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
+                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
 
         return ApiResponse.success("data", map);
     }
@@ -221,10 +242,13 @@ public class PostController {
                 .commentDTOList(commentDTOList)
                 .createdAt(post.getCreated_at())
                 .status(post.getStatus())
-                .imageUrl(post.getImageUrl())
+                .imageUrl(post.getUser().getProfileImageUrl())
                 .onlineOrOffline(post.getOnlineOrOffline())
                 .period(post.getPeriod())
                 .recruitNum(post.getRecruitNum())
+                .contactLink(post.getContactLink())
+                .contactMethod(post.getContactMethod())
+                .authorPosition(post.getUser().getUserInfo().getPosition())
                 .build();
 
         return ApiResponse.success("data", postResponseDto);
