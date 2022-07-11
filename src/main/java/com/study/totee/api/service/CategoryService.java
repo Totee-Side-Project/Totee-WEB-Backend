@@ -55,9 +55,8 @@ public class CategoryService {
     public void update(CategoryUpdateDto categoryUpdateDto) throws IOException {
         CategoryEntity category = categoryRepository.findByCategoryName(categoryUpdateDto.getCategoryName()).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_CATEGORY_ERROR));
-        // 기존 카테고리 이름과 새로운 이름이 같으면 업데이트 하지 않는다.
+        // 기존 카테고리 이름과 변경 할 카테고리 이름이 같지않으면 업데이트 한다.
         if(!categoryUpdateDto.getNewCategoryName().equals(category.getCategoryName())){
-            categoryUpdateDto.getNewCategoryName();
             category.setCategoryName(categoryUpdateDto.getNewCategoryName());
         }
         // 카테고리 요청 dto 에 이미지가 있으면 s3에 이미지 업로드, 없으면 null 처리
