@@ -1,6 +1,8 @@
 package com.study.totee.api.dto.post;
 
 import com.study.totee.api.dto.comment.CommentResponseDto;
+import com.study.totee.api.model.PositionEntity;
+import com.study.totee.type.PeriodType;
 import com.study.totee.type.PositionType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -51,8 +54,8 @@ public class PostResponseDto {
     @ApiModelProperty(name = "미팅 방식 (ON or OFF)")
     private String onlineOrOffline;
 
-    @ApiModelProperty(name = "예상 기간 (월 단위)")
-    private int period;
+    @ApiModelProperty(name = "예상 기간")
+    private PeriodType period;
 
     @ApiModelProperty(example = "모집 상태 (Y or N)")
     private String status;
@@ -60,7 +63,7 @@ public class PostResponseDto {
     @ApiModelProperty(example = "카테고리")
     private String categoryName;
 
-    @ApiModelProperty(example = "모집 대상 포지션 리스트 (ex Designer, Front_End..)")
+    @ApiModelProperty(example = "모집 대상 포지션 리스트 (ex Design, FrontEnd..)")
     private List<String> positionList;
 
     @ApiModelProperty(example = "모집 인원 수")

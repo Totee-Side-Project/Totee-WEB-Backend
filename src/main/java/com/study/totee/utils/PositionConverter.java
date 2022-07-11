@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class PositionConverter {
@@ -124,7 +125,7 @@ public class PositionConverter {
         return positionTypeList;
     }
 
-    public List<String> convertPositionEntityToString(List<PositionEntity> position){
+    public List<String> convertPositionEntityToString(Set<PositionEntity> position){
         List<String> positionList = new ArrayList<>();
         for (PositionEntity pos : position) {
             positionList.add(pos.getPosition().getPosition());

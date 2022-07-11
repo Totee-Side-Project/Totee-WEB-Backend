@@ -12,6 +12,7 @@ import com.study.totee.api.persistence.UserRepository;
 import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.ForbiddenException;
+import com.study.totee.type.PeriodType;
 import com.study.totee.utils.PositionConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +47,7 @@ public class PostService {
         PostEntity post = PostEntity.builder()
                 .status("Y").category(category).title(postRequestDto.getTitle()).user(user)
                 .content(postRequestDto.getContent()).onlineOrOffline(postRequestDto.getOnlineOrOffline())
-                .period(postRequestDto.getPeriod()).view(0).positionList(new HashSet<>()).build();
+                .period(PeriodType.of(postRequestDto.getPeriod())).view(0).positionList(new HashSet<>()).build();
 
         if(postRequestDto.getPostImage() != null){
             post.setImageUrl(awsS3Service.upload(postRequestDto.getPostImage(), "static"));
@@ -91,28 +92,6 @@ public class PostService {
             awsS3Service.fileDelete(post.getImageUrl());
         }
         postRepository.delete(post);
-    }
-
-    // 모든 게시글 카테고리 별 조회
-    @Transactional(readOnly = true)
-    public Page<PostEntity> findPostAllByCategoryName(String categoryName, final Pageable pageable){
-        Optional<CategoryEntity> category = Optional.of(categoryRepository.findByCategoryName(categoryName).orElseThrow(
-                () -> new BadRequestException(ErrorCode.NO_CATEGORY_ERROR)));
-        return postRepository.findAllByCategory_CategoryName(categoryName, pageable);
-    }
-
-    // 모든 게시글 모집중인 글만 조회
-    @Transactional(readOnly = true)
-    public Page<PostEntity> findPostAllByStatus(Pageable pageable){
-        return postRepository.findAllByStatus("Y", pageable);
-    }
-
-    // 모든 게시글 카테고리 별, 모집중인 글만 조회
-    @Transactional(readOnly = true)
-    public Page<PostEntity> findAllByCategory_CategoryNameAndStatus(String categoryName, Pageable pageable){
-        Optional<CategoryEntity> category = Optional.of(categoryRepository.findByCategoryName(categoryName).orElseThrow(
-                () -> new BadRequestException(ErrorCode.NO_CATEGORY_ERROR)));
-        return postRepository.findAllByCategory_CategoryNameAndStatus(categoryName, "Y", pageable);
     }
 
     // 게시글 제목 검색

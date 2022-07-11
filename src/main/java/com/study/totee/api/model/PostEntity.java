@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.study.totee.api.dto.post.PostRequestDto;
+import com.study.totee.type.PeriodType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -86,7 +87,7 @@ public class PostEntity {
     private String onlineOrOffline;
 
     @Column(name = "PERIOD")
-    private int period;
+    private PeriodType period;
 
     @Column(name = "COMMENT_NUM")
     private int commentNum;
@@ -115,7 +116,7 @@ public class PostEntity {
         this.title = postRequestDto.getTitle();
         this.status = postRequestDto.getStatus();
         this.onlineOrOffline = postRequestDto.getOnlineOrOffline();
-        this.period = postRequestDto.getPeriod();
+        this.period = PeriodType.of(postRequestDto.getPeriod());
         this.category = category;
     }
 }
