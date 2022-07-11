@@ -1,5 +1,6 @@
 package com.study.totee.api.controller;
 
+import com.google.common.collect.Lists;
 import com.study.totee.api.dto.comment.CommentResponseDto;
 import com.study.totee.api.dto.post.PostRequestDto;
 import com.study.totee.api.dto.post.PostResponseDto;
@@ -9,9 +10,11 @@ import com.study.totee.api.model.PostEntity;
 import com.study.totee.api.model.UserEntity;
 import com.study.totee.api.service.CommentService;
 import com.study.totee.api.service.PostService;
+import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.ForbiddenException;
 import com.study.totee.exption.NoAuthException;
+import com.study.totee.utils.PositionConverter;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +43,7 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final PositionConverter positionConverter;
     private final ModelMapper modelMapper;
 
     @ApiOperation(value = "게시글 등록" , notes = "게시글을 등록합니다 (폼데이터 형식 필수)")
@@ -82,84 +86,11 @@ public class PostController {
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
                 post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
                 null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
+                post.getStatus(), post.getCategory().getCategoryName(), positionConverter.convertPositionEntityToString(post.getPositionList()), post.getRecruitNum(), post.getContactMethod(),
                 post.getContactLink(), post.getUser().getUserInfo().getPosition()));
 
         return ApiResponse.success("data", map);
     }
-
-    // 댓글 많은 순서로 불러오기
-    @ApiOperation(value = "댓글 순 글 목록 불러오기", notes = "댓글 많은 순으로 모든 게시글을 조회합니다")
-    @GetMapping("/api/v1/post/list/all/comment")
-    public ApiResponse findAllOrderByCommentNum(@PageableDefault(size = 16, sort = "commentNum", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PostEntity> page = postService.findPostAll(pageable);
-        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
-                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
-                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
-
-        return ApiResponse.success("data", map);
-    }
-
-    // 좋아요 많은 순서로 불러오기
-    @ApiOperation(value = "좋아요 순 글 목록 불러오기", notes = "좋아요 많은 순으로 모든 게시글을 조회합니다")
-    @GetMapping("/api/v1/post/list/all/like")
-    public ApiResponse findAllOrderByLikeNum(@PageableDefault(size = 16, sort = "likeNum", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PostEntity> page = postService.findPostAll(pageable);
-        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
-                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
-                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
-
-        return ApiResponse.success("data", map);
-    }
-
-    @ApiOperation(value = "카테고리 별 글 목록 불러오기", notes = "카테고리 별 모든 게시글을 조회합니다.")
-    @GetMapping("/api/v1/post/list/{categoryName}")
-    public ApiResponse findPostAllByCategoryName(@PathVariable String categoryName, @PageableDefault
-            (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
-        Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
-        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
-                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
-                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
-
-        return ApiResponse.success("data", map);
-    }
-
-    // 카테고리 별 좋아요 순 글 목록 불러오기
-    @ApiOperation(value = "카테고리 별 좋아요 순 글 목록 불러오기", notes = "카테고리 별 좋아요 많은 순으로 모든 게시글을 조회합니다.")
-    @GetMapping("/api/v1/post/list/{categoryName}/like")
-    public ApiResponse findPostAllByCategoryNameOrderByLikeNum(@PathVariable String categoryName, @PageableDefault
-            (size = 16, sort = "likeNum", direction = Sort.Direction.DESC) Pageable pageable){
-        Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
-        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
-                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
-                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
-
-        return ApiResponse.success("data", map);
-    }
-
-    // 카테고리별 댓글 많은 순 글 목록 불러오기
-    @ApiOperation(value = "카테고리 별 댓글 순 글 목록 불러오기", notes = "카테고리 별 댓글 많은 순으로 모든 게시글을 조회합니다.")
-    @GetMapping("/api/v1/post/list/{categoryName}/comment")
-    public ApiResponse findPostAllByCategoryNameOrderByCommentNum(@PathVariable String categoryName, @PageableDefault
-            (size = 16, sort = "commentNum", direction = Sort.Direction.DESC) Pageable pageable){
-        Page<PostEntity> page = postService.findPostAllByCategoryName(categoryName, pageable);
-        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
-                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
-                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
-
-        return ApiResponse.success("data", map);
-    }
-
 
     @ApiOperation(value = "게시물 제목 검색합니다.", notes = "제목에 해당하는 게시글을 조회합니다. 빈 검색어 보내면 안됩니다")
     @GetMapping("/api/v1/post/search/{title}")
@@ -169,7 +100,7 @@ public class PostController {
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
                 post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
                 null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
+                post.getStatus(), post.getCategory().getCategoryName(), positionConverter.convertPositionEntityToString(post.getPositionList()), post.getRecruitNum(), post.getContactMethod(),
                 post.getContactLink(), post.getUser().getUserInfo().getPosition()));
 
         return ApiResponse.success("data", map);
@@ -183,7 +114,7 @@ public class PostController {
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
                 post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
                 null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
+                post.getStatus(), post.getCategory().getCategoryName(), positionConverter.convertPositionEntityToString(post.getPositionList()), post.getRecruitNum(), post.getContactMethod(),
                 post.getContactLink(), post.getUser().getUserInfo().getPosition()));
 
         return ApiResponse.success("data", map);
@@ -197,7 +128,7 @@ public class PostController {
     public ApiResponse findByPostId(@PathVariable Long postId, HttpServletRequest request, HttpServletResponse response){
         PostEntity post = postService.findByPostId(postId);
         if(post == null){
-            throw new ForbiddenException(ErrorCode.NO_POST_ERROR);
+            throw new BadRequestException(ErrorCode.NO_POST_ERROR);
         }
         Cookie oldCookie = null;
         Cookie[] cookies = request.getCookies();
@@ -249,6 +180,7 @@ public class PostController {
                 .contactLink(post.getContactLink())
                 .contactMethod(post.getContactMethod())
                 .authorPosition(post.getUser().getUserInfo().getPosition())
+                .positionList(positionConverter.convertPositionEntityToString(post.getPositionList()))
                 .build();
 
         return ApiResponse.success("data", postResponseDto);

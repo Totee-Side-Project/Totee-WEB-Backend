@@ -7,6 +7,7 @@ import com.study.totee.api.model.PostEntity;
 import com.study.totee.api.service.LikeService;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.NoAuthException;
+import com.study.totee.utils.PositionConverter;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LikeController {
     private final LikeService likeService;
+    private final PositionConverter positionConverter;
 
     @ApiOperation(value = "좋아요!", notes = "이미 좋아요 되어있으면 좋아요는 취소됩니다.")
     @PostMapping("/api/v1/post/like/{postId}")
@@ -47,7 +49,7 @@ public class LikeController {
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
                 post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
                 null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), null, post.getRecruitNum(), post.getContactMethod(),
+                post.getStatus(), post.getCategory().getCategoryName(), positionConverter.convertPositionEntityToString(post.getPositionList()), post.getRecruitNum(), post.getContactMethod(),
                 post.getContactLink(), post.getUser().getUserInfo().getPosition()));
 
 

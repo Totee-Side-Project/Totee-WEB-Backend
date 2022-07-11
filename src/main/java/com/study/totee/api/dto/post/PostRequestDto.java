@@ -30,8 +30,8 @@ public class PostRequestDto {
     @ApiModelProperty(example = "미팅 방식 (ON or OFF)")
     private String onlineOrOffline;
 
-    @ApiModelProperty(example = "예상 기간 (월 단위)")
-    private int period;
+    @ApiModelProperty(example = "예상 기간 (ex 1개월 미만 or 1~3개월 or 3~6개월 or 6개월 이상)")
+    private String period;
 
     @ApiModelProperty(example = "포스트 썸네일 이미지")
     private MultipartFile postImage;

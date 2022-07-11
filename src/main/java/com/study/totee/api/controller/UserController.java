@@ -3,6 +3,7 @@ package com.study.totee.api.controller;
 import com.study.totee.api.dto.user.NicknameRequestDto;
 import com.study.totee.api.dto.user.UserInfoRequestDto;
 import com.study.totee.api.dto.user.UserInfoResponseDto;
+import com.study.totee.api.dto.user.UserInfoUpdateRequestDto;
 import com.study.totee.api.model.UserEntity;
 import com.study.totee.common.ApiResponse;
 import com.study.totee.api.model.UserInfoEntity;
@@ -55,16 +56,25 @@ public class UserController {
         return ApiResponse.success("data", "SUCCESS");
     }
 
+    @ApiOperation(value = "유저 정보 수정하기", notes = "유저 관련 정보를 수정합니다.")
+    @PutMapping("/api/v1/info")
+    public ApiResponse updateUserInfo(@AuthenticationPrincipal User principal, @ModelAttribute @Valid @RequestBody UserInfoUpdateRequestDto userInfoUpdateRequestDto) throws IOException {
+        String id = Optional.ofNullable(principal).orElseThrow(()->
+                new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+        userService.updateUserInfo(id, userInfoUpdateRequestDto);
+        return ApiResponse.success("data", "SUCCESS");
+    }
+
     @ApiOperation(value = "닉네임 중복 확인" , notes = "사용 가능한 닉네임이면 true 을 반환하고 사용 불가능한 닉네임이면 예외 처리" +
             "닉네임 2자 이상, 5자 이하 길이만 가능합니다.")
     @PostMapping("/api/v1/validate/nickname")
-    public ApiResponse isNicknameDuplicate(@RequestParam NicknameRequestDto nicknameRequestDto){
+    public ApiResponse isNicknameDuplicate(@RequestBody NicknameRequestDto nicknameRequestDto){
         if(nicknameRequestDto.getNickname().length() < 2 || nicknameRequestDto.getNickname().length() > 5){
             throw new BadRequestException(ErrorCode.INVALID_INPUT_ERROR);
         }
         if (userService.isNicknameDuplicate(nicknameRequestDto.getNickname())) {
             throw new BadRequestException(ErrorCode.ALREADY_EXIST_NICKNAME_ERROR);
         }
-        return ApiResponse.success("data" ,true);
+        return ApiResponse.success("message" ,"사용 가능한 닉네임입니다.");
     }
 }
