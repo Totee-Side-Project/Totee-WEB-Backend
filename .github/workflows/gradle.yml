@@ -20,12 +20,6 @@ jobs:
         run: chmod +x ./gradlew
         shell: bash
 
-      - name: Create Spring Yml
-        run: |
-          touch src/main/resources/application.yml
-          echo "$DEV_SPRING_PROPERTIES" > application.yml.b64
-          base64 -d -i application.yml > server/src/main/resources/application.yml
-
       - name: Build with Gradle
         run: ./gradlew clean bootjar -Pprofile=prod
         shell: bash
