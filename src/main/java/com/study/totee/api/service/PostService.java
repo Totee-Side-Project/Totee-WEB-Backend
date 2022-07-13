@@ -47,7 +47,9 @@ public class PostService {
         PostEntity post = PostEntity.builder()
                 .status("Y").category(category).title(postRequestDto.getTitle()).user(user)
                 .content(postRequestDto.getContent()).onlineOrOffline(postRequestDto.getOnlineOrOffline())
-                .period(PeriodType.of(postRequestDto.getPeriod())).view(0).positionList(new HashSet<>()).build();
+                .period(PeriodType.of(postRequestDto.getPeriod())).view(0).positionList(new HashSet<>())
+                .contactLink(postRequestDto.getContactLink()).contactMethod(postRequestDto.getContactMethod())
+                .build();
 
         if(postRequestDto.getPostImage() != null){
             post.setImageUrl(awsS3Service.upload(postRequestDto.getPostImage(), "static"));

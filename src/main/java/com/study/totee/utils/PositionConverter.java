@@ -18,42 +18,42 @@ public class PositionConverter {
         List<PositionEntity> positionList = new ArrayList<>();
         for (String pos : position) {
             switch (pos) {
-                case "FrontEnd":
+                case "프론트엔드":
                     if (userInfo == null) {
                         positionList.add(new PositionEntity(PositionType.FRONT_END, post));
                     } else {
                         positionList.add(new PositionEntity(PositionType.FRONT_END, userInfo));
                     }
                     break;
-                case "BackEnd":
+                case "백엔드":
                     if (userInfo == null) {
                         positionList.add(new PositionEntity(PositionType.BACK_END, post));
                     } else {
                         positionList.add(new PositionEntity(PositionType.BACK_END, userInfo));
                     }
                     break;
-                case "Design":
+                case "디자인":
                     if (userInfo == null) {
                         positionList.add(new PositionEntity(PositionType.DESIGN, post));
                     } else {
                         positionList.add(new PositionEntity(PositionType.DESIGN, userInfo));
                     }
                     break;
-                case "Game":
+                case "게임":
                     if (userInfo == null) {
                         positionList.add(new PositionEntity(PositionType.GAME, post));
                     } else {
                         positionList.add(new PositionEntity(PositionType.GAME, userInfo));
                     }
                     break;
-                case "MachineLearning":
+                case "ML":
                     if (userInfo == null) {
                         positionList.add(new PositionEntity(PositionType.MACHINE_LEARNING, post));
                     } else {
                         positionList.add(new PositionEntity(PositionType.MACHINE_LEARNING, userInfo));
                     }
                     break;
-                case "ProductManager":
+                case "PM":
                     if (userInfo == null) {
                         positionList.add(new PositionEntity(PositionType.PRODUCT_MANAGER, post));
                     } else {
@@ -67,14 +67,14 @@ public class PositionConverter {
                         positionList.add(new PositionEntity(PositionType.iOS, userInfo));
                     }
                     break;
-                case "Android":
+                case "안드로이드":
                     if (userInfo == null) {
                         positionList.add(new PositionEntity(PositionType.ANDROID, post));
                     } else {
                         positionList.add(new PositionEntity(PositionType.ANDROID, userInfo));
                     }
                     break;
-                case "Others":
+                case "기타":
                     if (userInfo == null) {
                         positionList.add(new PositionEntity(PositionType.OTHERS, post));
                     } else {
@@ -90,31 +90,31 @@ public class PositionConverter {
         List<PositionType> positionTypeList = new ArrayList<>();
         for (String pos : position) {
             switch (pos) {
-                case "FrontEnd":
+                case "프론트엔드":
                     positionTypeList.add(PositionType.FRONT_END);
                     break;
-                case "BackEnd":
+                case "백엔드":
                     positionTypeList.add(PositionType.BACK_END);
                     break;
-                case "Design":
+                case "디자인":
                     positionTypeList.add(PositionType.DESIGN);
                     break;
-                case "Game":
+                case "게임":
                     positionTypeList.add(PositionType.GAME);
                     break;
-                case "MachineLearning":
+                case "ML":
                     positionTypeList.add(PositionType.MACHINE_LEARNING);
                     break;
-                case "ProductManager":
+                case "PM":
                     positionTypeList.add(PositionType.PRODUCT_MANAGER);
                     break;
                 case "iOS":
                     positionTypeList.add(PositionType.iOS);
                     break;
-                case "Android":
+                case "안드로이드":
                     positionTypeList.add(PositionType.ANDROID);
                     break;
-                case "Others":
+                case "기타":
                     positionTypeList.add(PositionType.OTHERS);
                     break;
             }
