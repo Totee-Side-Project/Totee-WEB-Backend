@@ -16,7 +16,7 @@ apply plugin: 'io.spring.dependency-management' // 스프링 부트의 의존성
 
 
 group 'org.example'
-version '1.0.0-SNAPSHOT'
+version '1.0.1-SNAPSHOT-'+ new Date().format("yyyyMMddHHmmss")
 sourceCompatibility = '1.8'
 
 repositories {
