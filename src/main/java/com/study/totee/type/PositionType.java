@@ -4,15 +4,15 @@ import lombok.Getter;
 
 @Getter
 public enum PositionType {
-    FRONT_END("FrontEnd"),
-    BACK_END("BackEnd"),
-    DESIGN("Design"),
-    GAME("Game"),
-    MACHINE_LEARNING("MachineLearning"),
-    PRODUCT_MANAGER("ProductManager"),
+    FRONT_END("프론트엔드"),
+    BACK_END("백엔드"),
+    DESIGN("디자인"),
+    GAME("게임"),
+    MACHINE_LEARNING("ML"),
+    PRODUCT_MANAGER("PM"),
     iOS("iOS"),
-    ANDROID("Android"),
-    OTHERS("Others");
+    ANDROID("안드로이드"),
+    OTHERS("기타");
 
     private final String position;
 

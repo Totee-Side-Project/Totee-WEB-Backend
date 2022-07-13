@@ -36,7 +36,7 @@ public class PostRequestDto {
     @ApiModelProperty(example = "포스트 썸네일 이미지")
     private MultipartFile postImage;
 
-    @ApiModelProperty(example = "모집 대상 포지션 리스트 (ex Design, FrontEnd..)")
+    @ApiModelProperty(example = "모집 대상 포지션 리스트 (ex 디자인, 게임, ML)")
     private List<String> positionList;
 
     @ApiModelProperty(example = "모집 인원 수")
