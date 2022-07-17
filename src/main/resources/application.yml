@@ -10,6 +10,8 @@ app:
     authorizedRedirectUris:
       - http://localhost:3000/oauth2/redirect
       - https://totee.site/oauth/redirect
+      - https://totee-fe-omega.vercel.app/oauth/rediret
+      - https://totee-fe-alpha.vercel.app/oauth2/redirect
 
 # GitAction
 

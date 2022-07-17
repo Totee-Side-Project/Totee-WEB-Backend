@@ -1,6 +1,5 @@
-package com.study.totee.api.dto.comment;
+package com.study.totee.api.dto.reply;
 
-import com.study.totee.api.dto.reply.ReplyResponseDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,24 +7,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentResponseDto {
+public class ReplyResponseDto {
     @ApiModelProperty(example = "작성자")
     private String username;
 
-    @ApiModelProperty(example = "댓글 번호")
-    private Long commentId;
+    @ApiModelProperty(example = "대댓글 번호")
+    private Long replyId;
 
     @ApiModelProperty(example = "내용")
     private String content;
-
-    @ApiModelProperty(example = "대댓글 리스트")
-    private List<ReplyResponseDto> replyList;
 
     @ApiModelProperty(example = "작성 날짜")
     private LocalDateTime created_at;

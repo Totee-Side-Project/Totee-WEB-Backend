@@ -53,7 +53,6 @@ public class CommentService {
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
         CommentEntity commentEntity = commentRepository.findByCommentIdAndUser(commentId, user);
-        post.setCommentNum(post.getCommentNum() - 1);
         commentEntity.setContent(commentRequestDto.getContent());
     }
 
@@ -71,10 +70,7 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentEntity> CommentListByPostId(Long postId){
-        if (postRepository.findByPostId(postId) == null) {
-            throw new BadRequestException(ErrorCode.NO_POST_ERROR);
-        }
+    public List<CommentEntity> commentListByPostId(Long postId){
         List<CommentEntity> commentEntities = commentRepository.findCommentEntityByPost_PostId(postId);
         return commentEntities;
     }
