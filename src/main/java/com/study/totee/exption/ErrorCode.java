@@ -13,6 +13,7 @@ public enum ErrorCode {
     INVALID_ROLE_TYPE_ERROR("존재하지 않는 Role Type 입니다."),
     NO_POST_ERROR("존재하지 않는 게시물입니다."),
     NO_COMMENT_ERROR("존재하지 않는 댓글입니다."),
+    NO_REPLY_ERROR("존재하지 않는 답글입니다."),
     BAD_REQUEST_ERROR("잘못된 요청입니다."),
     BAD_KEYWORD_ERROR("검색할 키워드는 1자 이상이어야 합니다."),
     NO_USER_INFO_ERROR("존재하지 않는 유저정보입니다."),

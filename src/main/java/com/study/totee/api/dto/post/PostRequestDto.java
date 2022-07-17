@@ -27,7 +27,7 @@ public class PostRequestDto {
     @ApiModelProperty(example = "모집 상태 (Y or N)")
     private String status;
 
-    @ApiModelProperty(example = "미팅 방식 (ON or OFF)")
+    @ApiModelProperty(example = "미팅 방식 (온라인 or 오프라인)")
     private String onlineOrOffline;
 
     @ApiModelProperty(example = "예상 기간 (ex 1개월 미만 or 1~3개월 or 3~6개월 or 6개월 이상)")
@@ -40,7 +40,7 @@ public class PostRequestDto {
     private List<String> positionList;
 
     @ApiModelProperty(example = "모집 인원 수")
-    private int recruitNum;
+    private String recruitNum;
 
     @ApiModelProperty(example = "연락 방법")
     private String contactMethod;

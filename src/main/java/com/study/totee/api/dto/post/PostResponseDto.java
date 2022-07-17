@@ -42,7 +42,7 @@ public class PostResponseDto {
     @ApiModelProperty(example = "댓글 수")
     private int commentNum;
 
-    @ApiModelProperty(example = "댓글리스트 정보")
+    @ApiModelProperty(example = "댓글리스트")
     private List<CommentResponseDto> commentDTOList;
 
     @ApiModelProperty(example = "포스트 이미지 URL")
@@ -51,7 +51,7 @@ public class PostResponseDto {
     @ApiModelProperty(example = "작성날짜")
     private LocalDateTime createdAt;
 
-    @ApiModelProperty(name = "미팅 방식 (ON or OFF)")
+    @ApiModelProperty(name = "미팅 방식 (온라인 or 오프라인)")
     private String onlineOrOffline;
 
     @ApiModelProperty(name = "예상 기간")
@@ -67,7 +67,7 @@ public class PostResponseDto {
     private List<String> positionList;
 
     @ApiModelProperty(example = "모집 인원 수")
-    private int recruitNum;
+    private String recruitNum;
 
     @ApiModelProperty(example = "연락 방법")
     private String contactMethod;

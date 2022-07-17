@@ -31,7 +31,7 @@ public class CommentController {
 
     @ApiOperation(value = "댓글 수정", notes = "댓글을 수정합니다")
     @PutMapping("/api/v1/comment/{commentId}")
-    public ApiResponse updateComment(@AuthenticationPrincipal User principal, @PathVariable Long commentId, CommentRequestDto commentRequestDto){
+    public ApiResponse updateComment(@AuthenticationPrincipal User principal, @PathVariable Long commentId, @RequestBody CommentRequestDto commentRequestDto){
         // 로그인이 되어 있지 않으면 예외를 던진다.
         String id = Optional.ofNullable(principal).orElseThrow(
                 () -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();

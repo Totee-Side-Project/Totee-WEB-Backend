@@ -108,8 +108,8 @@ public class PostEntity {
         this.positionList = new HashSet<>(positionList);
     }
 
-    @Column
-    private int recruitNum;
+    @Column(name ="RECURRENT_NUM")
+    private String recruitNum;
 
     public void update(PostRequestDto postRequestDto, CategoryEntity category) {
         this.content = postRequestDto.getContent();
@@ -117,6 +117,7 @@ public class PostEntity {
         this.status = postRequestDto.getStatus();
         this.onlineOrOffline = postRequestDto.getOnlineOrOffline();
         this.period = PeriodType.of(postRequestDto.getPeriod());
+        this.recruitNum = postRequestDto.getRecruitNum();
         this.category = category;
     }
 }

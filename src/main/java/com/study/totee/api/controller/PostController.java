@@ -155,7 +155,7 @@ public class PostController {
             newCookie.setMaxAge(60 * 60 * 24);
             response.addCookie(newCookie);
         }
-        List<CommentEntity> commentEntities = commentService.CommentListByPostId(postId);
+        List<CommentEntity> commentEntities = commentService.commentListByPostId(postId);
         List<CommentResponseDto> commentDTOList = commentEntities.stream().map(commentEntity ->
                 modelMapper.map(commentEntity, CommentResponseDto.class)).collect(Collectors.toList());
         UserEntity user = post.getUser();
