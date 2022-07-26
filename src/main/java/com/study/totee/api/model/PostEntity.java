@@ -3,21 +3,17 @@ package com.study.totee.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.study.totee.api.dto.post.PostRequestDto;
 import com.study.totee.type.PeriodType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -45,9 +41,8 @@ public class PostEntity {
     @Lob
     private String content;
 
-    @Column(name = "STATUS", length = 1)
+    @Column(name = "STATUS")
     @NotNull
-    @Size(min = 1, max = 1)
     private String status;
 
     @Column(name = "CREATED_AT")
@@ -57,8 +52,7 @@ public class PostEntity {
 
     @Column(name = "MODIFIED_AT")
     @LastModifiedDate
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @UpdateTimestamp
     private LocalDateTime modifiedAt;
 
     @ManyToOne(optional = false)
@@ -119,5 +113,9 @@ public class PostEntity {
         this.period = PeriodType.of(postRequestDto.getPeriod());
         this.recruitNum = postRequestDto.getRecruitNum();
         this.category = category;
+    }
+
+    public void updateStatus(String status) {
+        this.status = status.equals("Y") ? "N" : "Y";
     }
 }

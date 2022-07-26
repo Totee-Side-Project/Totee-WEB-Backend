@@ -1,6 +1,5 @@
 package com.study.totee.api.controller;
 
-import com.google.common.collect.Lists;
 import com.study.totee.api.dto.comment.CommentResponseDto;
 import com.study.totee.api.dto.post.PostRequestDto;
 import com.study.totee.api.dto.post.PostResponseDto;
@@ -12,7 +11,6 @@ import com.study.totee.api.service.CommentService;
 import com.study.totee.api.service.PostService;
 import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
-import com.study.totee.exption.ForbiddenException;
 import com.study.totee.exption.NoAuthException;
 import com.study.totee.utils.PositionConverter;
 import io.swagger.annotations.ApiOperation;
@@ -108,7 +106,7 @@ public class PostController {
 
     @ApiOperation(value = "추천 게시물 목록 불러오기", notes = "로그인한 유저의 포지션과 등록된 게시글의 모집분야가 같은 글을 조회합니다.")
     @GetMapping("/api/v1/post/recommend")
-    public ApiResponse findPostRecommend(@AuthenticationPrincipal User principal, @PageableDefault(size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
+    public ApiResponse findPostRecommend(@AuthenticationPrincipal User principal, @PageableDefault(size = 8, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
         // 로그인 안한 유저도 추천 게시물 이외의 다른 게시물을 불러와야하기에 예외처리를 하지 않습니다.
         Page<PostEntity> page = postService.findByPosition(principal.getUsername(), pageable);
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
@@ -184,5 +182,15 @@ public class PostController {
                 .build();
 
         return ApiResponse.success("data", postResponseDto);
+    }
+
+    @ApiOperation(value = "모집완료 수정", notes = "모집 중일 때 모집완료, 모집완료 일 때 모집 중으로 변환")
+    @PostMapping("/api/v1/post/status/{postId}")
+    public ApiResponse updateStatus(@AuthenticationPrincipal User principal , @PathVariable Long postId) {
+        String id = Optional.ofNullable(principal).orElseThrow(()->
+                new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+        postService.updateStatus(id, postId);
+
+        return ApiResponse.success("data", "게시글이 성공적으로 수정되었습니다");
     }
 }

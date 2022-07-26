@@ -34,9 +34,9 @@ public class CategoryController {
         return ApiResponse.success("data", dtoList);
     }
 
-    @ApiOperation(value = "카테고리 추가" , notes = "카테고리 추가, 폼데이터 형식으로 보내야됩니다. 필수!")
+    @ApiOperation(value = "카테고리 추가" , notes = "카테고리 추가")
     @PostMapping("/api/v1/category")
-    public ApiResponse addCategory(@ModelAttribute @Valid @RequestBody CategoryRequestDto categoryRequestDto) throws IOException {
+    public ApiResponse addCategory(@RequestBody CategoryRequestDto categoryRequestDto) throws IOException {
         categoryService.save(categoryRequestDto);
         return ApiResponse.success("message", "카테고리가 성공적으로 추가되었습니다.");
     }

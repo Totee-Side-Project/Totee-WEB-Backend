@@ -3,7 +3,6 @@ package com.study.totee.api.controller;
 import com.study.totee.api.dto.comment.CommentRequestDto;
 import com.study.totee.common.ApiResponse;
 import com.study.totee.api.service.CommentService;
-import com.study.totee.api.service.UserService;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.NoAuthException;
 import io.swagger.annotations.ApiOperation;

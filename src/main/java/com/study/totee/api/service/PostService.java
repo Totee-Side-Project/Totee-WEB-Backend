@@ -1,10 +1,7 @@
 package com.study.totee.api.service;
 
 import com.study.totee.api.dto.post.PostRequestDto;
-import com.study.totee.api.model.CategoryEntity;
-import com.study.totee.api.model.PositionEntity;
-import com.study.totee.api.model.PostEntity;
-import com.study.totee.api.model.UserEntity;
+import com.study.totee.api.model.*;
 import com.study.totee.api.persistence.CategoryRepository;
 import com.study.totee.api.persistence.PositionRepository;
 import com.study.totee.api.persistence.PostRepository;
@@ -17,7 +14,6 @@ import com.study.totee.utils.PositionConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,8 +37,8 @@ public class PostService {
         UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
 
-        CategoryEntity category = categoryRepository.findByCategoryName(postRequestDto.getCategoryName())
-                .orElseThrow(()-> new BadRequestException(ErrorCode.NO_CATEGORY_ERROR));
+        CategoryEntity category = Optional.ofNullable(categoryRepository.findByCategoryName(postRequestDto.getCategoryName())).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.ALREADY_EXIST_CATEGORY_ERROR));
 
         PostEntity post = PostEntity.builder()
                 .status("Y").category(category).title(postRequestDto.getTitle()).user(user)
@@ -65,8 +61,10 @@ public class PostService {
     public void update(String userId, PostRequestDto postRequestDto, Long postId) throws IOException {
         UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
-        CategoryEntity category = categoryRepository.findByCategoryName(postRequestDto.getCategoryName())
-                .orElseThrow(()-> new BadRequestException(ErrorCode.NO_CATEGORY_ERROR));
+
+        CategoryEntity category = Optional.ofNullable(categoryRepository.findByCategoryName(postRequestDto.getCategoryName())).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.ALREADY_EXIST_CATEGORY_ERROR));
+
         PostEntity post = Optional.ofNullable(postRepository.findByPostIdAndUser(postId, user)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
         positionRepository.deleteAllByPost(post);
@@ -131,4 +129,16 @@ public class PostService {
         }
         return postRepository.findAllByCategory_CategoryNameAndStatus("프로젝트", "Y", pageable);
     }
+
+    @Transactional
+    public void updateStatus(String userId, Long postId){
+        PostEntity post = Optional.ofNullable(postRepository.findByPostId(postId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
+        if(!post.getUser().getId().equals(userId)) {
+            throw new ForbiddenException(ErrorCode.NO_AUTHORITY_ERROR);
+        }
+        post.updateStatus(post.getStatus());
+
+    }
+
 }

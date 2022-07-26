@@ -8,13 +8,12 @@ import com.study.totee.api.persistence.PostRepository;
 import com.study.totee.api.persistence.UserRepository;
 import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
-import com.study.totee.exption.ForbiddenException;
-import com.study.totee.exption.NoAuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -26,6 +25,7 @@ public class LikeService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
+    @Transactional
     public void like(String userId, Long postId){
         UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
@@ -48,6 +48,7 @@ public class LikeService {
 
     }
 
+    @Transactional(readOnly = true)
     public boolean isLike(String userId, Long postId){
         PostEntity post = Optional.ofNullable(postRepository.findByPostId(postId)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
@@ -56,6 +57,7 @@ public class LikeService {
         return like != null;
     }
 
+    @Transactional(readOnly = true)
     public Page<PostEntity> findAllByLikedPost(String userId, final Pageable pageable){
         UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));

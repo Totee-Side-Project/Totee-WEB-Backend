@@ -3,10 +3,14 @@ package com.study.totee.api.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.study.totee.type.PositionType;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.util.List;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Builder
@@ -22,7 +26,7 @@ public class UserInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_INFO_ID")
-    private int userInfoId;
+    private Long userInfoId;
 
     @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "USER_ID")
@@ -38,5 +42,16 @@ public class UserInfoEntity {
 
     @OneToMany(mappedBy = "userInfo")
     private Set<PositionEntity> positionList;
+
+    @CreationTimestamp
+    @Column(name = "CREATED_AT")
+    @NotNull
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @UpdateTimestamp
+    @Column(name = "MODIFIED_AT")
+    @NotNull
+    private LocalDateTime modifiedAt;
 
 }

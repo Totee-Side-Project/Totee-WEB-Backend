@@ -7,6 +7,7 @@ import com.study.totee.type.ProviderType;
 import com.study.totee.type.RoleType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -78,6 +79,7 @@ public class UserEntity {
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @UpdateTimestamp
     @Column(name = "MODIFIED_AT")
     @NotNull
     private LocalDateTime modifiedAt;

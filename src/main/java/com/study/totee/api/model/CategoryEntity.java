@@ -1,13 +1,12 @@
 package com.study.totee.api.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -32,9 +31,6 @@ public class CategoryEntity {
     @Column(name = "CATEGORY_NAME" , length = 30 , nullable = false, unique = true)
     private String categoryName;
 
-    @Column(name = "IMAGE_URL")
-    private String imageUrl;
-
     @Column(name = "CREATED_AT")
     @CreationTimestamp
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -43,7 +39,6 @@ public class CategoryEntity {
 
     @Column(name = "MODIFIED_AT")
     @LastModifiedDate
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @UpdateTimestamp
     private LocalDateTime modifiedAt;
 }

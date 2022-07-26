@@ -16,6 +16,7 @@ public interface PostRepository extends JpaRepository<PostEntity, String> {
     Page<PostEntity> findAllByCategory_CategoryName(String categoryName, Pageable pageable);
     Page<PostEntity> findAllByCategory_CategoryNameAndStatus(String categoryName, String status, Pageable pageable);
     Page<PostEntity> findAllByTitleContaining(String keyword, Pageable pageable);
+    PostEntity findByUser_IdAndPostId(String userId, Long postId);
 
     @Query(value = "SELECT p FROM PostEntity p JOIN PositionEntity p2 ON p.postId = p2.post.postId WHERE p2.position = ?1 and p.category.categoryName = '프로젝트' and p.status = 'Y'")
     Page<PostEntity> findAllByPosition(PositionType position, Pageable pageable);

@@ -1,7 +1,6 @@
 package com.study.totee.api.controller;
 
 import com.study.totee.api.dto.post.PostResponseDto;
-import com.study.totee.api.model.UserEntity;
 import com.study.totee.common.ApiResponse;
 import com.study.totee.api.model.PostEntity;
 import com.study.totee.api.service.LikeService;
