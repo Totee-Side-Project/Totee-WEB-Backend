@@ -1,17 +1,14 @@
 package com.study.totee.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,21 +36,24 @@ public class CommentEntity {
     @JoinColumn(name = "USER_ID", nullable = false)
     private UserEntity user;
 
-    @Column(name = "USER_NAME")
-    private String username;
+    @Column(name = "NICKNAME")
+    private String nickname;
 
     @Column(name = "CONTENT")
     @Lob
-    String content;
+    private String content;
+
+    @Column(name = "PROFILE_IMAGE_URL", length = 512)
+    @NotNull
+    @Size(max = 512)
+    private String profileImageUrl;
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp
     private LocalDateTime created_at;
 
     @Column(name = "MODIFIED_AT")
-    @LastModifiedDate
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @UpdateTimestamp
     private LocalDateTime modifiedAt;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)

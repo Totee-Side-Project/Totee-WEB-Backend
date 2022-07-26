@@ -14,10 +14,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ReplyResponseDto {
     @ApiModelProperty(example = "작성자")
-    private String username;
+    private String nickname;
 
     @ApiModelProperty(example = "대댓글 번호")
     private Long replyId;
+
+    @ApiModelProperty(example = "작성자 프로필 URL")
+    private String profileImageUrl;
 
     @ApiModelProperty(example = "내용")
     private String content;

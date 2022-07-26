@@ -10,7 +10,6 @@ import com.study.totee.api.model.UserInfoEntity;
 import com.study.totee.api.service.UserService;
 import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
-import com.study.totee.exption.ForbiddenException;
 import com.study.totee.exption.NoAuthException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

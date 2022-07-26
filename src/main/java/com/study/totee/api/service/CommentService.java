@@ -9,7 +9,6 @@ import com.study.totee.api.persistence.PostRepository;
 import com.study.totee.api.persistence.UserRepository;
 import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
-import com.study.totee.exption.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,8 +35,9 @@ public class CommentService {
 
         CommentEntity commentEntity = CommentEntity.builder()
                 .content(commentRequestDto.getContent())
+                .profileImageUrl(user.getProfileImageUrl())
                 .user(user)
-                .username(user.getUsername())
+                .nickname(user.getUserInfo().getNickname())
                 .post(post)
                 .build();
         post.setCommentNum(post.getCommentNum() + 1);
@@ -60,10 +60,10 @@ public class CommentService {
     public void delete(Long commentId, String userId){
         UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
-        PostEntity post = Optional.ofNullable(postRepository.findByPostId(commentId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
         CommentEntity commentEntity = Optional.ofNullable(commentRepository.findByCommentIdAndUser(commentId, user)).
                 orElseThrow(()-> new BadRequestException(ErrorCode.NO_COMMENT_ERROR));
+        PostEntity post = Optional.ofNullable(postRepository.findByPostId(commentEntity.getPost().getPostId())).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
         post.setCommentNum(post.getCommentNum() - 1);
         commentRepository.delete(commentEntity);

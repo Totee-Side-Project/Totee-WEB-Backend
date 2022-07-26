@@ -40,8 +40,9 @@ public class ReplyService {
 
         ReplyEntity replyEntity = ReplyEntity.builder()
                 .content(replyRequestDto.getContent())
+                .profileImageUrl(user.getProfileImageUrl())
                 .user(user)
-                .username(user.getUsername())
+                .nickname(user.getUserInfo().getNickname())
                 .comment(comment)
                 .build();
 

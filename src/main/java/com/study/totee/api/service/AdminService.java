@@ -1,8 +1,6 @@
 package com.study.totee.api.service;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.study.totee.api.dto.user.RoleRequestDto;
-import com.study.totee.api.model.UserEntity;
 import com.study.totee.api.model.UserInfoEntity;
 import com.study.totee.api.persistence.UserInfoRepository;
 import com.study.totee.exption.BadRequestException;

@@ -1,7 +1,6 @@
 package com.study.totee.api.dto.post;
 
 import com.study.totee.api.dto.comment.CommentResponseDto;
-import com.study.totee.api.model.PositionEntity;
 import com.study.totee.type.PeriodType;
 import com.study.totee.type.PositionType;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,10 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder

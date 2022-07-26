@@ -1,6 +1,5 @@
 package com.study.totee.api.controller;
 
-import com.study.totee.api.dto.comment.CommentRequestDto;
 import com.study.totee.api.dto.reply.ReplyRequestDto;
 import com.study.totee.api.service.ReplyService;
 import com.study.totee.common.ApiResponse;

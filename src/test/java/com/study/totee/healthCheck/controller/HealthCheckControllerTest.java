@@ -1,4 +1,4 @@
-package com.study.totee.api.controller;
+package com.study.totee.healthCheck.controller;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
