@@ -53,11 +53,9 @@ public class ReplyEntity {
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Column(name = "MODIFIED_AT")
     @UpdateTimestamp
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime modifiedAt;
 }

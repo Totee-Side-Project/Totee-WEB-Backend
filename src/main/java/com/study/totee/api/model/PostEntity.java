@@ -48,7 +48,7 @@ public class PostEntity {
     @Column(name = "CREATED_AT")
     @CreationTimestamp
     @ApiModelProperty
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Column(name = "MODIFIED_AT")
     @LastModifiedDate
@@ -63,7 +63,7 @@ public class PostEntity {
     @NotNull
     private int view;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "CATEGORY_ID", nullable = false)
     private CategoryEntity category;
 

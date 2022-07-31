@@ -20,7 +20,7 @@ public class UserRefreshToken {
     /*@JsonIgnore
     @Id
     @Column(name = "REFRESH_TOKEN_SEQ")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long refreshTokenSeq;*/
     @Id
     @Column(name = "USER_ID", length = 64, unique = true)

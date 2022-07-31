@@ -1,4 +1,4 @@
-package com.study.totee.api.persistence;
+package com.study.totee.api.info;
 
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import com.study.totee.utils.CookieUtil;

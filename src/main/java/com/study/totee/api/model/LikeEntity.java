@@ -19,7 +19,7 @@ public class LikeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "LIKE_ID")
-    private int likeId;
+    private Long likeId;
 
     @ManyToOne
     @JoinColumn(name = "POST_ID", nullable = false)

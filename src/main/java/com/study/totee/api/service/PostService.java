@@ -67,7 +67,7 @@ public class PostService {
 
         PostEntity post = Optional.ofNullable(postRepository.findByPostIdAndUser(postId, user)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
-        positionRepository.deleteAllByPost(post);
+        positionRepository.deleteAllByPostId(post.getPostId());
         Set<String> positionStringList = new HashSet<>(postRequestDto.getPositionList());
         List<PositionEntity> positionEntityList = positionConverter.convertStringToPositionEntity(new ArrayList<>(positionStringList), null, post);
         post.update(postRequestDto, category);
@@ -124,10 +124,8 @@ public class PostService {
     public Page<PostEntity> findByPosition(String userId, Pageable pageable){
         UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
-        if (user.getUserInfo().getPosition() != null){
-            return postRepository.findAllByPosition(user.getUserInfo().getPosition(), pageable);
-        }
-        return postRepository.findAllByCategory_CategoryNameAndStatus("프로젝트", "Y", pageable);
+
+        return postRepository.findAllByPosition(user.getUserInfo().getPosition(), pageable);
     }
 
     @Transactional

@@ -27,12 +27,11 @@ public class CommentEntity {
     @Column(name = "COMMENT_ID")
     private Long commentId;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "POST_ID", nullable = false)
-    @JsonIgnore
     private PostEntity post;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "USER_ID", nullable = false)
     private UserEntity user;
 
@@ -50,7 +49,7 @@ public class CommentEntity {
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Column(name = "MODIFIED_AT")
     @UpdateTimestamp

@@ -11,7 +11,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,8 +30,12 @@ public class CategoryEntity {
     @Column(name = "CATEGORY_ID")
     private Long categoryId;
 
-    @Column(name = "CATEGORY_NAME" , length = 30 , nullable = false, unique = true)
+    @NotEmpty
+    @Column(name = "CATEGORY_NAME" , length = 20 , nullable = false, unique = true)
     private String categoryName;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<PostEntity> post;
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp

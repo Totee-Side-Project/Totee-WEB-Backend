@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -40,25 +41,37 @@ public class CategoryService {
     }
 
     @Transactional
-    public void delete(CategoryRequestDto categoryRequestDto){
-        CategoryEntity category = Optional.ofNullable(categoryRepository.findByCategoryName(categoryRequestDto.getCategoryName())).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.ALREADY_EXIST_CATEGORY_ERROR));
-        categoryRepository.delete(category);
+    public void update(CategoryUpdateDto categoryUpdateDto) throws IOException {
+        CategoryEntity category = categoryRepository.findByCategoryName(categoryUpdateDto.getCategoryName());
+        if (category == null) {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_CATEGORY_ERROR);
+        }
+        // 기존 카테고리 이름과 변경 할 카테고리 이름이 같지않으면 업데이트 한다.
+        if(categoryUpdateDto.getNewCategoryName().equals(category.getCategoryName())){
+            throw new BadRequestException(ErrorCode.BAD_REQUEST_ERROR);
+        }
+        category.setCategoryName(categoryUpdateDto.getNewCategoryName());
     }
 
     @Transactional
-    public void update(CategoryUpdateDto categoryUpdateDto) throws IOException {
-        CategoryEntity category = Optional.ofNullable(categoryRepository.findByCategoryName(categoryUpdateDto.getCategoryName())).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.ALREADY_EXIST_CATEGORY_ERROR));
-        // 기존 카테고리 이름과 변경 할 카테고리 이름이 같지않으면 업데이트 한다.
-        if(!categoryUpdateDto.getNewCategoryName().equals(category.getCategoryName())){
-            category.setCategoryName(categoryUpdateDto.getNewCategoryName());
+    public void delete(CategoryRequestDto categoryRequestDto){
+        CategoryEntity category = categoryRepository.findByCategoryName(categoryRequestDto.getCategoryName());
+        if (category == null) {
+            throw new BadRequestException(ErrorCode.NOT_EXIST_CATEGORY_ERROR);
         }
+        categoryRepository.delete(category);
     }
 
     @Transactional(readOnly = true)
-    public List<CategoryEntity> categoryEntityList(){
-        return categoryRepository.findAll();
+    public List<CategoryResponseDto> categoryEntityList(){
+
+        final List<CategoryEntity> categoryEntityList = categoryRepository.findAll();
+
+        return categoryEntityList.stream()
+                .map(categoryEntity -> CategoryResponseDto.builder()
+                        .categoryName(categoryEntity.getCategoryName())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }
