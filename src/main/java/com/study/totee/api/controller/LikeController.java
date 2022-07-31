@@ -47,7 +47,7 @@ public class LikeController {
 
         Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
                 post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getUser().getProfileImageUrl(), post.getCreated_at(), post.getOnlineOrOffline(), post.getPeriod(),
+                null, post.getUser().getProfileImageUrl(), post.getCreatedAt(), post.getOnlineOrOffline(), post.getPeriod(),
                 post.getStatus(), post.getCategory().getCategoryName(), positionConverter.convertPositionEntityToString(post.getPositionList()), post.getRecruitNum(), post.getContactMethod(),
                 post.getContactLink(), post.getUser().getUserInfo().getPosition()));
 

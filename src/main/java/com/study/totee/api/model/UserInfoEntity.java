@@ -28,8 +28,8 @@ public class UserInfoEntity {
     @Column(name = "USER_INFO_ID")
     private Long userInfoId;
 
-    @OneToOne(orphanRemoval = true)
-    @JoinColumn(name = "USER_ID")
+    @OneToOne
+    @JoinColumn(name = "USER_SEQ")
     @JsonIgnore
     private UserEntity user;
 

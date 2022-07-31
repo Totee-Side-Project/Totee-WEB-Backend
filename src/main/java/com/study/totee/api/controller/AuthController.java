@@ -39,7 +39,6 @@ import java.util.Date;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
 public class AuthController {
 
     private final UserService userService;
@@ -52,7 +51,7 @@ public class AuthController {
     private final static String REFRESH_TOKEN = "refresh_token";
 
     @ApiOperation(value = "회원가입", notes = "서버 테스트용 삭제예정")
-    @PostMapping("/signup")
+    @PostMapping("/auth/signup")
     public ApiResponse registerUser(@RequestBody SignupDto signUpDTO){
         // 요청을 이용해 저장할 사용자 만들기
         LocalDateTime now = LocalDateTime.now();
@@ -83,7 +82,7 @@ public class AuthController {
         return ApiResponse.success("message" , "회원가입이 성공적으로 완료되었습니다.");
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ApiResponse login(
             HttpServletRequest request,
             HttpServletResponse response,

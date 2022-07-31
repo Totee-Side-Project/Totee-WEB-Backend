@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -22,7 +24,7 @@ public class AdminService {
     @Transactional
     public void updateRole(RoleRequestDto roleRequestDto){
         // 존재 하지 않는 유저이면 예외를 던짐.
-        UserInfoEntity userinfo = userInfoRepository.findByNickname(roleRequestDto.getNickname()).orElseThrow(
+        UserInfoEntity userinfo = Optional.ofNullable(userInfoRepository.findByNickname(roleRequestDto.getNickname())).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
         // 맞지 않는 타입 예외
         if(roleRequestDto.getRoleType() != RoleType.ADMIN && roleRequestDto.getRoleType() != RoleType.USER){

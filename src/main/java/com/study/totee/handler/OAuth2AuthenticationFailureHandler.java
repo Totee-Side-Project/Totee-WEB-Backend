@@ -1,6 +1,6 @@
 package com.study.totee.handler;
 
-import com.study.totee.api.persistence.OAuth2AuthorizationRequestBasedOnCookieRepository;
+import com.study.totee.api.info.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.study.totee.utils.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.study.totee.api.persistence.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+import static com.study.totee.api.info.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 @Component
 @RequiredArgsConstructor

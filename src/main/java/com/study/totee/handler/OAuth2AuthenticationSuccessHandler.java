@@ -7,7 +7,7 @@ import com.study.totee.type.ProviderType;
 import com.study.totee.type.RoleType;
 import com.study.totee.api.info.OAuth2UserInfo;
 import com.study.totee.api.info.OAuth2UserInfoFactory;
-import com.study.totee.api.persistence.OAuth2AuthorizationRequestBasedOnCookieRepository;
+import com.study.totee.api.info.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.study.totee.token.AuthToken;
 import com.study.totee.token.AuthTokenProvider;
 import com.study.totee.utils.CookieUtil;
@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 
-import static com.study.totee.api.persistence.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+import static com.study.totee.api.info.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REFRESH_TOKEN;
 
 @Component

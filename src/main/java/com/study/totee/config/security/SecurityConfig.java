@@ -7,7 +7,7 @@ import com.study.totee.filter.TokenAuthenticationFilter;
 import com.study.totee.handler.OAuth2AuthenticationFailureHandler;
 import com.study.totee.handler.OAuth2AuthenticationSuccessHandler;
 import com.study.totee.handler.TokenAccessDeniedHandler;
-import com.study.totee.api.persistence.OAuth2AuthorizationRequestBasedOnCookieRepository;
+import com.study.totee.api.info.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.study.totee.api.service.CustomOAuth2UserService;
 import com.study.totee.api.service.CustomUserDetailsService;
 import com.study.totee.token.AuthTokenProvider;
