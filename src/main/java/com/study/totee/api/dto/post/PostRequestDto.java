@@ -1,17 +1,14 @@
 package com.study.totee.api.dto.post;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+
 @Data
-@Builder
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
 public class PostRequestDto {
     @ApiModelProperty(example = "제목")
@@ -22,9 +19,6 @@ public class PostRequestDto {
 
     @ApiModelProperty(example = "카테고리")
     private String categoryName;
-
-    @ApiModelProperty(example = "모집 상태 (Y or N)")
-    private String status;
 
     @ApiModelProperty(example = "미팅 방식 (온라인 or 오프라인)")
     private String onlineOrOffline;

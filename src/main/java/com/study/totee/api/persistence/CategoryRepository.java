@@ -1,13 +1,10 @@
 package com.study.totee.api.persistence;
 
-import com.study.totee.api.model.CategoryEntity;
+import com.study.totee.api.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-
 @Repository
-public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
-    CategoryEntity findByCategoryName(String name);
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+    Category findByCategoryName(String name);
 }

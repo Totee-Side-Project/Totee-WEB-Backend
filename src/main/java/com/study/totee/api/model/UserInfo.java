@@ -1,60 +1,65 @@
 package com.study.totee.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.study.totee.type.PositionType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
+@Builder
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@EntityListeners(AuditingEntityListener.class)
-@Table(name = "TB_COMMENT")
-public class CommentEntity {
+@Table(name = "TB_USER_INFO")
+public class UserInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "COMMENT_ID")
-    private Long commentId;
+    @Column(name = "USER_INFO_ID")
+    private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "POST_ID", nullable = false)
-    private PostEntity post;
+    @OneToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private UserEntity user;
-
+    @Size(min = 2, max = 5)
     @Column(name = "NICKNAME")
     private String nickname;
 
-    @Column(name = "CONTENT")
-    @Lob
-    private String content;
+    @Column(name = "INTRO", length = 500)
+    private String intro;
 
     @Column(name = "PROFILE_IMAGE_URL", length = 512)
-    @NotNull
-    @Size(max = 512)
     private String profileImageUrl;
 
-    @Column(name = "CREATED_AT")
+    @Column(name = "BACKGROUND_IMAGE_URL", length = 512)
+    private String backgroundImageUrl;
+
+    @Column(name = "POSITION", length = 20)
+    @Enumerated(EnumType.STRING)
+    private PositionType position;
+
+    @OneToMany(mappedBy = "userInfo")
+    private Set<Position> positionList;
+
     @CreationTimestamp
+    @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
-    @Column(name = "MODIFIED_AT")
+    @LastModifiedDate
     @UpdateTimestamp
+    @Column(name = "MODIFIED_AT")
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-    private List<ReplyEntity> reply;
 }

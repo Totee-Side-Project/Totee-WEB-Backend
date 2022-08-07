@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Table(name = "TB_POSITION")
-public class PositionEntity {
+public class Position {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -25,19 +25,19 @@ public class PositionEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
-    private PostEntity post;
+    private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_INFO_ID")
-    private UserInfoEntity userInfo;
+    private UserInfo userInfo;
 
-    public PositionEntity(PositionType position, UserInfoEntity userInfo) {
+    public Position(PositionType position, UserInfo userInfo) {
         this.position = position;
         this.userInfo = userInfo;
         userInfo.getPositionList().add(this);
     }
 
-    public PositionEntity(PositionType position, PostEntity post) {
+    public Position(PositionType position, Post post) {
         this.position = position;
         this.post = post;
         post.getPositionList().add(this);

@@ -32,6 +32,7 @@ out
 gen
 build
 rebel.xml
+*.yml
 
 /build/classes/java/main/
 /.idea/

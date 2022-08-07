@@ -1,9 +1,11 @@
 package com.study.totee.api.service;
 
-import com.study.totee.api.model.LikeEntity;
-import com.study.totee.api.model.PostEntity;
-import com.study.totee.api.model.UserEntity;
+import com.study.totee.api.model.Like;
+import com.study.totee.api.model.Notification;
+import com.study.totee.api.model.Post;
+import com.study.totee.api.model.User;
 import com.study.totee.api.persistence.LikeRepository;
+import com.study.totee.api.persistence.NotificationRepository;
 import com.study.totee.api.persistence.PostRepository;
 import com.study.totee.api.persistence.UserRepository;
 import com.study.totee.exption.BadRequestException;
@@ -24,46 +26,42 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public void like(String userId, Long postId){
-        UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+        User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
-        PostEntity post = Optional.ofNullable(postRepository.findByPostId(postId)).orElseThrow(
+        Post post = postRepository.findById(postId).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
-        LikeEntity like = likeRepository.findByUser_IdAndPost_PostId(userId , postId);
+        Like like = likeRepository.findByUser_IdAndPost_Id(userId , postId);
+
         if(like == null){
-            LikeEntity newLike = new LikeEntity();
-            post.setLikeNum(post.getLikeNum() + 1);
-            newLike.setUser(user);
-            newLike.setPost(post);
-            likeRepository.save(newLike);
-            log.info( userId + " like " + postId);
+            post.increaseLikeNum();
+            Like savedLike = likeRepository.save(new Like(user, post));
+
+            if (!post.getUser().getId().equals(userId)) {
+                notificationRepository.save(new Notification(savedLike, user));
+            }
+
         }else {
-            post.setLikeNum(post.getLikeNum() - 1);
+            if (Optional.ofNullable(notificationRepository.findByPostId(postId)).isPresent()) {
+                notificationRepository.deleteByPost_Id(postId);
+            }
+            post.decreaseLikeNum();
             likeRepository.delete(like);
-            log.info( userId + " dislike " + postId);
         }
 
     }
 
     @Transactional(readOnly = true)
     public boolean isLike(String userId, Long postId){
-        PostEntity post = Optional.ofNullable(postRepository.findByPostId(postId)).orElseThrow(
+        postRepository.findById(postId).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
-        LikeEntity like = likeRepository.findByUser_IdAndPost_PostId(userId , postId);
+        Like like = likeRepository.findByUser_IdAndPost_Id(userId , postId);
         return like != null;
-    }
-
-    @Transactional(readOnly = true)
-    public Page<PostEntity> findAllByLikedPost(String userId, final Pageable pageable){
-        UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
-
-        Page<PostEntity> likeEntityList = likeRepository.findAllByLikedPost(user, pageable);
-        return likeEntityList;
     }
 
 }

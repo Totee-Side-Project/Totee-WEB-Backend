@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -20,7 +21,7 @@ public class ReplyController {
 
     @ApiOperation(value = "대댓글 등록", notes = "대댓글을 등록합니다")
     @PostMapping("/api/v1/reply")
-    public ApiResponse saveReply(@AuthenticationPrincipal User principal, @RequestBody ReplyRequestDto replyRequestDto) {
+    public ApiResponse<Object> saveReply(@AuthenticationPrincipal User principal, @Valid @RequestBody ReplyRequestDto replyRequestDto) {
         // 로그인이 되어 있지 않으면 예외를 던진다.
         String id = Optional.ofNullable(principal).orElseThrow(
                 () -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
@@ -30,7 +31,7 @@ public class ReplyController {
 
     @ApiOperation(value = "대댓글 수정", notes = "대댓글을 수정합니다")
     @PutMapping("/api/v1/reply/{replyId}")
-    public ApiResponse updateReply(@AuthenticationPrincipal User principal, @PathVariable Long replyId, @RequestBody ReplyRequestDto replyRequestDto){
+    public ApiResponse<Object> updateReply(@AuthenticationPrincipal User principal, @PathVariable Long replyId, @Valid @RequestBody ReplyRequestDto replyRequestDto){
         // 로그인이 되어 있지 않으면 예외를 던진다.
         String id = Optional.ofNullable(principal).orElseThrow(
                 () -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
@@ -40,7 +41,7 @@ public class ReplyController {
 
     @ApiOperation(value = "대댓글 삭제", notes = "대댓글을 삭제합니다")
     @DeleteMapping("/api/v1/reply/{replyId}")
-    public ApiResponse deleteReply(@AuthenticationPrincipal User principal, @PathVariable Long replyId){
+    public ApiResponse<Object> deleteReply(@AuthenticationPrincipal User principal, @PathVariable Long replyId){
         // 로그인이 되어 있지 않으면 예외를 던진다.
         String id = Optional.ofNullable(principal).orElseThrow(
                 () -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();

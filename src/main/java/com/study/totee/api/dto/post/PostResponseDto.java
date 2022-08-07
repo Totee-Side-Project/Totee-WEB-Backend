@@ -1,20 +1,19 @@
 package com.study.totee.api.dto.post;
 
 import com.study.totee.api.dto.comment.CommentResponseDto;
+import com.study.totee.api.model.Post;
 import com.study.totee.type.PeriodType;
 import com.study.totee.type.PositionType;
+import com.study.totee.utils.PositionConverter;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Data
-@Builder
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
 public class PostResponseDto {
 
@@ -28,7 +27,7 @@ public class PostResponseDto {
     private String content;
 
     @ApiModelProperty(example = "작성자")
-    private String author;
+    private String nickname;
 
     @ApiModelProperty(example = "조회수")
     private int view;
@@ -74,4 +73,53 @@ public class PostResponseDto {
 
     @ApiModelProperty(example = "작성자 포지션")
     private PositionType authorPosition;
+
+    public PostResponseDto(Post post) {
+
+        final PositionConverter positionConverter = new PositionConverter();
+
+        this.postId = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.nickname = post.getUser().getUserInfo().getNickname();
+        this.view = post.getView();
+        this.likeNum = post.getLikeNum();
+        this.commentNum = post.getCommentNum();
+        this.imageUrl = post.getUser().getUserInfo().getProfileImageUrl();
+        this.createdAt = post.getCreatedAt();
+        this.onlineOrOffline = post.getOnlineOrOffline();
+        this.period = post.getPeriod();
+        this.status = post.getStatus();
+        this.categoryName = post.getCategory().getCategoryName();
+        this.positionList = positionConverter.convertPositionEntityToString(post.getPositionList());
+        this.recruitNum = post.getRecruitNum();
+        this.contactMethod = post.getContactMethod();
+        this.contactLink = post.getContactLink();
+        this.authorPosition = post.getUser().getUserInfo().getPosition();
+    }
+
+    public PostResponseDto(Post post, List<CommentResponseDto> CommentResponseDtoList) {
+
+        final PositionConverter positionConverter = new PositionConverter();
+
+        this.postId = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.nickname = post.getUser().getUserInfo().getNickname();
+        this.view = post.getView();
+        this.likeNum = post.getLikeNum();
+        this.commentNum = post.getCommentNum();
+        this.imageUrl = post.getUser().getUserInfo().getProfileImageUrl();
+        this.createdAt = post.getCreatedAt();
+        this.onlineOrOffline = post.getOnlineOrOffline();
+        this.period = post.getPeriod();
+        this.status = post.getStatus();
+        this.categoryName = post.getCategory().getCategoryName();
+        this.positionList = positionConverter.convertPositionEntityToString(post.getPositionList());
+        this.recruitNum = post.getRecruitNum();
+        this.contactMethod = post.getContactMethod();
+        this.contactLink = post.getContactLink();
+        this.authorPosition = post.getUser().getUserInfo().getPosition();
+        this.commentDTOList = CommentResponseDtoList;
+    }
 }

@@ -1,14 +1,11 @@
 package com.study.totee.api.dto.reply;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 
 @Data
-@Builder
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
 public class ReplyRequestDto {
     @ApiModelProperty(example = "댓글 번호")

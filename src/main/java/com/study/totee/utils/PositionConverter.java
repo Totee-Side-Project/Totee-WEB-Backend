@@ -1,8 +1,8 @@
 package com.study.totee.utils;
 
-import com.study.totee.api.model.PositionEntity;
-import com.study.totee.api.model.PostEntity;
-import com.study.totee.api.model.UserInfoEntity;
+import com.study.totee.api.model.Position;
+import com.study.totee.api.model.Post;
+import com.study.totee.api.model.UserInfo;
 import com.study.totee.type.PositionType;
 import org.springframework.stereotype.Component;
 
@@ -14,71 +14,71 @@ import java.util.Set;
 @Component
 public class PositionConverter {
 
-    public List<PositionEntity> convertStringToPositionEntity(List<String> position, UserInfoEntity userInfo, PostEntity post){
-        List<PositionEntity> positionList = new ArrayList<>();
+    public List<Position> convertStringToPositionEntity(List<String> position, UserInfo userInfo, Post post){
+        List<Position> positionList = new ArrayList<>();
         for (String pos : position) {
             switch (pos) {
                 case "프론트엔드":
                     if (userInfo == null) {
-                        positionList.add(new PositionEntity(PositionType.FRONT_END, post));
+                        positionList.add(new Position(PositionType.FRONT_END, post));
                     } else {
-                        positionList.add(new PositionEntity(PositionType.FRONT_END, userInfo));
+                        positionList.add(new Position(PositionType.FRONT_END, userInfo));
                     }
                     break;
                 case "백엔드":
                     if (userInfo == null) {
-                        positionList.add(new PositionEntity(PositionType.BACK_END, post));
+                        positionList.add(new Position(PositionType.BACK_END, post));
                     } else {
-                        positionList.add(new PositionEntity(PositionType.BACK_END, userInfo));
+                        positionList.add(new Position(PositionType.BACK_END, userInfo));
                     }
                     break;
                 case "디자인":
                     if (userInfo == null) {
-                        positionList.add(new PositionEntity(PositionType.DESIGN, post));
+                        positionList.add(new Position(PositionType.DESIGN, post));
                     } else {
-                        positionList.add(new PositionEntity(PositionType.DESIGN, userInfo));
+                        positionList.add(new Position(PositionType.DESIGN, userInfo));
                     }
                     break;
                 case "게임":
                     if (userInfo == null) {
-                        positionList.add(new PositionEntity(PositionType.GAME, post));
+                        positionList.add(new Position(PositionType.GAME, post));
                     } else {
-                        positionList.add(new PositionEntity(PositionType.GAME, userInfo));
+                        positionList.add(new Position(PositionType.GAME, userInfo));
                     }
                     break;
                 case "ML":
                     if (userInfo == null) {
-                        positionList.add(new PositionEntity(PositionType.MACHINE_LEARNING, post));
+                        positionList.add(new Position(PositionType.MACHINE_LEARNING, post));
                     } else {
-                        positionList.add(new PositionEntity(PositionType.MACHINE_LEARNING, userInfo));
+                        positionList.add(new Position(PositionType.MACHINE_LEARNING, userInfo));
                     }
                     break;
                 case "PM":
                     if (userInfo == null) {
-                        positionList.add(new PositionEntity(PositionType.PRODUCT_MANAGER, post));
+                        positionList.add(new Position(PositionType.PRODUCT_MANAGER, post));
                     } else {
-                        positionList.add(new PositionEntity(PositionType.PRODUCT_MANAGER, userInfo));
+                        positionList.add(new Position(PositionType.PRODUCT_MANAGER, userInfo));
                     }
                     break;
                 case "iOS":
                     if (userInfo == null) {
-                        positionList.add(new PositionEntity(PositionType.iOS, post));
+                        positionList.add(new Position(PositionType.iOS, post));
                     } else {
-                        positionList.add(new PositionEntity(PositionType.iOS, userInfo));
+                        positionList.add(new Position(PositionType.iOS, userInfo));
                     }
                     break;
                 case "안드로이드":
                     if (userInfo == null) {
-                        positionList.add(new PositionEntity(PositionType.ANDROID, post));
+                        positionList.add(new Position(PositionType.ANDROID, post));
                     } else {
-                        positionList.add(new PositionEntity(PositionType.ANDROID, userInfo));
+                        positionList.add(new Position(PositionType.ANDROID, userInfo));
                     }
                     break;
                 case "기타":
                     if (userInfo == null) {
-                        positionList.add(new PositionEntity(PositionType.OTHERS, post));
+                        positionList.add(new Position(PositionType.OTHERS, post));
                     } else {
-                        positionList.add(new PositionEntity(PositionType.OTHERS, userInfo));
+                        positionList.add(new Position(PositionType.OTHERS, userInfo));
                     }
                     break;
             }
@@ -125,9 +125,9 @@ public class PositionConverter {
         return positionTypeList;
     }
 
-    public List<String> convertPositionEntityToString(Set<PositionEntity> position){
+    public List<String> convertPositionEntityToString(Set<Position> position){
         List<String> positionList = new ArrayList<>();
-        for (PositionEntity pos : position) {
+        for (Position pos : position) {
             positionList.add(pos.getPosition().getPosition());
         }
         return positionList;

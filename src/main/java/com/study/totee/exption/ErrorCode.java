@@ -24,6 +24,7 @@ public enum ErrorCode {
     ALREADY_EXIST_CATEGORY_ERROR("이미 존재하는 카테고리입니다."),
     IMAGE_SAVE_ERROR("이미지 저장 실패"),
     INVALID_INPUT_ERROR("잘못된 입력입니다."),
+    NO_NOTIFICATION_ERROR("존재하지 않는 알림입니다."),
     ;
     private String message;
 }

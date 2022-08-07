@@ -1,3 +1,9 @@
+vapid:
+  public:
+    key: 'BFgwklomAULsbnwTPW7KBoVDlldEe1pxRqEXG8wAFxsgAg8ztXm6Q2O2LLUhgvKhfBCpxZZ7J5JWccEvzuoudE4'
+  private:
+    key: 'qZkIETJMzm6H666GKzHuGXOjEnsTh4acEuVTKgLDUbs'
+
 jwt:
   secret: '8sknjlO3NPTBqo319DHLNqsQAfRJEdKsETOds'
 
@@ -122,9 +128,8 @@ spring:
 ---
 server:
   port: 5000
-  use-forward-headers: true
+  forward-headers-strategy: native
 spring:
-  profiles: prod
   jpa:
     database: MYSQL
     show-sql: true
@@ -185,3 +190,6 @@ spring:
           tokenUri: https://kauth.kakao.com/oauth/token
           userInfoUri: https://kapi.kakao.com/v2/user/me
           userNameAttribute: id
+  config:
+    activate:
+      on-profile: prod

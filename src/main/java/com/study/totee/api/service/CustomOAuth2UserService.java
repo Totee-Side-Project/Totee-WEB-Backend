@@ -1,7 +1,7 @@
 package com.study.totee.api.service;
 
-import com.study.totee.api.model.UserEntity;
-import com.study.totee.api.model.UserInfoEntity;
+import com.study.totee.api.model.User;
+import com.study.totee.api.model.UserInfo;
 import com.study.totee.api.persistence.UserRepository;
 import com.study.totee.type.ProviderType;
 import com.study.totee.type.RoleType;
@@ -45,7 +45,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         ProviderType providerType = ProviderType.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
 
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
-        UserEntity savedUser = userRepository.findById(userInfo.getId());
+        User savedUser = userRepository.findById(userInfo.getId());
 
         if (savedUser != null) {
             if (providerType != savedUser.getProviderType()) {
@@ -62,27 +62,28 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return UserPrincipal.create(savedUser, user.getAttributes());
     }
 
-    private UserEntity createUser(OAuth2UserInfo userInfo, ProviderType providerType) {
-        LocalDateTime now = LocalDateTime.now();
-        UserInfoEntity userInfoEntity = new UserInfoEntity();
-        UserEntity user = new UserEntity(
+    private User createUser(OAuth2UserInfo userInfo, ProviderType providerType) {
+
+        User user = new User(
                 userInfo.getId(),
                 userInfo.getName(),
                 userInfo.getEmail(),
-                "Y",
+                "N",
                 userInfo.getImageUrl(),
                 providerType,
                 RoleType.USER,
-                now,
-                now,
-                userInfoEntity
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                new UserInfo()
         );
+
+        UserInfo userInfoEntity = user.getUserInfo();
         userInfoEntity.setUser(user);
 
         return userRepository.saveAndFlush(user);
     }
 
-    private UserEntity updateUser(UserEntity user, OAuth2UserInfo userInfo) {
+    private User updateUser(User user, OAuth2UserInfo userInfo) {
         if (userInfo.getName() != null && !user.getUsername().equals(userInfo.getName())) {
             user.setUsername(userInfo.getName());
         }

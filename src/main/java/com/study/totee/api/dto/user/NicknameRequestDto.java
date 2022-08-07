@@ -1,14 +1,13 @@
 package com.study.totee.api.dto.user;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import javax.validation.constraints.NotBlank;
+
 
 @Data
-@Builder
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
 public class NicknameRequestDto {
     @ApiModelProperty(example = "닉네임")

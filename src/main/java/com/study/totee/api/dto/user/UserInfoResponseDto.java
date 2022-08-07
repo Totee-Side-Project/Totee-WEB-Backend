@@ -1,16 +1,15 @@
 package com.study.totee.api.dto.user;
 
+import com.study.totee.api.model.User;
+import com.study.totee.api.model.UserInfo;
 import com.study.totee.type.PositionType;
 import com.study.totee.type.RoleType;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
-@Data
-@Builder
-@AllArgsConstructor
+
+@Getter
 @NoArgsConstructor
 public class UserInfoResponseDto {
     @ApiModelProperty(example = "이메일")
@@ -23,4 +22,18 @@ public class UserInfoResponseDto {
     private String profileImageUrl;
     @ApiModelProperty(example = "유저 등급")
     private RoleType roleType;
+    @ApiModelProperty(example = "자기소개")
+    private String intro;
+    @ApiModelProperty(example = "배경 이미지")
+    private String backgroundImageUrl;
+
+    public UserInfoResponseDto(UserInfo userInfo, User user){
+        this.email = user.getEmail();
+        this.nickname = userInfo.getNickname();
+        this.position = userInfo.getPosition();
+        this.roleType = user.getRoleType();
+        this.intro = userInfo.getIntro();
+        this.profileImageUrl = userInfo.getProfileImageUrl();
+        this.backgroundImageUrl = userInfo.getBackgroundImageUrl();
+    }
 }

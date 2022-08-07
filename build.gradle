@@ -1,27 +1,24 @@
-buildscript { // 이 프로젝트의 플러그인 의존성 관리를 위한 설정
-    ext{ // 전역변수를 설정하겠다는 의미
-        springBootVersion = '2.1.9.RELEASE'
-    }
-    repositories{
-        mavenCentral()
-    }
-    dependencies{
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+plugins {
+    id 'org.springframework.boot' version '2.5.6'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
     }
 }
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management' // 스프링 부트의 의존성 관리
 
+repositories{
+    mavenCentral()
+}
 
 group 'org.example'
 version '1.0.1-SNAPSHOT-'+ new Date().format("yyyyMMddHHmmss")
 sourceCompatibility = '1.8'
 
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     implementation "com.h2database:h2"
@@ -65,9 +62,35 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.5.1")
     testRuntimeOnly("org.junit.platform:junit-platform-commons:1.5.1")
 
-
+    implementation 'com.querydsl:querydsl-jpa:5.0.0'
+    implementation 'com.querydsl:querydsl-core:5.0.0'
 }
 
 test {
     useJUnitPlatform()
+}
+
+//querydsl 추가 시작
+def querydslDir = "$buildDir/generated/querydsl"
+
+test {
+    useJUnitPlatform()
+}
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+//querydsl 추가 끝
+compileQuerydsl.doFirst {
+    if(file(querydslDir).exists() ) delete(file(querydslDir))
 }

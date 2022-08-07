@@ -1,14 +1,14 @@
 package com.study.totee.api.dto.comment;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 
 @Data
-@Builder
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
 public class CommentRequestDto {
     @ApiModelProperty(example = "게시글 번호")

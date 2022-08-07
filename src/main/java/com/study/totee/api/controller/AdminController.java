@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 public class AdminController {
@@ -17,7 +19,7 @@ public class AdminController {
 
     @ApiOperation(value = "권한변경", notes = "유저의 권한 등급을 변경합니다.")
     @PutMapping("/api/v1/admin/update/role")
-    public ApiResponse updateRole(@RequestBody RoleRequestDto roleRequestDto){
+    public ApiResponse<Object> updateRole(@Valid @RequestBody RoleRequestDto roleRequestDto){
         adminService.updateRole(roleRequestDto);
         return ApiResponse.success("message", "유저의 권한을 성공적으로 변경했습니다.");
     }

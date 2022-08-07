@@ -10,7 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -27,7 +26,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = "id")}, name = "TB_USER")
-public class UserEntity {
+public class User {
     @JsonIgnore
     @Id
     @Column(name = "USER_SEQ")
@@ -88,9 +87,12 @@ public class UserEntity {
 
     @JoinColumn(name = "USER_INFO_ID")
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private UserInfoEntity userInfo;
+    private UserInfo userInfo;
 
-    public UserEntity(
+    @OneToMany(mappedBy = "user")
+    private List<Notification> notification;
+
+    public User(
             @NotNull @Size(max = 64) String id,
             @NotNull @Size(max = 100) String username,
             @NotNull @Size(max = 512) String email,
@@ -100,7 +102,7 @@ public class UserEntity {
             @NotNull RoleType roleType,
             @NotNull LocalDateTime createdAt,
             @NotNull LocalDateTime modifiedAt,
-            @NotNull UserInfoEntity userInfo
+            @NotNull UserInfo userInfo
     ){
         this.id = id;
         this.username = username;
