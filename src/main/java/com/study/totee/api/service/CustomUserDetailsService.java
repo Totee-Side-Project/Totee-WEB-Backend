@@ -1,6 +1,6 @@
 package com.study.totee.api.service;
 
-import com.study.totee.api.model.UserEntity;
+import com.study.totee.api.model.User;
 import com.study.totee.api.persistence.UserRepository;
 import com.study.totee.type.UserPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findById(username);
+        User user = userRepository.findById(username);
         if (user == null) {
             throw new UsernameNotFoundException("Can not find username.");
         }

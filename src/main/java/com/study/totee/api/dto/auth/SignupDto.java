@@ -5,7 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+/**
+ * @author : Marine
+ * @date : 2022-08-02
+ * @description : 로컬테스트 전용 Dto입니다.
+ */
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

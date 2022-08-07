@@ -1,13 +1,12 @@
 package com.study.totee.api.persistence;
 
-import com.study.totee.api.model.CommentEntity;
-import com.study.totee.api.model.UserEntity;
+import com.study.totee.api.model.Comment;
+import com.study.totee.api.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
-    CommentEntity findByCommentId(Long commentId);
-    CommentEntity findByCommentIdAndUser(Long commentId, UserEntity user);
-    List<CommentEntity> findCommentEntityByPost_PostId(Long postId);
+public interface CommentRepository extends JpaRepository<Comment, Long> {
+    Comment findByIdAndUser(Long id, User user);
+    List<Comment> findAllByPost_Id(Long postId);
 }

@@ -2,8 +2,8 @@ package com.study.totee.api.service;
 
 import com.study.totee.api.dto.user.UserInfoRequestDto;
 import com.study.totee.api.dto.user.UserInfoUpdateRequestDto;
-import com.study.totee.api.model.UserEntity;
-import com.study.totee.api.model.UserInfoEntity;
+import com.study.totee.api.model.User;
+import com.study.totee.api.model.UserInfo;
 import com.study.totee.api.persistence.UserInfoRepository;
 import com.study.totee.api.persistence.UserRepository;
 import com.study.totee.exption.BadRequestException;
@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static com.study.totee.api.model.QUser.user;
 
 
 @Slf4j
@@ -29,85 +31,64 @@ public class UserService {
     // 유저 상세 정보 추가
     @Transactional
     public void createUserInfo(String userId, UserInfoRequestDto userInfoRequestDto) throws IOException {
-        UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+        UserInfo userInfo = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR)).getUserInfo();
 
-        // 닉네임 체크 한번 더
-        if(userInfoRequestDto.getNickname().length() < 2 || userInfoRequestDto.getNickname().length() > 5){
-            throw new BadRequestException(ErrorCode.INVALID_INPUT_ERROR);
-        }
+        // 닉네임 존재 검사
         if (isNicknameDuplicate(userInfoRequestDto.getNickname())) {
             throw new BadRequestException(ErrorCode.ALREADY_EXIST_NICKNAME_ERROR);
         }
-        UserInfoEntity userInfo = user.getUserInfo();
 
-        // 유저 상세 정보 dto 에서 Position Type 에 존재하지 않는 Position 을 입력하면 예외를 던짐
-        try {
-            userInfo.setPosition(userInfoRequestDto.getPosition());
-        } catch (IllegalArgumentException e) {
-            throw new BadRequestException(ErrorCode.INVALID_POSITION_TYPE_ERROR);
+        if(!userInfoRequestDto.getProfileImage().isEmpty()){
+            userInfo.setProfileImageUrl(awsS3Service.upload(userInfoRequestDto.getProfileImage(), "static"));
+        } else {
+            userInfo.setProfileImageUrl(null);
         }
-
-        // 유저 상세 정보 dto 에 프로필 이미지가 없을 경우 디폴트 이미지로 설정
-        if (userInfoRequestDto.getProfileImage() == null) {
-            user.setProfileImageUrl("https://lh3.googleusercontent.com/a-/AOh14Gg_jYj1ka2KSZcYgcxXxasvl8_rytXHtszA-SzRwg=s96-c");
-        } // 유저 상세 정보 dto 에 프로필 이미지가 있을 경우 서버에 이미지 업로드
-        else {
-            user.setProfileImageUrl(awsS3Service.upload(userInfoRequestDto.getProfileImage(), "static"));
-        }
-
+        userInfo.setPosition(userInfoRequestDto.getPosition());
         userInfo.setNickname(userInfoRequestDto.getNickname());
-        user.setUserInfo(userInfo);
     }
 
     // 유저 상세 정보 수정
     @Transactional
     public void updateUserInfo(String userId, UserInfoUpdateRequestDto userInfoUpdateRequestDto) throws IOException {
-        UserEntity user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
-
-        UserInfoEntity userInfo = user.getUserInfo();
+        UserInfo userInfo = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR)).getUserInfo();
 
         // 닉네임 체크
-        if(userInfoUpdateRequestDto.getNewNickname() != null){
-            if(userInfoUpdateRequestDto.getNickname().length() < 2 || userInfoUpdateRequestDto.getNickname().length() > 5){
-                throw new BadRequestException(ErrorCode.INVALID_INPUT_ERROR);
-            }
-            else if (isNicknameDuplicate(userInfoUpdateRequestDto.getNickname())) {
-                throw new BadRequestException(ErrorCode.ALREADY_EXIST_NICKNAME_ERROR);
-            }
+        if (!userInfo.getNickname().equals(userInfoUpdateRequestDto.getNickname())
+                && isNicknameDuplicate(userInfoUpdateRequestDto.getNickname())) {
+            throw new BadRequestException(ErrorCode.ALREADY_EXIST_NICKNAME_ERROR);
         }
-        // 유저 상세 정보 dto 에서 Position Type 에 존재하지 않는 Position 을 입력하면 예외를 던짐
-        try {
-            userInfo.setPosition(userInfoUpdateRequestDto.getPosition());
-        } catch (IllegalArgumentException e) {
-            throw new BadRequestException(ErrorCode.INVALID_POSITION_TYPE_ERROR);
+
+        // 이미지 체크(기존 이미지를 삭제)
+        if(userInfo.getProfileImageUrl() != null){
+            awsS3Service.fileDelete(userInfo.getProfileImageUrl());
         }
-        // 유저 상세 정보 dto 에 프로필 이미지가 없을 경우 디폴트 이미지로 설정
-        if (userInfoUpdateRequestDto.getProfileImage() == null) {
-            user.setProfileImageUrl("https://lh3.googleusercontent.com/a-/AOh14Gg_jYj1ka2KSZcYgcxXxasvl8_rytXHtszA-SzRwg=s96-c");
-        } // 유저 상세 정보 dto 에 프로필 이미지가 있을 경우 서버에 이미지 업로드
-        else {
-            awsS3Service.fileDelete(user.getProfileImageUrl());
-            user.setProfileImageUrl(awsS3Service.upload(userInfoUpdateRequestDto.getProfileImage(), "static"));
+        if (userInfo.getBackgroundImageUrl() != null) {
+            awsS3Service.fileDelete(userInfo.getBackgroundImageUrl());
         }
-        userInfo.setNickname(userInfoUpdateRequestDto.getNewNickname());
-        user.setUserInfo(userInfo);
+
+        // dto 의 이미지를 업로드
+        if (userInfoUpdateRequestDto.getProfileImage().isEmpty()) {
+            userInfo.setProfileImageUrl(null);
+        } else {
+            userInfo.setProfileImageUrl(awsS3Service.upload(userInfoUpdateRequestDto.getProfileImage(), "static"));
+        }
+        if (userInfoUpdateRequestDto.getBackgroundImage().isEmpty()) {
+            userInfo.setBackgroundImageUrl(null);
+        } else {
+            userInfo.setBackgroundImageUrl(awsS3Service.upload(userInfoUpdateRequestDto.getBackgroundImage(), "static"));
+        }
+
+        userInfo.setPosition(userInfoUpdateRequestDto.getPosition());
+        userInfo.setNickname(userInfoUpdateRequestDto.getNickname());
+        userInfo.setIntro(userInfoUpdateRequestDto.getIntro());
     }
 
     // 로컬 회원가입 테스트 용 삭제 예정
-    public void create(final UserEntity userEntity, final UserInfoEntity userInfoEntity) {
-        if(userEntity == null || userInfoEntity == null || userEntity.getEmail() == null ) {
-            throw new RuntimeException("Invalid arguments");
-        }
-        final String email = userEntity.getEmail();
-        if(userRepository.existsByEmail(email)) {
-            log.warn("Email already exists {}", email);
-            throw new RuntimeException("Email already exists");
-        }
+    public void create(final User userEntity) {
 
-        userRepository.save(userEntity);
-        userInfoRepository.save(userInfoEntity);
+        userRepository.saveAndFlush(userEntity);
     }
 
     // 닉네임 중복 체크
@@ -115,7 +96,11 @@ public class UserService {
         return userInfoRepository.existsByNickname(nickname);
     }
     // 아이디로 유저 조회
-    public UserEntity getUser(final String id){
+    public User getUser(final String id){
         return userRepository.findById(id);
+    }
+    // 닉네임으로 유저 조회
+    public User getUserByNickname(final String nickname){
+        return userRepository.findByUserInfo_Nickname(nickname);
     }
 }

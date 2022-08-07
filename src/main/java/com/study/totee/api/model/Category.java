@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.study.totee.api.dto.category.CategoryRequestDto;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -21,30 +22,33 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "TB_CATEGORY")
-public class CategoryEntity {
+public class Category{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CATEGORY_ID")
-    private Long categoryId;
+    private Long id;
 
-    @NotEmpty
-    @Column(name = "CATEGORY_NAME" , length = 20 , nullable = false, unique = true)
+    @Column(name = "CATEGORY_NAME" , length = 15 , nullable = false, unique = true)
     private String categoryName;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<PostEntity> post;
+    @OneToMany(mappedBy = "category")
+    private List<Post> post;
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Column(name = "MODIFIED_AT")
-    @LastModifiedDate
     @UpdateTimestamp
     private LocalDateTime modifiedAt;
+
+    public Category(CategoryRequestDto categoryRequestDto) {
+        this.categoryName = categoryRequestDto.getCategoryName();
+    }
+
+    public void update(CategoryRequestDto categoryRequestDto) {
+        this.categoryName = categoryRequestDto.getCategoryName();
+    }
 }

@@ -1,17 +1,14 @@
 package com.study.totee.api.persistence;
 
-import com.study.totee.api.model.LikeEntity;
-import com.study.totee.api.model.PostEntity;
-import com.study.totee.api.model.UserEntity;
+import com.study.totee.api.model.Like;
+import com.study.totee.api.model.Post;
+import com.study.totee.api.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface LikeRepository extends JpaRepository<LikeEntity,Long> {
-    LikeEntity findByUser_IdAndPost_PostId(String userId, Long postId);
-    Boolean existsByUser_IdAndPost_PostId(String userId, Long postId);
-    @Query(value = "SELECT p FROM PostEntity p LEFT JOIN LikeEntity l " +
-            "ON l.post.postId = p.postId WHERE l.user = ?1")
-    Page<PostEntity> findAllByLikedPost(UserEntity user, Pageable pageable);
+public interface LikeRepository extends JpaRepository<Like, Long> {
+    Like findByUser_IdAndPost_Id(String userId, Long postId);
+    Boolean existsByUser_IdAndPost_Id(String userId, Long postId);
 }

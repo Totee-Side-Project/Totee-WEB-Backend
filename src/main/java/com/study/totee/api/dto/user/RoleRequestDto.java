@@ -2,14 +2,13 @@ package com.study.totee.api.dto.user;
 
 import com.study.totee.type.RoleType;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import javax.validation.constraints.NotBlank;
+
 
 @Data
-@Builder
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
 public class RoleRequestDto {
     @ApiModelProperty(example = "닉네임")

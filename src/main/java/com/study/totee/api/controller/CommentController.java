@@ -11,16 +11,18 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
+
     private final CommentService commentService;
 
     @ApiOperation(value = "댓글 등록", notes = "댓글을 등록합니다")
     @PostMapping("/api/v1/comment")
-    public ApiResponse saveComment(@AuthenticationPrincipal User principal, @RequestBody CommentRequestDto commentRequestDto) {
+    public ApiResponse<Object> saveComment(@AuthenticationPrincipal User principal,@Valid @RequestBody CommentRequestDto commentRequestDto) {
         // 로그인이 되어 있지 않으면 예외를 던진다.
         String id = Optional.ofNullable(principal).orElseThrow(
                 () -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
@@ -30,7 +32,7 @@ public class CommentController {
 
     @ApiOperation(value = "댓글 수정", notes = "댓글을 수정합니다")
     @PutMapping("/api/v1/comment/{commentId}")
-    public ApiResponse updateComment(@AuthenticationPrincipal User principal, @PathVariable Long commentId, @RequestBody CommentRequestDto commentRequestDto){
+    public ApiResponse<Object> updateComment(@AuthenticationPrincipal User principal, @PathVariable Long commentId,@Valid @RequestBody CommentRequestDto commentRequestDto){
         // 로그인이 되어 있지 않으면 예외를 던진다.
         String id = Optional.ofNullable(principal).orElseThrow(
                 () -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
@@ -40,7 +42,7 @@ public class CommentController {
 
     @ApiOperation(value = "댓글 삭제", notes = "댓글을 삭제합니다")
     @DeleteMapping("/api/v1/comment/{commentId}")
-    public ApiResponse deleteComment(@AuthenticationPrincipal User principal, @PathVariable Long commentId){
+    public ApiResponse<Object> deleteComment(@AuthenticationPrincipal User principal, @PathVariable Long commentId){
         // 로그인이 되어 있지 않으면 예외를 던진다.
         String id = Optional.ofNullable(principal).orElseThrow(
                 () -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();

@@ -1,8 +1,8 @@
 package com.study.totee.api.controller;
 
 import com.study.totee.api.dto.auth.SignupDto;
-import com.study.totee.api.model.UserEntity;
-import com.study.totee.api.model.UserInfoEntity;
+import com.study.totee.api.model.User;
+import com.study.totee.api.model.UserInfo;
 import com.study.totee.api.model.UserRefreshToken;
 import com.study.totee.api.dto.auth.AuthReqModel;
 import com.study.totee.api.persistence.UserRefreshTokenRepository;
@@ -50,40 +50,34 @@ public class AuthController {
     private final static long THREE_DAYS_MSEC = 259200000;
     private final static String REFRESH_TOKEN = "refresh_token";
 
-    @ApiOperation(value = "회원가입", notes = "서버 테스트용 삭제예정")
+    @ApiOperation(value = "회원가입", notes = "로컬 테스트용 삭제예정")
     @PostMapping("/auth/signup")
-    public ApiResponse registerUser(@RequestBody SignupDto signUpDTO){
+    public ApiResponse<Object> registerUser(@RequestBody SignupDto signUpDTO){
         // 요청을 이용해 저장할 사용자 만들기
-        LocalDateTime now = LocalDateTime.now();
 
-        UserEntity userEntity = UserEntity.builder()
-                .id(signUpDTO.getId())
-                .email(signUpDTO.getEmail())
-                .username(signUpDTO.getUsername())
-                .password(passwordEncoder.encode(signUpDTO.getPassword()))
+        User userEntity = User.builder()
+                .id("12345")
+                .email("12345")
+                .username("12345")
+                .password(passwordEncoder.encode("12345"))
                 .providerType(ProviderType.LOCAL)
                 .roleType(RoleType.USER)
                 .emailVerifiedYn("N")
-                .profileImageUrl("www")
-                .createdAt(now)
-                .modifiedAt(now)
+                .profileImageUrl("https://lh3.googleusercontent.com/a-/AOh14Gg_jYj1ka2KSZcYgcxXxasvl8_rytXHtszA-SzRwg=s96-c")
+                .createdAt(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
+                .userInfo(new UserInfo())
                 .build();
-
-        UserInfoEntity userInfoEntity = UserInfoEntity.builder()
-                .nickname(signUpDTO.getNickname())
-                .user(userEntity)
-                .build();
-
-        userEntity.setUserInfo(userInfoEntity);
 
         // 서비스를 이용해 리포지토리에 사용자 저장
-        userService.create(userEntity, userInfoEntity);
+        userEntity.getUserInfo().setUser(userEntity);
+        userService.create(userEntity);
 
         return ApiResponse.success("message" , "회원가입이 성공적으로 완료되었습니다.");
     }
 
     @PostMapping("/auth/login")
-    public ApiResponse login(
+    public ApiResponse<Object> login(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestBody AuthReqModel authReqModel
@@ -132,7 +126,7 @@ public class AuthController {
     }
 
     @GetMapping("/refresh")
-    public ApiResponse refreshToken (HttpServletRequest request, HttpServletResponse response) {
+    public ApiResponse<Object> refreshToken (HttpServletRequest request, HttpServletResponse response) {
         // access token 확인
         String accessToken = HeaderUtil.getAccessToken(request);
         AuthToken authToken = tokenProvider.convertAuthToken(accessToken);

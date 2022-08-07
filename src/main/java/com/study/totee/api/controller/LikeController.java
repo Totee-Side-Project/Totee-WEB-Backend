@@ -2,7 +2,7 @@ package com.study.totee.api.controller;
 
 import com.study.totee.api.dto.post.PostResponseDto;
 import com.study.totee.common.ApiResponse;
-import com.study.totee.api.model.PostEntity;
+import com.study.totee.api.model.Post;
 import com.study.totee.api.service.LikeService;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.NoAuthException;
@@ -30,7 +30,7 @@ public class LikeController {
 
     @ApiOperation(value = "좋아요!", notes = "이미 좋아요 되어있으면 좋아요는 취소됩니다.")
     @PostMapping("/api/v1/post/like/{postId}")
-    public ApiResponse like(@AuthenticationPrincipal User principal , @PathVariable Long postId){
+    public ApiResponse<Object> like(@AuthenticationPrincipal User principal , @PathVariable Long postId){
         // 로그인이 되어 있지 않으면 예외를 던진다.
         String id = Optional.ofNullable(principal).orElseThrow(()->
                 new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
@@ -39,25 +39,9 @@ public class LikeController {
         return ApiResponse.success("message","게시글에 좋아요를 눌렀습니다.");
     }
 
-    @ApiOperation(value = "좋아요한 글 리스트", notes = "로그인 한 유저의 좋아요 누른 글의 리스트를 조회합니다")
-    @GetMapping("/api/v1/post/like")
-    public ApiResponse myLikePost(@AuthenticationPrincipal User principal, @PageableDefault
-            (size = 16, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable){
-        Page<PostEntity> page = likeService.findAllByLikedPost(principal.getUsername(), pageable);
-
-        Page<PostResponseDto> map = page.map(post -> new PostResponseDto(post.getPostId(), post.getTitle(), post.getContent(),
-                post.getUser().getUserInfo().getNickname(), post.getView(), post.getLikeNum(), post.getCommentNum(),
-                null, post.getUser().getProfileImageUrl(), post.getCreatedAt(), post.getOnlineOrOffline(), post.getPeriod(),
-                post.getStatus(), post.getCategory().getCategoryName(), positionConverter.convertPositionEntityToString(post.getPositionList()), post.getRecruitNum(), post.getContactMethod(),
-                post.getContactLink(), post.getUser().getUserInfo().getPosition()));
-
-
-        return ApiResponse.success("data", map);
-    }
-
     @ApiOperation(value = "좋아요 여부", notes = "해당 포스트에 내가 '좋아요'를 눌렀는 지 확인합니다. 로그인이 안된 유저는 무조건 false를 반환합니다.")
     @GetMapping("/api/v1/post/isLike/{postId}")
-    public ApiResponse isLike(@AuthenticationPrincipal User principal, @PathVariable Long postId){
+    public ApiResponse<Object> isLike(@AuthenticationPrincipal User principal, @PathVariable Long postId){
         if (principal.getUsername() == null) {
             return ApiResponse.success("data", false);
         }

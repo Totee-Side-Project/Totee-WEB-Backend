@@ -1,6 +1,6 @@
 package com.study.totee.type;
 
-import com.study.totee.api.model.UserEntity;
+import com.study.totee.api.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -84,7 +84,7 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
         return null;
     }
 
-    public static UserPrincipal create(UserEntity user) {
+    public static UserPrincipal create(User user) {
         return new UserPrincipal(
                 user.getId(),
                 user.getPassword(),
@@ -94,7 +94,7 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
         );
     }
 
-    public static UserPrincipal create(UserEntity user, Map<String, Object> attributes) {
+    public static UserPrincipal create(User user, Map<String, Object> attributes) {
         UserPrincipal userPrincipal = create(user);
         userPrincipal.setAttributes(attributes);
 

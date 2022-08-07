@@ -14,23 +14,27 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Table(name = "TB_LIKE")
-public class LikeEntity {
+public class Like {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "LIKE_ID")
-    private Long likeId;
+    private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID", nullable = false)
-    @JsonIgnore
-    private PostEntity post;
+    private Post post;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
-    private UserEntity user;
+    private User user;
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp
     private LocalDateTime created_at;
+
+    public Like(User user, Post post) {
+        this.user = user;
+        this.post = post;
+    }
 }
