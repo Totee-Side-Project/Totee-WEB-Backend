@@ -1,6 +1,7 @@
-package com.study.totee.api.controller;
+package com.study.totee.healthCheck;
 
 import com.google.gson.Gson;
+import com.study.totee.api.controller.HealthCheckController;
 import com.study.totee.handler.RestApiExceptionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
