@@ -41,7 +41,7 @@ public class PostService {
     @Transactional
     public void save(String userId, PostRequestDto postRequestDto) throws IOException {
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
         Category category = Optional.ofNullable(categoryRepository.findByCategoryName(postRequestDto.getCategoryName())).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NOT_EXIST_CATEGORY_ERROR));
@@ -104,7 +104,7 @@ public class PostService {
     @Transactional
     public void update(String userId, PostRequestDto postRequestDto, Long postId) throws IOException {
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
         Category category = Optional.ofNullable(categoryRepository.findByCategoryName(postRequestDto.getCategoryName())).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.ALREADY_EXIST_CATEGORY_ERROR));
@@ -130,7 +130,7 @@ public class PostService {
     @Transactional
     public void delete(Long postId, String userId){
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
         Post post = Optional.ofNullable(postRepository.findByIdAndUser(postId, user)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
@@ -162,7 +162,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostResponseDto> findAllByUserId(String userId){
         Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
         return postRepository.findAllByUser_Id(userId).stream()
                 .map(PostResponseDto::new)
@@ -173,7 +173,7 @@ public class PostService {
     @Transactional
     public Page<PostResponseDto> findByPosition(String userId, Pageable pageable){
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
         return postRepository.findAllByPosition(user.getUserInfo().getPosition(), pageable).map(PostResponseDto::new);
     }
@@ -182,7 +182,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostResponseDto> findAllByLikedPost(String userId){
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
         return postRepository.findAllByLikedPost(user).stream()
                 .map(PostResponseDto::new)

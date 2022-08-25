@@ -31,7 +31,7 @@ public class LikeService {
     @Transactional
     public void like(String userId, Long postId){
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
         Post post = postRepository.findById(postId).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 

@@ -1,16 +1,14 @@
 package com.study.totee.api.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.study.totee.api.dto.user.UserInfoRequestDto;
+import com.study.totee.api.dto.user.UserInfoUpdateRequestDto;
 import com.study.totee.type.PositionType;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -62,4 +60,20 @@ public class UserInfo {
     @Column(name = "MODIFIED_AT")
     private LocalDateTime modifiedAt;
 
+    public void setUserInfo(UserInfoRequestDto userInfoRequestDto, String profileImageUrl) {
+        this.nickname = userInfoRequestDto.getNickname();
+        this.profileImageUrl = profileImageUrl;
+        this.position = userInfoRequestDto.getPosition();
+        this.intro = "";
+        this.backgroundImageUrl = null;
+    }
+
+    public void updateUserInfo(UserInfoUpdateRequestDto userInfoUpdateRequestDto,
+                               String profileImageUrl, String backgroundImageUrl) {
+        this.nickname = userInfoUpdateRequestDto.getNickname();
+        this.position = userInfoUpdateRequestDto.getPosition();
+        this.intro = userInfoUpdateRequestDto.getIntro();
+        this.profileImageUrl = profileImageUrl;
+        this.backgroundImageUrl = backgroundImageUrl;
+    }
 }

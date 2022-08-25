@@ -1,9 +1,11 @@
 package com.study.totee.api.dto.notification;
 
 
+import com.study.totee.api.dto.License;
 import com.study.totee.api.model.Notification;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class NotificationResponseDto {
+public class NotificationResponseDto extends RepresentationModel<NotificationResponseDto> {
 
     @ApiModelProperty(value = "알림 아이디")
     private Long notificationId;

@@ -4,15 +4,10 @@ import com.study.totee.api.dto.comment.CommentResponseDto;
 import com.study.totee.api.dto.post.PostRequestDto;
 import com.study.totee.api.dto.post.PostResponseDto;
 import com.study.totee.common.ApiResponse;
-import com.study.totee.api.model.Comment;
-import com.study.totee.api.model.Post;
-import com.study.totee.api.model.User;
 import com.study.totee.api.service.CommentService;
 import com.study.totee.api.service.PostService;
-import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.NoAuthException;
-import com.study.totee.utils.PositionConverter;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +19,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -44,7 +38,7 @@ public class PostController {
 
     @ApiOperation(value = "게시글 등록" , notes = "게시글을 등록합니다 (폼데이터 형식 필수)")
     @PostMapping("/api/v1/post")
-    public ApiResponse<Object> savePost(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @ModelAttribute @Valid @RequestBody PostRequestDto postRequestDto) throws IOException {
+    public ApiResponse<Object> createPost(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @ModelAttribute @Valid @RequestBody PostRequestDto postRequestDto) throws IOException {
         // 로그인 정보가 없으면 예외 발생
         String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
 
@@ -55,7 +49,7 @@ public class PostController {
 
     @ApiOperation(value = "게시글 업데이트", notes = "게시글을 수정합니다")
     @PutMapping("/api/v1/post/{postId}")
-    public ApiResponse<Object> postUpdate(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @RequestBody @ModelAttribute @Valid PostRequestDto postRequestDto, @PathVariable Long postId) throws IOException {
+    public ApiResponse<Object> updatePost(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @RequestBody @ModelAttribute @Valid PostRequestDto postRequestDto, @PathVariable Long postId) throws IOException {
         // 로그인 정보가 없으면 예외 발생
         String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
 
@@ -129,7 +123,7 @@ public class PostController {
             notes = "PostId로 상세보기\n" +
                     "api 주소에 PathVariable 주면 됩니다.")
     @GetMapping("/api/v1/post/{postId}")
-    public ApiResponse<Object> findByPostId(@PathVariable Long postId, HttpServletRequest request, HttpServletResponse response){
+    public ApiResponse<Object> getPost(@PathVariable Long postId, HttpServletRequest request, HttpServletResponse response){
 
         // 포스트에 속한 댓글과 답글을 불러와 Dto 에 담습니다.
         List<CommentResponseDto> commentDTOList = commentService.commentListByPostId(postId).stream().map(commentEntity ->

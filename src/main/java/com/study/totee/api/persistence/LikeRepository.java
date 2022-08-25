@@ -10,5 +10,4 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
     Like findByUser_IdAndPost_Id(String userId, Long postId);
-    Boolean existsByUser_IdAndPost_Id(String userId, Long postId);
 }

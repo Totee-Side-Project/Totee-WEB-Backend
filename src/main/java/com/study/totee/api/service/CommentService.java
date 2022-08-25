@@ -31,19 +31,21 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public void save(CommentRequestDto commentRequestDto, String userId){
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
         Post post = postRepository.findById(commentRequestDto.getPostId()).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
         Comment commentEntity = new Comment(user, post, commentRequestDto);
         post.addComment(commentEntity);
 
-        if (post.getUser().getId().equals(userId)) {
+        if (!post.getUser().getId().equals(userId)) {
             Notification notification = new Notification(post, user);
+            notificationService.send(post.getUser(), post, user.getUserInfo().getNickname() + " 님이 " + post.getContent() + " 게시글에 댓글을 남기셨습니다!");
             notificationRepository.save(notification);
         }
 
@@ -53,7 +55,7 @@ public class CommentService {
     @Transactional
     public void update(CommentRequestDto commentRequestDto, String userId, Long commentId){
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
         postRepository.findById(commentRequestDto.getPostId()).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
@@ -64,7 +66,7 @@ public class CommentService {
     @Transactional
     public void delete(Long commentId, String userId){
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
         Comment comment = Optional.ofNullable(commentRepository.findByIdAndUser(commentId, user)).
                 orElseThrow(()-> new BadRequestException(ErrorCode.NO_COMMENT_ERROR));
         Post post = postRepository.findById(comment.getPost().getId()).orElseThrow(

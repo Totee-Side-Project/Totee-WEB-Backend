@@ -27,13 +27,33 @@ public class UserInfoResponseDto {
     @ApiModelProperty(example = "배경 이미지")
     private String backgroundImageUrl;
 
-    public UserInfoResponseDto(UserInfo userInfo, User user){
+    public UserInfoResponseDto(User user){
         this.email = user.getEmail();
+        this.nickname = user.getUserInfo().getNickname();
+        this.position = user.getUserInfo().getPosition();
+        this.roleType = user.getRoleType();
+        this.intro = user.getUserInfo().getIntro();
+        this.profileImageUrl = user.getUserInfo().getProfileImageUrl();
+        this.backgroundImageUrl = user.getUserInfo().getBackgroundImageUrl();
+    }
+
+    public UserInfoResponseDto(UserInfo userInfo){
         this.nickname = userInfo.getNickname();
         this.position = userInfo.getPosition();
-        this.roleType = user.getRoleType();
         this.intro = userInfo.getIntro();
         this.profileImageUrl = userInfo.getProfileImageUrl();
         this.backgroundImageUrl = userInfo.getBackgroundImageUrl();
+//        this.roleType = userInfo.getUser().getRoleType();
+//        this.email = userInfo.getUser().getEmail();
+    }
+
+    public UserInfoResponseDto(UserInfo userInfo, User user){
+        this.nickname = userInfo.getNickname();
+        this.position = userInfo.getPosition();
+        this.intro = userInfo.getIntro();
+        this.profileImageUrl = userInfo.getProfileImageUrl();
+        this.backgroundImageUrl = userInfo.getBackgroundImageUrl();
+        this.roleType = user.getRoleType();
+        this.email = user.getEmail();
     }
 }

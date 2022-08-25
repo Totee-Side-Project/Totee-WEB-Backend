@@ -23,6 +23,9 @@ public class Notification {
     @Column(name = "CONTENT")
     private String content;
 
+    @Column(name = "URL")
+    private String url;
+
     @Column(name = "IS_READ")
     private String isRead;
 

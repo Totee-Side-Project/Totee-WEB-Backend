@@ -2,6 +2,7 @@ package com.study.totee.cateogory;
 
 import com.study.totee.api.dto.category.CategoryRequestDto;
 import com.study.totee.api.dto.category.CategoryResponseDto;
+import com.study.totee.api.dto.category.CategoryUpdateRequestDto;
 import com.study.totee.api.model.Category;
 import com.study.totee.api.persistence.CategoryQueryRepository;
 import com.study.totee.api.persistence.CategoryRepository;
@@ -15,8 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
-import static com.study.totee.api.util.EntityFactory.categoryRequestDto;
+import static com.study.totee.util.EntityFactory.categoryRequestDto;
+import static com.study.totee.util.EntityFactory.categoryUpdateRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,98 +57,99 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void 카테고리등록실패_중복이름() throws IOException {
+    public void 카테고리등록실패_중복이름(){
         // given
         CategoryRequestDto dto = categoryRequestDto(1);
-        given(categoryQueryRepository.findByCategoryName("프로젝트1")).willReturn(any(Category.class));
+        given(categoryQueryRepository.findByCategoryName(dto.getCategoryName())).willReturn(new Category());
 
         // when
         final BadRequestException result = assertThrows(BadRequestException.class, () -> target.save(dto));
 
         // then
         assertThat(result.getMessage()).isEqualTo(ErrorCode.ALREADY_EXIST_CATEGORY_ERROR.getMessage());
-
-        //verify
-        verify(categoryRepository, times(1)).save(any(Category.class));
     }
-//
-//    @Test
-//    public void 카테고리등록실패_이미존재(){
-//        // given
-//        doReturn(Category.builder().build()).when(categoryRepository).findByCategoryName("TEST");
-//        CategoryRequestDto dto = CategoryRequestDto.builder().categoryName("TEST").build();
-//
-//        // when
-//        final BadRequestException result = assertThrows(BadRequestException.class, () -> target.save(dto));
-//
-//        // then
-//        assertThat(result.getMessage()).isEqualTo(ErrorCode.ALREADY_EXIST_CATEGORY_ERROR.getMessage());
-//    }
-//
-//    @Test
-//    public void 카테고리목록조회() {
-//        // given
-//        doReturn(Arrays.asList(
-//                category(),
-//                category(),
-//                category()
-//        )).when(categoryRepository).findAll();
-//
-//        // when
-//        final List<CategoryResponseDto> result = target.categoryResponseDtoList();
-//
-//        // then
-//        assertThat(result.size()).isEqualTo(3);
-//    }
-//
-//    @Test
-//    public void 카테고리삭제실패_존재하지않음(){
-//        // given
-//        lenient().doReturn(null).when(categoryRepository).findByCategoryName("categoryName");
-//        CategoryRequestDto dto = CategoryRequestDto.builder().categoryName("TEST").build();
-//
-//        // when
-//        final BadRequestException result = assertThrows(BadRequestException.class, () -> target.delete(dto));
-//
-//        // then
-//        assertThat(result.getMessage()).isEqualTo(ErrorCode.NOT_EXIST_CATEGORY_ERROR.getMessage());
-//    }
-//
-//
-//
-//    @Test
-//    public void 카테고리삭제성공() {
-//        // given
-//        final Category categoryEntity = category();
-//        doReturn(categoryEntity).when(categoryRepository).findByCategoryName("TEST");
-//
-//        // when
-//        target.delete(CategoryRequestDto.builder().categoryName("TEST").build());
-//    }
-//
-//    @Test
-//    public void 카테고리수정실패_존재하지않음() {
-//        // given
-//        CategoryUpdateDto dto = CategoryUpdateDto.builder().categoryName("TEST").newCategoryName("TEST").build();
-//
-//        // when
-//        final BadRequestException result = assertThrows(BadRequestException.class, () -> target.update(dto));
-//
-//        // then
-//        assertThat(result.getMessage()).isEqualTo(ErrorCode.NOT_EXIST_CATEGORY_ERROR.getMessage());
-//
-//    }
-//
-//    @Test
-//    public void 카테고리수정실패_같은이름으로변경() {
-//        // given
-//        final Category categoryEntity = category();
-//        doReturn(categoryEntity).when(categoryRepository).findByCategoryName("TEST");
-//        CategoryUpdateDto dto = CategoryUpdateDto.builder().categoryName("TEST").newCategoryName("TEST").build();
-//        // when
-//        final BadRequestException result = assertThrows(BadRequestException.class, () -> target.update(dto));
-//
-//        // then
-//        assertThat(result.getMessage()).isEqualTo(ErrorCode.BAD_REQUEST_ERROR.getMessage());
-//    }
+
+    @Test
+    public void 카테고리목록조회성공() {
+
+        // given
+        List<Category> categories = Arrays.asList(new Category(), new Category(), new Category());
+        given(categoryQueryRepository.findAll()).willReturn(categories);
+
+        // when
+        final List<CategoryResponseDto> result = target.categoryResponseDtoList();
+
+        // then
+        assertThat(result.size()).isEqualTo(3);
+    }
+
+    @Test
+    public void 카테고리수정실패_존재하지않음(){
+        // given
+        CategoryUpdateRequestDto dto = categoryUpdateRequestDto(1);
+        given(categoryQueryRepository.findByCategoryName(dto.getCategoryName())).willReturn(null);
+
+        // when
+        final BadRequestException result = assertThrows(BadRequestException.class, () -> target.update(dto));
+
+        // then
+        assertThat(result.getMessage()).isEqualTo(ErrorCode.NOT_EXIST_CATEGORY_ERROR.getMessage());
+    }
+
+    @Test
+    public void 카테고리수정실패_중복이름(){
+        // given
+        CategoryRequestDto dto1 = categoryRequestDto(1);
+        CategoryUpdateRequestDto dto2 = CategoryUpdateRequestDto.builder().categoryName("프로젝트1")
+                        .newCategoryName("프로젝트1").build();
+        given(categoryQueryRepository.findByCategoryName(dto2.getNewCategoryName())).willReturn(new Category(dto1));
+
+        // when
+        final BadRequestException result = assertThrows(BadRequestException.class, () -> target.update(dto2));
+
+        // then
+        assertThat(result.getMessage()).isEqualTo(ErrorCode.ALREADY_EXIST_CATEGORY_ERROR.getMessage());
+    }
+
+    @Test
+    public void 카테고리수정성공() throws IOException {
+        // given
+        CategoryRequestDto requestDto = categoryRequestDto(1);
+        CategoryUpdateRequestDto updateRequestDto = categoryUpdateRequestDto(1);
+        given(categoryQueryRepository.findByCategoryName(any(String.class))).willReturn(new Category(requestDto));
+
+        // when
+        CategoryResponseDto result = target.update(updateRequestDto);
+
+        // then
+        assertThat(result.getCategoryName()).isEqualTo("프로젝트1수정");
+
+        // verify
+        verify(categoryQueryRepository, times(1)).findByCategoryName(updateRequestDto.getCategoryName());
+    }
+
+    @Test
+    public void 카테고리삭제실패_존재하지않음() {
+        // given
+        CategoryRequestDto dto = categoryRequestDto(1);
+        given(categoryQueryRepository.findByCategoryName(dto.getCategoryName())).willReturn(null);
+
+        // when
+        final BadRequestException result = assertThrows(BadRequestException.class, () -> target.delete(dto));
+
+        // then
+        assertThat(result.getMessage()).isEqualTo(ErrorCode.NOT_EXIST_CATEGORY_ERROR.getMessage());
+    }
+
+    @Test
+    public void 카테고리삭제성공(){
+        // given
+        CategoryRequestDto dto = categoryRequestDto(1);
+        given(categoryQueryRepository.findByCategoryName(dto.getCategoryName())).willReturn(new Category(dto));
+        // when
+        target.delete(dto);
+        // then
+        verify(categoryRepository, times(1)).delete(any(Category.class));
+        verify(categoryQueryRepository, times(1)).findByCategoryName(dto.getCategoryName());
+    }
 }

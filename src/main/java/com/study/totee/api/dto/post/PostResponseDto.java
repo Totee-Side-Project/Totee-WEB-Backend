@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @Getter
 @NoArgsConstructor
-public class PostResponseDto {
+public class PostResponseDto  {
 
     @ApiModelProperty(example = "포스트번호")
     private Long postId;
