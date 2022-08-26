@@ -5,6 +5,7 @@ import com.study.totee.api.dto.user.UserInfoRequestDto;
 import com.study.totee.api.dto.user.UserInfoResponseDto;
 import com.study.totee.api.dto.user.UserInfoUpdateRequestDto;
 import com.study.totee.api.model.User;
+import com.study.totee.api.service.NotificationService;
 import com.study.totee.common.ApiResponse;
 import com.study.totee.api.model.UserInfo;
 import com.study.totee.api.service.UserService;
@@ -21,22 +22,23 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final NotificationService notificationService;
 
     @ApiOperation(value = "로그인한 유저 정보" , notes = "유저 관련 정보를 확인합니다.")
     @GetMapping("/api/v1/info")
-    public ApiResponse<Object> getUserInfo(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-
+    public ApiResponse<Object> getUserInfo(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
+                                           @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
         String id = Optional.ofNullable(principal).orElseThrow(() ->
                 new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
-
         User user = userService.getUser(id);
-        UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(user.getUserInfo(), user);
-
+        notificationService.subscribe(user.getId(), lastEventId);
+        UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(user);
         return ApiResponse.success("data", userInfoResponseDto);
     }
 
@@ -47,7 +49,7 @@ public class UserController {
         String id = Optional.ofNullable(principal).orElseThrow(()->
                 new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
 
-        userService.createUserInfo(id, userInfoRequestDto);
+        userService.setUserInfo(id, userInfoRequestDto);
         return ApiResponse.success("data", "SUCCESS");
     }
 
@@ -71,7 +73,7 @@ public class UserController {
         // 닉네임 길이와 중복확인
         if(nicknameRequestDto.getNickname().length() < 2 || nicknameRequestDto.getNickname().length() > 5){
             throw new BadRequestException(ErrorCode.INVALID_INPUT_ERROR);
-        } else if (userService.isNicknameDuplicate(nicknameRequestDto.getNickname())) {
+        } else if (userService.existsByNickname(nicknameRequestDto.getNickname())) {
             throw new BadRequestException(ErrorCode.ALREADY_EXIST_NICKNAME_ERROR);
         }
 
@@ -83,8 +85,8 @@ public class UserController {
     public ApiResponse<Object> getUserInfoByNickname(@PathVariable String nickname) {
 
         User user = Optional.ofNullable(userService.getUserByNickname(nickname)).orElseThrow(()->
-                new BadRequestException(ErrorCode.NO_USER_ERROR));
-        UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(user.getUserInfo(), user);
+                new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
+        UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(user);
 
         return ApiResponse.success("data", userInfoResponseDto);
     }

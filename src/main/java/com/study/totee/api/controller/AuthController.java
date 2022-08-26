@@ -56,21 +56,19 @@ public class AuthController {
         // 요청을 이용해 저장할 사용자 만들기
 
         User userEntity = User.builder()
-                .id("12345")
-                .email("12345")
-                .username("12345")
-                .password(passwordEncoder.encode("12345"))
+                .id("1234")
+                .email("1234")
+                .username("1234")
+                .password(passwordEncoder.encode("1234"))
                 .providerType(ProviderType.LOCAL)
                 .roleType(RoleType.USER)
                 .emailVerifiedYn("N")
                 .profileImageUrl("https://lh3.googleusercontent.com/a-/AOh14Gg_jYj1ka2KSZcYgcxXxasvl8_rytXHtszA-SzRwg=s96-c")
                 .createdAt(LocalDateTime.now())
                 .modifiedAt(LocalDateTime.now())
-                .userInfo(new UserInfo())
                 .build();
 
         // 서비스를 이용해 리포지토리에 사용자 저장
-        userEntity.getUserInfo().setUser(userEntity);
         userService.create(userEntity);
 
         return ApiResponse.success("message" , "회원가입이 성공적으로 완료되었습니다.");

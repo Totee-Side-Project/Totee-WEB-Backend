@@ -27,7 +27,7 @@ public class ReplyService {
     @Transactional
     public void save(ReplyRequestDto replyRequestDto, String userId) {
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                () -> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                () -> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
         Comment comment = commentRepository.findById(replyRequestDto.getCommentId())
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NO_COMMENT_ERROR));
@@ -49,7 +49,7 @@ public class ReplyService {
     @Transactional
     public void update(ReplyRequestDto replyRequestDto, String userId, Long replyId) {
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                () -> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                () -> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
         Comment comment = commentRepository.findById(replyRequestDto.getCommentId())
                 .orElseThrow(() -> new BadRequestException(ErrorCode.NO_COMMENT_ERROR));
@@ -66,7 +66,7 @@ public class ReplyService {
     @Transactional
     public void delete(Long replyId, String userId){
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
-                () -> new BadRequestException(ErrorCode.NO_USER_ERROR));
+                () -> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
         Reply reply = Optional.ofNullable(replyRepository.findByIdAndUser(replyId, user)).orElseThrow(
                 () -> new BadRequestException(ErrorCode.NO_REPLY_ERROR));

@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-    NO_USER_ERROR("존재하지 않는 유저입니다."),
+    NOT_EXIST_USER_ERROR("존재하지 않는 유저입니다."),
     NOT_EXIST_CATEGORY_ERROR("존재하지 않는 카테고리입니다."),
     NO_AUTHENTICATION_ERROR("로그인이 필요한 서비스입니다."),
     INVALID_POSITION_TYPE_ERROR("존재하지 않는 Position Type 입니다."),

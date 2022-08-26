@@ -2,6 +2,7 @@ package com.study.totee.api.service;
 
 import com.study.totee.api.model.User;
 import com.study.totee.api.model.UserInfo;
+import com.study.totee.api.persistence.UserInfoRepository;
 import com.study.totee.api.persistence.UserRepository;
 import com.study.totee.type.ProviderType;
 import com.study.totee.type.RoleType;
@@ -26,6 +27,7 @@ import org.springframework.security.core.AuthenticationException;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+    private final UserInfoRepository userInfoRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -76,9 +78,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 LocalDateTime.now(),
                 new UserInfo()
         );
-
-        UserInfo userInfoEntity = user.getUserInfo();
-        userInfoEntity.setUser(user);
+        user.getUserInfo().setUser(user);
 
         return userRepository.saveAndFlush(user);
     }

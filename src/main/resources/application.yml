@@ -1,3 +1,19 @@
+# Health Check
+management:
+  endpoints:
+    web:
+      base-path: "/"
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+  health:
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
+
 vapid:
   public:
     key: 'BFgwklomAULsbnwTPW7KBoVDlldEe1pxRqEXG8wAFxsgAg8ztXm6Q2O2LLUhgvKhfBCpxZZ7J5JWccEvzuoudE4'

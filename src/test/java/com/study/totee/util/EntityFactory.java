@@ -1,6 +1,10 @@
-package com.study.totee.api.util;
+package com.study.totee.util;
 
 import com.study.totee.api.dto.category.CategoryRequestDto;
+import com.study.totee.api.dto.category.CategoryResponseDto;
+import com.study.totee.api.dto.category.CategoryUpdateRequestDto;
+import com.study.totee.api.dto.user.UserInfoRequestDto;
+import com.study.totee.api.dto.user.UserInfoUpdateRequestDto;
 import com.study.totee.api.model.*;
 import com.study.totee.type.PeriodType;
 import com.study.totee.type.PositionType;
@@ -16,6 +20,27 @@ public class EntityFactory {
     public static CategoryRequestDto categoryRequestDto(int idx) {
         return CategoryRequestDto.builder()
                 .categoryName("프로젝트" + idx)
+                .build();
+    }
+
+    public static CategoryUpdateRequestDto categoryUpdateRequestDto(int idx) {
+        return CategoryUpdateRequestDto.builder()
+                .categoryName("프로젝트" + idx)
+                .newCategoryName("프로젝트" + idx + "수정")
+                .build();
+    }
+
+    public static UserInfoRequestDto userInfoRequestDto(int idx) {
+        return UserInfoRequestDto.builder()
+                .nickname("user" + idx)
+                .position(PositionType.FRONT_END)
+                .build();
+    }
+
+    public static UserInfoUpdateRequestDto userInfoUpdateRequestDto(int idx) {
+        return UserInfoUpdateRequestDto.builder()
+                .nickname("user" + idx + "수정")
+                .position(PositionType.FRONT_END)
                 .build();
     }
 

@@ -1,4 +1,4 @@
-package com.study.totee.cateogory;
+package com.study.totee.util;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.boot.test.context.TestConfiguration;

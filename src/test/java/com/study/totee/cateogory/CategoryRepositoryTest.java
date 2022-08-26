@@ -1,22 +1,18 @@
 package com.study.totee.cateogory;
 
-import com.study.totee.api.dto.category.CategoryRequestDto;
 import com.study.totee.api.model.Category;
 import com.study.totee.api.persistence.CategoryRepository;
-import com.study.totee.api.util.EntityFactory;
 import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 
-import static com.study.totee.api.util.EntityFactory.categoryRequestDto;
+import javax.persistence.EntityManager;
+
+import static com.study.totee.util.EntityFactory.categoryRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -26,6 +22,9 @@ public class CategoryRepositoryTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Test
     @Order(1)
@@ -83,5 +82,14 @@ public class CategoryRepositoryTest {
         // then
         assertThat(categoryRepository.findAll().size()).isEqualTo(0);
     }
-}
 
+    @Test
+    @Order(5)
+    @Rollback(false)
+    public void 초기화(){
+        categoryRepository.deleteAll();
+
+        entityManager.createNativeQuery("ALTER TABLE tb_category ALTER COLUMN `category_id` RESTART WITH 1")
+                .executeUpdate();
+    }
+}

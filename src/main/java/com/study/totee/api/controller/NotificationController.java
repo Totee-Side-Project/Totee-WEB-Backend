@@ -1,17 +1,26 @@
 package com.study.totee.api.controller;
 
+import com.study.totee.api.dto.notification.NotificationResponseDto;
 import com.study.totee.api.service.NotificationService;
 import com.study.totee.common.ApiResponse;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.NoAuthException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,8 +32,14 @@ public class NotificationController {
     @GetMapping("/api/v1/notification")
     public ApiResponse<Object> getNotificationList(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+        List<EntityModel<NotificationResponseDto>> notifications = notificationService.notificationDtoList(id).stream()
+                .map(notification -> EntityModel.of(notification,
+                        linkTo(methodOn(NotificationController.class).readNotification(principal, notification.getNotificationId())).withRel("read"),
+                        linkTo(methodOn(NotificationController.class).deleteNotification(principal, notification.getNotificationId())).withRel("delete"),
+                        linkTo(methodOn(PostController.class).getPost(notification.getPostId(), null, null)).withRel("post")))
+                .collect(Collectors.toList());
 
-        return ApiResponse.success("data", notificationService.notificationDtoList(id));
+        return ApiResponse.success("data", notifications);
     }
 
     @ApiOperation(value = "알림 읽음 처리", notes = "알림을 읽음 처리합니다.")
@@ -41,5 +56,14 @@ public class NotificationController {
         String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
 
         return ResponseEntity.status(HttpStatus.OK).body(notificationService.deleteNotification(id, notificationId));
+    }
+
+    /**
+     * @title 로그인 한 유저 sse 연결
+     */
+    @GetMapping(value = "/subscribe/{id}", produces = "text/event-stream")
+    public SseEmitter subscribe(@PathVariable String id,
+                                @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+        return notificationService.subscribe(id, lastEventId);
     }
 }

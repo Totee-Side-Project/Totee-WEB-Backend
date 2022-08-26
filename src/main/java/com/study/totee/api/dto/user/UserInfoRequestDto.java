@@ -20,4 +20,11 @@ public class UserInfoRequestDto {
 
     @ApiModelProperty(example = "유저 프로필 이미지")
     private MultipartFile profileImage;
+
+    @Builder
+    public UserInfoRequestDto(String nickname, PositionType position, MultipartFile profileImage) {
+        this.nickname = nickname;
+        this.position = position;
+        this.profileImage = null;
+    }
 }
