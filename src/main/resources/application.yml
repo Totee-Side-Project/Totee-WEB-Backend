@@ -41,7 +41,12 @@ secrets:
   AWS_ACCESS_KEY_ID: AKIA6FQGGONZNCGZLYDD
   AWS_SECRET_ACCESS_KEY: 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
 
-logging.level.com.amazonaws.util.EC2MetadataUtils: error
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
 
 cloud:
   aws:
@@ -62,8 +67,8 @@ spring:
     active: local
   # 데이터 소스 설정
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/toteedb?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://127.0.0.1:3306/toteedb?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
     username: 'root'
     password: '%rnjs6078'
     hikari:
@@ -153,7 +158,7 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:mysql://${rds.hostname}:${rds.port}/${rds.db.name}?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://${rds.hostname}:${rds.port}/${rds.db.name}?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
     username: ${rds.username}
     password: ${rds.password}
   security:
