@@ -14,7 +14,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import java.util.Locale;
 
 
-//@ComponentScan({ "com.study.totee.*"})
+@ComponentScan({ "com.study.totee.*"})
 @EnableConfigurationProperties(AppProperties.class)
 @EnableWebSecurity
 @SpringBootApplication

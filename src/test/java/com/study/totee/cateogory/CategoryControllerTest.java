@@ -9,6 +9,7 @@ import com.study.totee.api.model.Category;
 import com.study.totee.api.service.CategoryService;
 import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
+import com.study.totee.handler.RestApiExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
