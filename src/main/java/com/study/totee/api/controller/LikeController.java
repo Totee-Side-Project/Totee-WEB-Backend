@@ -42,8 +42,8 @@ public class LikeController {
     @ApiOperation(value = "좋아요 여부", notes = "해당 포스트에 내가 '좋아요'를 눌렀는 지 확인합니다. 로그인이 안된 유저는 무조건 false를 반환합니다.")
     @GetMapping("/api/v1/post/isLike/{postId}")
     public ApiResponse<Object> isLike(@AuthenticationPrincipal User principal, @PathVariable Long postId){
-        if (principal.getUsername() == null) {
-            return ApiResponse.success("data", false);
+        if (principal == null) {
+            return ApiResponse.success("data", "");
         }
         boolean isLike = likeService.isLike(principal.getUsername(), postId);
         return ApiResponse.success("data", isLike);

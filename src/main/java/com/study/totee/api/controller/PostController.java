@@ -90,7 +90,9 @@ public class PostController {
     @ApiOperation(value = "추천 게시물 목록 불러오기", notes = "로그인한 유저의 포지션과 등록된 게시글의 모집분야가 같은 글을 조회합니다.")
     @GetMapping("/api/v1/post/recommend")
     public ApiResponse<Object> findPostRecommend(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
-        // 로그인 안한 유저도 추천 게시물 이외의 다른 게시물을 불러와야하기에 예외처리를 하지 않습니다.
+        if(principal == null){
+            return ApiResponse.success("data", postService.findPostAll(pageable));
+        }
         Page<PostResponseDto> page = postService.findByPosition(principal.getUsername(), pageable);
 
         return ApiResponse.success("data", page);
