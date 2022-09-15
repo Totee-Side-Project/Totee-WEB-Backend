@@ -28,16 +28,13 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
-    private final NotificationService notificationService;
 
     @ApiOperation(value = "로그인한 유저 정보" , notes = "유저 관련 정보를 확인합니다.")
     @GetMapping("/api/v1/info")
-    public ApiResponse<Object> getUserInfo(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal,
-                                           @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+    public ApiResponse<Object> getUserInfo(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         String id = Optional.ofNullable(principal).orElseThrow(() ->
                 new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
         User user = userService.getUser(id);
-        notificationService.subscribe(user.getId(), lastEventId);
         UserInfoResponseDto userInfoResponseDto = new UserInfoResponseDto(user);
         return ApiResponse.success("data", userInfoResponseDto);
     }

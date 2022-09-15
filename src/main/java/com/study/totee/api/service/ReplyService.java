@@ -9,9 +9,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.study.totee.api.controller.NotificationController.sseEmitters;
 
 @Slf4j
 @Service
@@ -41,6 +44,19 @@ public class ReplyService {
         if(!comment.getUser().getId().equals(userId)) {
             Notification notification = new Notification(comment, user);
             notificationRepository.save(notification);
+
+            if (!comment.getUser().getId().equals(userId)) {
+                if (sseEmitters.containsKey(comment.getUser().getId())) {
+                    SseEmitter sseEmitter = sseEmitters.get(comment.getUser().getId());
+                    try {
+                        sseEmitter.send(SseEmitter.event().name("see")
+                                .data(user.getUserInfo().getNickname() + " 님이 " +
+                                        comment.getContent() + " 댓글에 답글을 남기셨습니다!"));
+                    } catch (Exception e) {
+                        sseEmitters.remove(user.getUserInfo().getNickname());
+                    }
+                }
+            }
         }
 
         replyRepository.save(replyEntity);

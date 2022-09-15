@@ -30,6 +30,7 @@ public class CookieUtil {
         cookie.setMaxAge(maxAge);
 
         response.addCookie(cookie);
+        response.addHeader(name, value + "; Secure; SameSite=None");
     }
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
@@ -42,6 +43,7 @@ public class CookieUtil {
                     cookie.setPath("/");
                     cookie.setMaxAge(0);
                     response.addCookie(cookie);
+                    response.addHeader(name, cookie.getValue() + "; Secure; SameSite=None");
                 }
             }
         }
