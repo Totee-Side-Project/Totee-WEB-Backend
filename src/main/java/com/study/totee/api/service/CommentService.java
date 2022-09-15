@@ -17,10 +17,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.study.totee.api.controller.NotificationController.sseEmitters;
 
 @Slf4j
 @Service
@@ -45,10 +48,19 @@ public class CommentService {
 
         if (!post.getUser().getId().equals(userId)) {
             Notification notification = new Notification(post, user);
-            notificationService.send(post.getUser(), post, user.getUserInfo().getNickname() + " 님이 " + post.getContent() + " 게시글에 댓글을 남기셨습니다!");
             notificationRepository.save(notification);
-        }
 
+            if (sseEmitters.containsKey(post.getUser().getId())) {
+                SseEmitter sseEmitter = sseEmitters.get(post.getUser().getId());
+                try {
+                    sseEmitter.send(SseEmitter.event().name("see")
+                            .data(user.getUserInfo().getNickname() + " 님이 " +
+                                    post.getContent() + " 게시글에 댓글을 남기셨습니다!"));
+                } catch (Exception e) {
+                    sseEmitters.remove(user.getUserInfo().getNickname());
+                }
+            }
+        }
         commentRepository.save(commentEntity);
     }
 
