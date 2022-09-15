@@ -30,7 +30,7 @@ public class CookieUtil {
         cookie.setMaxAge(maxAge);
 
         response.addCookie(cookie);
-        response.addHeader(name, value + "; Secure; SameSite=None");
+        response.setHeader(name, value + "; Secure; SameSite=None");
     }
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
