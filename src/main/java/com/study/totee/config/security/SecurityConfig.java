@@ -3,6 +3,7 @@ package com.study.totee.config.security;
 import com.study.totee.api.persistence.UserRefreshTokenRepository;
 import com.study.totee.config.properties.AppProperties;
 import com.study.totee.exption.RestAuthenticationEntryPoint;
+import com.study.totee.filter.CookieAttributeFilter;
 import com.study.totee.filter.TokenAuthenticationFilter;
 import com.study.totee.handler.OAuth2AuthenticationFailureHandler;
 import com.study.totee.handler.OAuth2AuthenticationSuccessHandler;
@@ -24,6 +25,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
@@ -86,7 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .successHandler(oAuth2AuthenticationSuccessHandler())
                 .failureHandler(oAuth2AuthenticationFailureHandler());
-
+        http.addFilterAfter(new CookieAttributeFilter(), BasicAuthenticationFilter.class);
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
