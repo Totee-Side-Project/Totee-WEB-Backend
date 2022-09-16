@@ -49,7 +49,7 @@ public class ReplyService {
                 if (sseEmitters.containsKey(comment.getUser().getId())) {
                     SseEmitter sseEmitter = sseEmitters.get(comment.getUser().getId());
                     try {
-                        sseEmitter.send(SseEmitter.event().name("see")
+                        sseEmitter.send(SseEmitter.event().name("sse")
                                 .data(user.getUserInfo().getNickname() + " 님이 " +
                                         comment.getContent() + " 댓글에 답글을 남기셨습니다!"));
                     } catch (Exception e) {

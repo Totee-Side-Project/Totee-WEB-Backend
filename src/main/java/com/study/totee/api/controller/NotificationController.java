@@ -9,6 +9,7 @@ import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.NoAuthException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +31,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationController {
 
     private final NotificationService notificationService;
@@ -69,8 +71,10 @@ public class NotificationController {
     /**
      * @title 로그인 한 유저 sse 연결
      */
-    @GetMapping(value = "/subscribe", consumes = MediaType.ALL_VALUE)
-    public SseEmitter subscribe(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+    @GetMapping(value = "/subscribe/{id}", consumes = MediaType.ALL_VALUE)
+    public SseEmitter subscribe(@PathVariable String id) {
+        log.info("id : {}", id);
+        User user = userService.getUserByNickname(id);
         // 현재 클라이언트를 위한 SseEmitter 생성
         SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);
         try {
@@ -81,11 +85,11 @@ public class NotificationController {
         }
 
         // user의 고유 아이디값을 key값으로 해서 SseEmitter를 저장
-        sseEmitters.put(principal.getUsername(), sseEmitter);
+        sseEmitters.put(user.getId(), sseEmitter);
 
-        sseEmitter.onCompletion(() -> sseEmitters.remove(principal.getUsername()));
-        sseEmitter.onTimeout(() -> sseEmitters.remove(principal.getUsername()));
-        sseEmitter.onError((e) -> sseEmitters.remove(principal.getUsername()));
+        sseEmitter.onCompletion(() -> sseEmitters.remove(user.getId()));
+        sseEmitter.onTimeout(() -> sseEmitters.remove(user.getId()));
+        sseEmitter.onError((e) -> sseEmitters.remove(user.getId()));
 
         return sseEmitter;
     }

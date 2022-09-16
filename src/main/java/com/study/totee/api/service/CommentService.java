@@ -49,11 +49,10 @@ public class CommentService {
         if (!post.getUser().getId().equals(userId)) {
             Notification notification = new Notification(post, user);
             notificationRepository.save(notification);
-
             if (sseEmitters.containsKey(post.getUser().getId())) {
                 SseEmitter sseEmitter = sseEmitters.get(post.getUser().getId());
                 try {
-                    sseEmitter.send(SseEmitter.event().name("see")
+                    sseEmitter.send(SseEmitter.event().name("sse")
                             .data(user.getUserInfo().getNickname() + " 님이 " +
                                     post.getContent() + " 게시글에 댓글을 남기셨습니다!"));
                 } catch (Exception e) {
