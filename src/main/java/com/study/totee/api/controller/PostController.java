@@ -79,7 +79,7 @@ public class PostController {
     }
 
     @ApiOperation(value = "게시물 제목 검색합니다.", notes = "제목에 해당하는 게시글을 조회합니다. 빈 검색어 보내면 안됩니다")
-    @GetMapping("/api/v1/post/search/{title}")
+    @GetMapping("/api/v2/post/search/{title}")
     public ApiResponse<Object> findPostAllByTitle(@PathVariable String title, @PageableDefault
             (size = 16, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
         Page<PostResponseDto> page = postService.searchTitle(title, pageable);
