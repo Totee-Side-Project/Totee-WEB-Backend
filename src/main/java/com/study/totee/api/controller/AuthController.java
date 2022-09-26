@@ -56,10 +56,10 @@ public class AuthController {
         // 요청을 이용해 저장할 사용자 만들기
 
         User userEntity = User.builder()
-                .id("123")
-                .email("123")
-                .username("123")
-                .password(passwordEncoder.encode("123"))
+                .id("1234")
+                .email("1234")
+                .username("1234")
+                .password(passwordEncoder.encode("1234"))
                 .providerType(ProviderType.LOCAL)
                 .roleType(RoleType.USER)
                 .emailVerifiedYn("N")
@@ -116,7 +116,13 @@ public class AuthController {
 
         int cookieMaxAge = (int) refreshTokenExpiry / 60;
         CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
-        CookieUtil.addCookie(response, REFRESH_TOKEN, refreshToken.getToken(), cookieMaxAge);
+        Cookie cookie = new Cookie(REFRESH_TOKEN, refreshToken.getToken());
+        cookie.setPath("/oauth2/callback");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(cookieMaxAge);
+
+        response.addCookie(cookie);
+        response.addHeader("Set-Cookie", REFRESH_TOKEN + "=" + refreshToken.getToken() + "; Secure; SameSite=None");
 
         return ApiResponse.success("token", accessToken.getToken());
     }
@@ -179,7 +185,13 @@ public class AuthController {
 
             int cookieMaxAge = (int) refreshTokenExpiry / 60;
             CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
-            CookieUtil.addCookie(response, REFRESH_TOKEN, authRefreshToken.getToken(), cookieMaxAge);
+            Cookie cookie = new Cookie(REFRESH_TOKEN, authRefreshToken.getToken());
+            cookie.setPath("/oauth2/callback");
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(cookieMaxAge);
+
+            response.addCookie(cookie);
+            response.addHeader("Set-Cookie", REFRESH_TOKEN + "=" + authRefreshToken.getToken() + "; Secure; SameSite=None");
         }
 
         return ApiResponse.success("token", newAccessToken.getToken());
