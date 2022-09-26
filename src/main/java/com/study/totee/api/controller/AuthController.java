@@ -21,6 +21,7 @@ import io.jsonwebtoken.Claims;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -115,14 +116,15 @@ public class AuthController {
         }
 
         int cookieMaxAge = (int) refreshTokenExpiry / 60;
-        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
-        Cookie cookie = new Cookie(REFRESH_TOKEN, refreshToken.getToken());
-        cookie.setPath("/oauth2/callback");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(cookieMaxAge);
 
-        response.addCookie(cookie);
-        response.addHeader("Set-Cookie", REFRESH_TOKEN + "=" + refreshToken.getToken() + "; Secure; SameSite=None");
+        ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN, refreshToken.getToken())
+                .sameSite("None")
+                .maxAge(cookieMaxAge)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .build();
+        response.setHeader("Set-Cookie", cookie.toString());
 
         return ApiResponse.success("token", accessToken.getToken());
     }
@@ -184,14 +186,15 @@ public class AuthController {
             userRefreshToken.setRefreshToken(authRefreshToken.getToken());
 
             int cookieMaxAge = (int) refreshTokenExpiry / 60;
-            CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
-            Cookie cookie = new Cookie(REFRESH_TOKEN, authRefreshToken.getToken());
-            cookie.setPath("/oauth2/callback");
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(cookieMaxAge);
 
-            response.addCookie(cookie);
-            response.addHeader("Set-Cookie", REFRESH_TOKEN + "=" + authRefreshToken.getToken() + "; Secure; SameSite=None");
+            ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN, authRefreshToken.getToken())
+                    .sameSite("None")
+                    .maxAge(cookieMaxAge)
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .build();
+            response.setHeader("Set-Cookie", cookie.toString());
         }
 
         return ApiResponse.success("token", newAccessToken.getToken());
