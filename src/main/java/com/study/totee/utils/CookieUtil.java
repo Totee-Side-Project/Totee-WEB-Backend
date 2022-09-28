@@ -25,18 +25,12 @@ public class CookieUtil {
     }
 
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
-//        Cookie cookie = new Cookie(name, value);
-//        cookie.setPath("/");
-//        cookie.setHttpOnly(true);
-//        cookie.setMaxAge(maxAge);
-//
-//        response.addCookie(cookie);
-        ResponseCookie cookie = ResponseCookie.from(name, value)
-                .maxAge(maxAge)
-                .httpOnly(true)
-                .path("/")
-                .build();
-        response.addHeader("Set-Cookie", cookie.toString());
+        Cookie cookie = new Cookie(name, value);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(maxAge);
+
+        response.addCookie(cookie);
     }
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
@@ -48,6 +42,35 @@ public class CookieUtil {
                     ResponseCookie responseCookie = ResponseCookie.from(name, "")
                             .path("/")
                             .maxAge(0)
+                            .build();
+                    response.addHeader("Set-Cookie", responseCookie.toString());
+                }
+            }
+        }
+    }
+
+    public static void addSameSiteCookie(HttpServletResponse response, String name, String value, int maxAge){
+        ResponseCookie cookie = ResponseCookie.from(name, value)
+                .maxAge(maxAge)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .domain("api.totee.link")
+                .path("/")
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+    }
+
+    public static void deleteSameSiteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null && cookies.length > 0) {
+            for (Cookie cookie : cookies) {
+                if (name.equals(cookie.getName())) {
+                    ResponseCookie responseCookie = ResponseCookie.from(name, "")
+                            .path("/")
+                            .maxAge(0)
+                            .domain("api.totee.link")
                             .secure(true)
                             .sameSite("None")
                             .build();

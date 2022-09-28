@@ -118,7 +118,8 @@ public class AuthController {
         }
 
         int cookieMaxAge = (int) refreshTokenExpiry / 60;
-        CookieUtil.addCookie(response, REFRESH_TOKEN, refreshToken.getToken(), cookieMaxAge);
+        CookieUtil.deleteSameSiteCookie(request, response, REFRESH_TOKEN);
+        CookieUtil.addSameSiteCookie(response, REFRESH_TOKEN, refreshToken.getToken(), cookieMaxAge);
 
         return ApiResponse.success("token", accessToken.getToken());
     }
@@ -180,7 +181,7 @@ public class AuthController {
             userRefreshToken.setRefreshToken(authRefreshToken.getToken());
 
             int cookieMaxAge = (int) refreshTokenExpiry / 60;
-            CookieUtil.addCookie(response, REFRESH_TOKEN, authRefreshToken.getToken(), cookieMaxAge);
+            CookieUtil.addSameSiteCookie(response, REFRESH_TOKEN, authRefreshToken.getToken(), cookieMaxAge);
         }
 
         return ApiResponse.success("token", newAccessToken.getToken());
