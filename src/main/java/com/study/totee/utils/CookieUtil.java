@@ -55,7 +55,7 @@ public class CookieUtil {
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("None")
-                .domain("api.totee.link")
+                .domain("totee-fe-omega.vercel.app")
                 .path("/")
                 .build();
         response.addHeader("Set-Cookie", cookie.toString());
