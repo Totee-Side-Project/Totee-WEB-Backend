@@ -34,12 +34,9 @@ public class CookieUtil {
         ResponseCookie cookie = ResponseCookie.from(name, value)
                 .maxAge(maxAge)
                 .httpOnly(true)
-                .secure(true)
-                .domain("api.totee.link")
-                .sameSite("None")
                 .path("/")
                 .build();
-        response.setHeader("Set-Cookie", cookie.toString());
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
@@ -49,7 +46,6 @@ public class CookieUtil {
             for (Cookie cookie : cookies) {
                 if (name.equals(cookie.getName())) {
                     ResponseCookie responseCookie = ResponseCookie.from(name, "")
-                            .domain("api.totee.link")
                             .path("/")
                             .maxAge(0)
                             .secure(true)
