@@ -1,5 +1,6 @@
 package com.study.totee.utils;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.util.SerializationUtils;
 
 import javax.servlet.http.Cookie;
@@ -24,12 +25,21 @@ public class CookieUtil {
     }
 
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(maxAge);
-
-        response.addCookie(cookie);
+//        Cookie cookie = new Cookie(name, value);
+//        cookie.setPath("/");
+//        cookie.setHttpOnly(true);
+//        cookie.setMaxAge(maxAge);
+//
+//        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(name, value)
+                .maxAge(maxAge)
+                .httpOnly(true)
+                .secure(true)
+                .domain("api.totee.link")
+                .sameSite("None")
+                .path("/")
+                .build();
+        response.setHeader("Set-Cookie", cookie.toString());
     }
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
@@ -38,10 +48,14 @@ public class CookieUtil {
         if (cookies != null && cookies.length > 0) {
             for (Cookie cookie : cookies) {
                 if (name.equals(cookie.getName())) {
-                    cookie.setValue("");
-                    cookie.setPath("/");
-                    cookie.setMaxAge(0);
-                    response.addCookie(cookie);
+                    ResponseCookie responseCookie = ResponseCookie.from(name, "")
+                            .domain("api.totee.link")
+                            .path("/")
+                            .maxAge(0)
+                            .secure(true)
+                            .sameSite("None")
+                            .build();
+                    response.addHeader("Set-Cookie", responseCookie.toString());
                 }
             }
         }

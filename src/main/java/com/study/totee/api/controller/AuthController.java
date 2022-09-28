@@ -37,6 +37,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REFRESH_TOKEN;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -116,15 +118,7 @@ public class AuthController {
         }
 
         int cookieMaxAge = (int) refreshTokenExpiry / 60;
-
-        ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN, refreshToken.getToken())
-                .sameSite("None")
-                .maxAge(cookieMaxAge)
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .build();
-        response.setHeader("Set-Cookie", cookie.toString());
+        CookieUtil.addCookie(response, REFRESH_TOKEN, refreshToken.getToken(), cookieMaxAge);
 
         return ApiResponse.success("token", accessToken.getToken());
     }
@@ -186,15 +180,7 @@ public class AuthController {
             userRefreshToken.setRefreshToken(authRefreshToken.getToken());
 
             int cookieMaxAge = (int) refreshTokenExpiry / 60;
-
-            ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN, authRefreshToken.getToken())
-                    .sameSite("None")
-                    .maxAge(cookieMaxAge)
-                    .httpOnly(true)
-                    .secure(true)
-                    .path("/")
-                    .build();
-            response.setHeader("Set-Cookie", cookie.toString());
+            CookieUtil.addCookie(response, REFRESH_TOKEN, authRefreshToken.getToken(), cookieMaxAge);
         }
 
         return ApiResponse.success("token", newAccessToken.getToken());
