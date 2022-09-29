@@ -115,11 +115,12 @@ public class AuthController {
         } else {
             // DB에 refresh 토큰 업데이트
             userRefreshToken.setRefreshToken(refreshToken.getToken());
+            userRefreshTokenRepository.saveAndFlush(userRefreshToken);
         }
 
         int cookieMaxAge = (int) refreshTokenExpiry / 60;
-        CookieUtil.deleteSameSiteCookie(request, response, REFRESH_TOKEN);
-        CookieUtil.addSameSiteCookie(response, REFRESH_TOKEN, refreshToken.getToken(), cookieMaxAge);
+        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
+        CookieUtil.addCookie(response, REFRESH_TOKEN, refreshToken.getToken(), cookieMaxAge);
 
         return ApiResponse.success("token", accessToken.getToken());
     }
@@ -129,16 +130,15 @@ public class AuthController {
         // access token 확인
         String accessToken = HeaderUtil.getAccessToken(request);
         AuthToken authToken = tokenProvider.convertAuthToken(accessToken);
+
         if (!authToken.validate()) {
             return ApiResponse.invalidAccessToken();
         }
-
         // expired access token 인지 확인
         Claims claims = authToken.getExpiredTokenClaims();
         if (claims == null) {
             return ApiResponse.notExpiredTokenYet();
         }
-
         String userId = claims.getSubject();
         RoleType roleType = RoleType.of(claims.get("role", String.class));
 
@@ -147,8 +147,7 @@ public class AuthController {
                 .map(Cookie::getValue)
                 .orElse((null));
         AuthToken authRefreshToken = tokenProvider.convertAuthToken(refreshToken);
-
-        if (authRefreshToken.validate()) {
+        if (!authRefreshToken.validate()) {
             return ApiResponse.invalidRefreshToken();
         }
 
@@ -179,6 +178,7 @@ public class AuthController {
 
             // DB에 refresh 토큰 업데이트
             userRefreshToken.setRefreshToken(authRefreshToken.getToken());
+            userRefreshTokenRepository.save(userRefreshToken);
 
             int cookieMaxAge = (int) refreshTokenExpiry / 60;
             CookieUtil.addSameSiteCookie(response, REFRESH_TOKEN, authRefreshToken.getToken(), cookieMaxAge);
