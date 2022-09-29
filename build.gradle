@@ -101,5 +101,6 @@ compileQuerydsl {
 
 //  querydsl 추가 끝
 compileQuerydsl.doFirst {
-  if(file(querydslDir).exists() ) delete(file(querydslDir))
+  if(file(querydslDir).exists() )
+      delete(file(querydslDir))
 }
