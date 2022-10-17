@@ -1,18 +1,11 @@
 package com.study.totee.api.controller;
 
-import com.study.totee.api.dto.post.PostResponseDto;
 import com.study.totee.common.ApiResponse;
-import com.study.totee.api.model.Post;
 import com.study.totee.api.service.LikeService;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.NoAuthException;
-import com.study.totee.utils.PositionConverter;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +19,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LikeController {
     private final LikeService likeService;
-    private final PositionConverter positionConverter;
 
     @ApiOperation(value = "좋아요!", notes = "이미 좋아요 되어있으면 좋아요는 취소됩니다.")
     @PostMapping("/api/v1/post/like/{postId}")

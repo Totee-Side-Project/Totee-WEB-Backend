@@ -25,6 +25,14 @@ public enum ErrorCode {
     IMAGE_SAVE_ERROR("이미지 저장 실패"),
     INVALID_INPUT_ERROR("잘못된 입력입니다."),
     NO_NOTIFICATION_ERROR("존재하지 않는 알림입니다."),
+    NO_APPLICANT_ERROR("존재하지 않는 지원자입니다."),
+    ALREADY_APPLY_POST_ERROR("이미 지원하였습니다."),
+    NO_AUTHORIZATION_ERROR("접근 권한이 없습니다."),
+    ALREADY_STARTED_ERROR("모집이 완료된 프로젝트입니다."),
+    ALREADY_TEAM_ERROR("이미 팀원에 속해 있습니다."),
+    NOT_AVAILABLE_ACCESS("잘못된 접근입니다."),
+    NO_TEAM_ERROR("팀원이 아닌 사용자입니다."),
+    NO_EXCEED_MEMBER_ERROR("더이상 멤버를 받을 수 없습니다");
     ;
     private String message;
 }
