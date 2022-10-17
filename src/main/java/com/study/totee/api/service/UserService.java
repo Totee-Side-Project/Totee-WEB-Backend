@@ -112,6 +112,12 @@ public class UserService {
         return userQueryRepository.findById(id);
     }
 
+    //user id로 정보 반환
+    public User loadUserByUserId(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
+    }
+
     // 포스트맨 회원가입 (테스트 용 삭제 예정)
     @Transactional
     public void create(final User userEntity) {

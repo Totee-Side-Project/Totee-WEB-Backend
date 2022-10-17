@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,10 +61,6 @@ public class Post {
     @NotNull
     private int view;
 
-    @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID", nullable = false)
-    private Category category;
-
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Like> like;
 
@@ -71,7 +68,6 @@ public class Post {
     private List<Comment> comment;
 
     @Column(name = "IMAGE_URL")
-    @ApiModelProperty(example = "썸네일 이미지 URL")
     private String imageUrl;
 
     @Column(name = "ONLINE_OR_OFFLINE")
@@ -86,8 +82,20 @@ public class Post {
     @Column(name = "LIKE_NUM")
     private int likeNum;
 
+    @Column(name = "MEMBER_NUM")
+    private int memberNum;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<Position> positionList;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private Set<Skill> skillList;
+
+    @OneToMany(mappedBy = "post")
+    private List<Applicant> applicantList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    private List<Team> teamList = new ArrayList<>();
 
     @Column(name = "CONTACT_METHOD")
     private String contactMethod;
@@ -95,32 +103,44 @@ public class Post {
     @Column(name = "CONTACT_LINK")
     private String contactLink;
 
-    @Column(name ="RECRUIT_NUM")
-    private String recruitNum;
+    @Column(name = "RECRUIT_NUM")
+    private int recruitNum;
 
-    public Post(User user, Category category, PostRequestDto postRequestDto){
+    @Column(name = "REGION")
+    private String region;
+
+    @Column(name = "DETAILED_REGION")
+    private String detailedRegion;
+
+    public Post(User user, PostRequestDto postRequestDto){
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
         this.status = "Y";
         this.view = 0;
-        this.category = category;
+        this.memberNum = 1;
         this.onlineOrOffline = postRequestDto.getOnlineOrOffline();
         this.period = PeriodType.of(postRequestDto.getPeriod());
         this.contactMethod = postRequestDto.getContactMethod();
         this.contactLink = postRequestDto.getContactLink();
         this.recruitNum = postRequestDto.getRecruitNum();
+        this.region = postRequestDto.getRegion();
         this.user = user;
-        this.positionList = new HashSet<>();
+        this.teamList = new ArrayList<>();
+        this.applicantList = new ArrayList<>();
+        this.skillList = new HashSet<>();
+        this.region = postRequestDto.getRegion();
+        this.detailedRegion = postRequestDto.getDetailedRegion();
     }
 
-    public void update(PostRequestDto postRequestDto, Category category, List<Position> positionList) {
+    public void update(PostRequestDto postRequestDto, List<Skill> skillList) {
         this.content = postRequestDto.getContent();
         this.title = postRequestDto.getTitle();
         this.onlineOrOffline = postRequestDto.getOnlineOrOffline();
         this.period = PeriodType.of(postRequestDto.getPeriod());
         this.recruitNum = postRequestDto.getRecruitNum();
-        this.category = category;
-        this.positionList = new HashSet<>(positionList);
+        this.region = postRequestDto.getRegion();
+        this.detailedRegion = postRequestDto.getDetailedRegion();
+        this.skillList = new HashSet<>(skillList);
     }
 
     public void addComment(Comment comment) {
@@ -155,5 +175,9 @@ public class Post {
     public void updateStatus(String status) {
         this.status = status.equals("Y") ? "N" : "Y";
     }
+
+    public void increaseMemberNum() {this.memberNum += 1;}
+
+    public void decreaseMemberNum() {this.memberNum -= 1;}
 
 }

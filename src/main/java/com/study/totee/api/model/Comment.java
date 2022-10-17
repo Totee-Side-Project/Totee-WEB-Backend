@@ -62,6 +62,6 @@ public class Comment {
 
     public void addReply(Reply reply) {
         this.reply.add(reply);
-        this.post.setCommentNum(this.post.getCommentNum() + 1);
+        this.post.increaseCommentNum();
     }
 }

@@ -1,6 +1,5 @@
 package com.study.totee.api.service;
 
-import com.google.common.net.HttpHeaders;
 import com.study.totee.api.dto.comment.CommentResponseDto;
 import com.study.totee.api.dto.post.PostRequestDto;
 import com.study.totee.api.dto.post.PostResponseDto;
@@ -9,9 +8,8 @@ import com.study.totee.api.persistence.*;
 import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.ForbiddenException;
-import com.study.totee.type.PeriodType;
 import com.study.totee.utils.CookieUtil;
-import com.study.totee.utils.PositionConverter;
+import com.study.totee.utils.SkillConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,32 +30,29 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final CategoryRepository categoryRepository;
-    private final PositionRepository positionRepository;
+    private final TeamRepository teamRepository;
+    private final SkillRepository skillRepository;
     private final NotificationRepository notificationRepository;
-    private final PositionConverter positionConverter;
-    private final AwsS3Service awsS3Service;
+    private final SkillConverter skillConverter;
 
     @Transactional
     public void save(String userId, PostRequestDto postRequestDto) throws IOException {
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
-        Category category = Optional.ofNullable(categoryRepository.findByCategoryName(postRequestDto.getCategoryName())).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.NOT_EXIST_CATEGORY_ERROR));
 
-        Post savedPost = postRepository.save(new Post(user, category, postRequestDto));
+        Post savedPost = postRepository.save(new Post(user, postRequestDto));
 
-        Set<String> positionStringList = new HashSet<>(postRequestDto.getPositionList());
-        List<Position> positionList = positionConverter.convertStringToPositionEntity(new ArrayList<>(positionStringList), null, savedPost);
-        savedPost.setPositionList(new HashSet<>(positionList));
-
+        Set<String> skillStringList = new HashSet<>(postRequestDto.getSkillList());
+        List<Skill> skillList = skillConverter.convertStringToSkillEntity(new ArrayList<>(skillStringList), savedPost);
+        savedPost.setSkillList(new HashSet<>(skillList));
+        teamRepository.save(new Team(user, savedPost));
 //        게시글의 썸네일 디자인이 생길 시 추가!
 //        if(postRequestDto.getPostImage() != null){
 //            post.setImageUrl(awsS3Service.upload(postRequestDto.getPostImage(), "static"));
 //        }
 
-        positionRepository.saveAll(positionList);
+        skillRepository.saveAll(skillList);
     }
 
     // 게시글 상세 조회
@@ -68,34 +63,17 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
-        Cookie oldCookie = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("postView")) {
-                    oldCookie = cookie;
-                }
-            }
-        }
+        Cookie oldCookie = CookieUtil.getCookie(request, "postView").orElse(null);
 
         if (oldCookie != null) {
             if (!oldCookie.getValue().contains("[" + postId + "]")) {
                 post.increaseView();
                 oldCookie.setValue(oldCookie.getValue() + "_[" + postId + "]");
-                oldCookie.setPath("/");
-                oldCookie.setHttpOnly(true);
-                oldCookie.setMaxAge(60 * 60 * 24);
-                response.addCookie(oldCookie);
-                response.addHeader("Set-Cookie", oldCookie.getName() + "=" + oldCookie.getValue() + "; Secure; SameSite=None");
+                CookieUtil.addSameSiteCookie(response, oldCookie.getName(), oldCookie.getValue(), 60 * 60 * 24);
             }
         } else {
             post.increaseView();
-            Cookie newCookie = new Cookie("postView","[" + postId + "]");
-            newCookie.setPath("/");
-            newCookie.setHttpOnly(true);
-            newCookie.setMaxAge(60 * 60 * 24);
-            response.addCookie(newCookie);
-            response.setHeader("Set-Cookie", newCookie.getName() + "=" + newCookie.getValue() + "; Secure; SameSite=None");
+            CookieUtil.addSameSiteCookie(response, "postView", "[" + postId + "]", 60 * 60 * 24);
         }
 
         return new PostResponseDto(post, commentDTOList);
@@ -106,8 +84,6 @@ public class PostService {
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
-        Category category = Optional.ofNullable(categoryRepository.findByCategoryName(postRequestDto.getCategoryName())).orElseThrow(
-                ()-> new BadRequestException(ErrorCode.ALREADY_EXIST_CATEGORY_ERROR));
 
         Post post = Optional.ofNullable(postRepository.findByIdAndUser(postId, user)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
@@ -118,13 +94,13 @@ public class PostService {
 //            post.setImageUrl(awsS3Service.upload(postRequestDto.getPostImage(), "static"));
 //        }
 
-        // 기존 포지션 리스트 삭제 후 새로운 포지션 리스트 저장
-        positionRepository.deleteAllByPostId(post.getId());
-        Set<String> positionStringList = new HashSet<>(postRequestDto.getPositionList());
-        List<Position> positionEntityList = positionConverter.convertStringToPositionEntity(new ArrayList<>(positionStringList), null, post);
+        // 기존 기술 리스트 삭제 후 새로운 리스트 저장
+        skillRepository.deleteAllByPostId(post.getId());
+        Set<String> skillStringList = new HashSet<>(postRequestDto.getSkillList());
+        List<Skill> skillEntityList = skillConverter.convertStringToSkillEntity(new ArrayList<>(skillStringList), post);
 
-        post.update(postRequestDto, category, positionEntityList);
-        positionRepository.saveAll(positionEntityList);
+        post.update(postRequestDto, skillEntityList);
+        skillRepository.saveAll(skillEntityList);
     }
 
     @Transactional
@@ -187,6 +163,18 @@ public class PostService {
         return postRepository.findAllByLikedPost(user).stream()
                 .map(PostResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    public Post findByPostId(Long postId) {
+        return postRepository.findById(postId).orElseThrow(
+                () -> new BadRequestException(ErrorCode.NO_POST_ERROR)
+        );
+    }
+
+    public Post loadPostIfOwner(Long postId, User user) {
+        return Optional.ofNullable(postRepository.findByIdAndUser(postId, user)).orElseThrow(
+                () -> new ForbiddenException(ErrorCode.NO_AUTHORIZATION_ERROR)
+        );
     }
 
     // 모집 여부 상태 변경

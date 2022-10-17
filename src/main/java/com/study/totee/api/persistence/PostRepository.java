@@ -15,7 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAll(Pageable pageable);
     Page<Post> findAllByTitleContaining(String keyword, Pageable pageable);
 
-    @Query(value = "SELECT p FROM Post p JOIN Position p2 ON p.id = p2.post.id WHERE p2.position = ?1 and p.category.categoryName = '프로젝트' and p.status = 'Y'")
+    @Query(value = "SELECT p FROM Post p JOIN Position p2 ON p.id = p2.post.id WHERE p2.position = ?1 and p.status = 'Y'")
     Page<Post> findAllByPosition(PositionType position, Pageable pageable);
 
     @Query(value = "SELECT p FROM Post p LEFT JOIN Like l " + "ON l.post.id = p.id WHERE l.user = ?1")

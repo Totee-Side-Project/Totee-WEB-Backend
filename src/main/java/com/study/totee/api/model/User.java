@@ -92,6 +92,12 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Notification> notification;
 
+    @OneToMany(mappedBy = "user")
+    private List<Applicant> applicantList;
+
+    @OneToMany(mappedBy = "user")
+    private List<Team> teamList;
+
     public User(
             @NotNull @Size(max = 64) String id,
             @NotNull @Size(max = 100) String username,

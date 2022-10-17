@@ -5,6 +5,7 @@ import com.study.totee.api.model.Post;
 import com.study.totee.type.PeriodType;
 import com.study.totee.type.PositionType;
 import com.study.totee.utils.PositionConverter;
+import com.study.totee.utils.SkillConverter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -56,14 +57,14 @@ public class PostResponseDto  {
     @ApiModelProperty(example = "모집 상태 (Y or N)")
     private String status;
 
-    @ApiModelProperty(example = "카테고리")
-    private String categoryName;
-
     @ApiModelProperty(example = "모집 대상 포지션 리스트 (ex Design, FrontEnd..)")
     private List<String> positionList;
 
+    @ApiModelProperty(example = "기술 스택 리스트 (ex JavaScript, C, Java)")
+    private List<String> skillList;
+
     @ApiModelProperty(example = "모집 인원 수")
-    private String recruitNum;
+    private int recruitNum;
 
     @ApiModelProperty(example = "연락 방법")
     private String contactMethod;
@@ -71,12 +72,22 @@ public class PostResponseDto  {
     @ApiModelProperty(example = "연락 링크")
     private String contactLink;
 
+    @ApiModelProperty(example = "지역")
+    private String region;
+
+    @ApiModelProperty(example = "상세주소")
+    private String detailedRegion;
+
+    @ApiModelProperty(example = "카테고리이름")
+    private String categoryName;
+
     @ApiModelProperty(example = "작성자 포지션")
     private PositionType authorPosition;
 
     public PostResponseDto(Post post) {
 
         final PositionConverter positionConverter = new PositionConverter();
+        final SkillConverter skillConverter = new SkillConverter();
 
         this.postId = post.getId();
         this.title = post.getTitle();
@@ -90,17 +101,21 @@ public class PostResponseDto  {
         this.onlineOrOffline = post.getOnlineOrOffline();
         this.period = post.getPeriod();
         this.status = post.getStatus();
-        this.categoryName = post.getCategory().getCategoryName();
         this.positionList = positionConverter.convertPositionEntityToString(post.getPositionList());
         this.recruitNum = post.getRecruitNum();
         this.contactMethod = post.getContactMethod();
         this.contactLink = post.getContactLink();
+        this.skillList = skillConverter.convertSkillEntityToString(post.getSkillList());
+        this.region = post.getRegion();
+        this.detailedRegion = post.getDetailedRegion();
+        this.categoryName = "스터디";
         this.authorPosition = post.getUser().getUserInfo().getPosition();
     }
 
     public PostResponseDto(Post post, List<CommentResponseDto> CommentResponseDtoList) {
 
         final PositionConverter positionConverter = new PositionConverter();
+        final SkillConverter skillConverter = new SkillConverter();
 
         this.postId = post.getId();
         this.title = post.getTitle();
@@ -114,12 +129,15 @@ public class PostResponseDto  {
         this.onlineOrOffline = post.getOnlineOrOffline();
         this.period = post.getPeriod();
         this.status = post.getStatus();
-        this.categoryName = post.getCategory().getCategoryName();
         this.positionList = positionConverter.convertPositionEntityToString(post.getPositionList());
         this.recruitNum = post.getRecruitNum();
         this.contactMethod = post.getContactMethod();
         this.contactLink = post.getContactLink();
-        this.authorPosition = post.getUser().getUserInfo().getPosition();
         this.commentDTOList = CommentResponseDtoList;
+        this.skillList = skillConverter.convertSkillEntityToString(post.getSkillList());
+        this.region = post.getRegion();
+        this.detailedRegion = post.getDetailedRegion();
+        this.categoryName = "스터디";
+        this.authorPosition = post.getUser().getUserInfo().getPosition();
     }
 }
