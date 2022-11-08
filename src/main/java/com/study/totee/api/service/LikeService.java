@@ -44,8 +44,8 @@ public class LikeService {
             }
 
         }else {
-            if (Optional.ofNullable(notificationRepository.findByPostId(postId)).isPresent()) {
-                notificationRepository.deleteByPost_Id(postId);
+            if (Optional.ofNullable(notificationRepository.findByPost_IdAndUser(postId, user)).isPresent()) {
+                notificationRepository.deleteByPost_IdAndUser(postId, user);
             }
             post.decreaseLikeNum();
             likeRepository.delete(like);
