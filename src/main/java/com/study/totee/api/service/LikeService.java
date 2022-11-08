@@ -12,8 +12,6 @@ import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +33,7 @@ public class LikeService {
         Post post = postRepository.findById(postId).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
-        Like like = likeRepository.findByUser_IdAndPost_Id(user.getUserSeq() , postId);
+        Like like = likeRepository.findByUserAndPost_Id(user , postId);
 
         if(like == null){
             post.increaseLikeNum();
@@ -62,7 +60,7 @@ public class LikeService {
         postRepository.findById(postId).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
-        Like like = likeRepository.findByUser_IdAndPost_Id(user.getUserSeq() , postId);
+        Like like = likeRepository.findByUserAndPost_Id(user, postId);
         return like != null;
     }
 
