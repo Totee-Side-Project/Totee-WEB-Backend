@@ -35,7 +35,7 @@ public class LikeService {
         Post post = postRepository.findById(postId).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
-        Like like = likeRepository.findByUser_IdAndPost_Id(userId , postId);
+        Like like = likeRepository.findByUser_IdAndPost_Id(user.getUserSeq() , postId);
 
         if(like == null){
             post.increaseLikeNum();
@@ -57,10 +57,12 @@ public class LikeService {
 
     @Transactional(readOnly = true)
     public boolean isLike(String userId, Long postId){
+        User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
         postRepository.findById(postId).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
-        Like like = likeRepository.findByUser_IdAndPost_Id(userId , postId);
+        Like like = likeRepository.findByUser_IdAndPost_Id(user.getUserSeq() , postId);
         return like != null;
     }
 
