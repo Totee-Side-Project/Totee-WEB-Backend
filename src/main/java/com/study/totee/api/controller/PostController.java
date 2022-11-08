@@ -120,7 +120,6 @@ public class PostController {
         return ApiResponse.success("data", page);
     }
 
-
     @ApiOperation(value = "post 상세보기",
             notes = "PostId로 상세보기\n" +
                     "api 주소에 PathVariable 주면 됩니다.")
