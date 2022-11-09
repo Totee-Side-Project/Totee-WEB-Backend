@@ -94,7 +94,9 @@ public class ReplyService {
                 () -> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
         Notification notification = notificationRepository.findByPostAndUserAndReplyId(post, comment.getUser(), reply.getId());
-        notificationRepository.delete(notification);
+        if(notification != null){
+            notificationRepository.delete(notification);
+        }
 
         post.decreaseCommentNum();
         replyRepository.delete(reply);
