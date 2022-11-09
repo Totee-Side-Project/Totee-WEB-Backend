@@ -82,7 +82,7 @@ public class CommentService {
         Post post = postRepository.findById(comment.getPost().getId()).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
-        Notification notification = notificationRepository.findByPostAndUserAndCommentId(post, user, commentId);
+        Notification notification = notificationRepository.findByPostAndUserAndCommentId(post, post.getUser(), commentId);
         notificationRepository.delete(notification);
         post.decreaseCommentNum(comment);
         commentRepository.delete(comment);
