@@ -114,7 +114,7 @@ public class PostService {
 //        if(post.getImageUrl() != null){
 //            awsS3Service.fileDelete(post.getImageUrl());
 //        }
-
+        teamRepository.deleteAllByPost(post);
         notificationRepository.deleteAllByPost_Id(post.getId());
         postRepository.delete(post);
     }
