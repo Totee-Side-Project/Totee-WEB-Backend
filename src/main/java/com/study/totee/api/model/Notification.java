@@ -52,7 +52,7 @@ public class Notification {
 
     public Notification(Post post, User user, Comment comment) {
         this.post = post;
-        this.user = user;
+        this.user = post.getUser();
         this.content = user.getUserInfo().getNickname() + " 님이 " + post.getTitle() + " 게시글에 댓글을 남기셨습니다.";
         this.isRead = "N";
         this.commentId = comment.getId();
@@ -60,7 +60,7 @@ public class Notification {
 
     public Notification(Comment comment, User user, Reply reply) {
         this.post = comment.getPost();
-        this.user = user;
+        this.user = comment.getUser();
         this.content = user.getUserInfo().getNickname() + " 님이 " + comment.getContent() + " 댓글에 답글을 남기셨습니다.";
         this.isRead = "N";
         this.replyId = reply.getId();
@@ -68,7 +68,7 @@ public class Notification {
 
     public Notification(Like like, User user){
         this.post = like.getPost();
-        this.user = user;
+        this.user = like.getPost().getUser();
         this.content = user.getUserInfo().getNickname() + " 님이 " + like.getPost().getTitle() + " 게시글에 좋아요를 눌렀습니다.";
         this.isRead = "N";
         this.likeId = like.getId();
