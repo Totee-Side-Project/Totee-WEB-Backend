@@ -43,7 +43,7 @@ public class CommentService {
         Post post = postRepository.findById(commentRequestDto.getPostId()).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
-        Comment commentEntity = new Comment(user, post, commentRequestDto);
+        Comment commentEntity = commentRepository.save(new Comment(user, post, commentRequestDto));
         post.addComment(commentEntity);
 
         if (!post.getUser().getId().equals(userId)) {
@@ -60,7 +60,6 @@ public class CommentService {
                 }
             }
         }
-        commentRepository.save(commentEntity);
     }
 
     @Transactional
