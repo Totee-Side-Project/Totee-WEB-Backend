@@ -59,10 +59,10 @@ public class AuthController {
         // 요청을 이용해 저장할 사용자 만들기
 
         User userEntity = User.builder()
-                .id("1234")
-                .email("1234")
-                .username("1234")
-                .password(passwordEncoder.encode("1234"))
+                .id("123")
+                .email("123")
+                .username("123")
+                .password(passwordEncoder.encode("123"))
                 .providerType(ProviderType.LOCAL)
                 .roleType(RoleType.USER)
                 .emailVerifiedYn("N")

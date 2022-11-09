@@ -10,4 +10,5 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
     Like findByUserAndPost_Id(User user, Long postId);
+    Like findByUserAndPost(User user, Post post);
 }

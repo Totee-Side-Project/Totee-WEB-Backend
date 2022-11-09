@@ -33,19 +33,17 @@ public class LikeService {
         Post post = postRepository.findById(postId).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
-        Like like = likeRepository.findByUserAndPost_Id(user , postId);
+        Like like = likeRepository.findByUserAndPost(user , post);
 
         if(like == null){
             post.increaseLikeNum();
             Like savedLike = likeRepository.save(new Like(user, post));
-
             if (!post.getUser().getId().equals(userId)) {
                 notificationRepository.save(new Notification(savedLike, user));
             }
-
         }else {
-            if (Optional.ofNullable(notificationRepository.findByPost_IdAndUser(postId, user)).isPresent()) {
-                notificationRepository.deleteByPost_IdAndUser(postId, user);
+            if (notificationRepository.findByPostAndUser(post, post.getUser()) != null) {
+                notificationRepository.deleteByPostAndUser(post, post.getUser());
             }
             post.decreaseLikeNum();
             likeRepository.delete(like);

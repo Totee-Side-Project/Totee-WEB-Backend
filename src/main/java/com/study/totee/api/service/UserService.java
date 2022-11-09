@@ -123,7 +123,7 @@ public class UserService {
     public void create(final User userEntity) {
         UserInfo userInfo = new UserInfo();
         userInfo.setUser(userEntity);
-        userInfo.setNickname("테스트1");
+        userInfo.setNickname("테스트2");
         userInfo.setUser(userEntity);
         UserInfo savedUserInfo = userInfoRepository.save(userInfo);
         userEntity.setUserInfo(savedUserInfo);
