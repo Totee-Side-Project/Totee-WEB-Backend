@@ -9,12 +9,12 @@ import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     Notification findByIdAndUser(Long notificationId, User user);
-    Notification findByPostId(Long postId);
-    Notification findByPost_IdAndUser(Long postId, User user);
-    void deleteByPost_IdAndUser(Long postId, User user);
-    Notification findByPostAndUser(Post post, User user);
-    void deleteByPostAndUser(Post post,User user);
     void deleteAllByPost_Id(Long postId);
 
     List<Notification> findAllByUser(User user);
+
+    Notification findByPostAndUserAndLikeId(Post post, User user, Long likeId);
+    Notification findByPostAndUserAndReplyId(Post post, User user, Long replyId);
+    Notification findByPostAndUserAndCommentId(Post post, User user, Long commentId);
+
 }

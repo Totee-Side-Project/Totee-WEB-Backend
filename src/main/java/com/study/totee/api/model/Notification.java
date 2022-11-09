@@ -29,6 +29,15 @@ public class Notification {
     @Column(name = "IS_READ")
     private String isRead;
 
+    @Column(name = "LIKE_ID")
+    private Long likeId;
+
+    @Column(name = "COMMENT_ID")
+    private Long commentId;
+
+    @Column(name = "REPLY_ID")
+    private Long replyId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_SEQ")
     private User user;
@@ -41,24 +50,27 @@ public class Notification {
     @CreationTimestamp
     private LocalDateTime created_at;
 
-    public Notification(Post post, User user) {
+    public Notification(Post post, User user, Comment comment) {
         this.post = post;
-        this.user = post.getUser();
+        this.user = user;
         this.content = user.getUserInfo().getNickname() + " 님이 " + post.getTitle() + " 게시글에 댓글을 남기셨습니다.";
         this.isRead = "N";
+        this.commentId = comment.getId();
     }
 
-    public Notification(Comment comment, User user) {
+    public Notification(Comment comment, User user, Reply reply) {
         this.post = comment.getPost();
-        this.user = comment.getPost().getUser();
+        this.user = user;
         this.content = user.getUserInfo().getNickname() + " 님이 " + comment.getContent() + " 댓글에 답글을 남기셨습니다.";
         this.isRead = "N";
+        this.replyId = reply.getId();
     }
 
     public Notification(Like like, User user){
         this.post = like.getPost();
-        this.user = like.getPost().getUser();
+        this.user = user;
         this.content = user.getUserInfo().getNickname() + " 님이 " + like.getPost().getTitle() + " 게시글에 좋아요를 눌렀습니다.";
         this.isRead = "N";
+        this.likeId = like.getId();
     }
 }

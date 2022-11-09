@@ -47,7 +47,7 @@ public class CommentService {
         post.addComment(commentEntity);
 
         if (!post.getUser().getId().equals(userId)) {
-            Notification notification = new Notification(post, user);
+            Notification notification = new Notification(post, user, commentEntity);
             notificationRepository.save(notification);
             if (sseEmitters.containsKey(post.getUser().getId())) {
                 SseEmitter sseEmitter = sseEmitters.get(post.getUser().getId());
@@ -83,6 +83,8 @@ public class CommentService {
         Post post = postRepository.findById(comment.getPost().getId()).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
+        Notification notification = notificationRepository.findByPostAndUserAndCommentId(post, user, commentId);
+        notificationRepository.delete(notification);
         post.decreaseCommentNum(comment);
         commentRepository.delete(comment);
     }
