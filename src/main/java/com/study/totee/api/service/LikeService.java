@@ -34,7 +34,6 @@ public class LikeService {
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
 
         Like like = likeRepository.findByUserAndPost(user , post);
-
         if(like == null){
             post.increaseLikeNum();
             Like savedLike = likeRepository.save(new Like(user, post));
@@ -42,9 +41,8 @@ public class LikeService {
                 notificationRepository.save(new Notification(savedLike, user));
             }
         }else {
-            if (notificationRepository.findByPostAndUser(post, post.getUser()) != null) {
-                notificationRepository.deleteByPostAndUser(post, post.getUser());
-            }
+            Notification notification = notificationRepository.findByPostAndUserAndLikeId(post, user, like.getId());
+            notificationRepository.delete(notification);
             post.decreaseLikeNum();
             likeRepository.delete(like);
         }

@@ -42,7 +42,7 @@ public class ReplyService {
         comment.addReply(replyEntity);
 
         if(!comment.getUser().getId().equals(userId)) {
-            Notification notification = new Notification(comment, user);
+            Notification notification = new Notification(comment, user, replyEntity);
             notificationRepository.save(notification);
 
             if (!comment.getUser().getId().equals(userId)) {
@@ -92,6 +92,9 @@ public class ReplyService {
 
         Post post = postRepository.findById(comment.getPost().getId()).orElseThrow(
                 () -> new BadRequestException(ErrorCode.NO_POST_ERROR));
+
+        Notification notification = notificationRepository.findByPostAndUserAndReplyId(post, user, reply.getId());
+        notificationRepository.delete(notification);
 
         post.decreaseCommentNum();
         replyRepository.delete(reply);
