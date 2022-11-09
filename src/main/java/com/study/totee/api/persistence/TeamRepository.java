@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface TeamRepository extends JpaRepository<Team, Long> {
     Optional<Team> findByUserAndPost(User user, Post post);
     void deleteByUserAndPost(User user, Post post);
+    void deleteAllByPost(Post post);
 }
