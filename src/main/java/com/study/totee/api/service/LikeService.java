@@ -42,7 +42,9 @@ public class LikeService {
             }
         }else {
             Notification notification = notificationRepository.findByPostAndUserAndLikeId(post, user, like.getId());
-            notificationRepository.delete(notification);
+            if(notification != null){
+                notificationRepository.delete(notification);
+            }
             post.decreaseLikeNum();
             likeRepository.delete(like);
         }
