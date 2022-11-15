@@ -35,7 +35,7 @@ public class NotificationService {
         final User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
                 () -> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
-        return notificationRepository.findAllByUser(user).stream()
+        return notificationRepository.findAllByUserOrderByIdAsc(user).stream()
                 .map(NotificationResponseDto::new)
                 .collect(Collectors.toList());
     }
