@@ -56,15 +56,8 @@ public class ApplicantController {
     @GetMapping("/api/v1/applicant/{postId}")
     public ApiResponse<Object> getApplicant(@PathVariable Long postId,
                                                @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        String userId = Optional.ofNullable(principal.getUsername()).orElseThrow(
-                () -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)
-        );
 
         Post post = postService.findByPostId(postId);
-        Optional.ofNullable(post).map(Post::getUser).map(User::getId).filter(o -> o.equals(userId)).orElseThrow(
-                () -> new ForbiddenException(ErrorCode.NO_AUTHORIZATION_ERROR)
-        );
-
         List<MemberListResponseDto> responseDto = applicantService.getApplicant(post);
         return ApiResponse.success("data" , responseDto);
 
