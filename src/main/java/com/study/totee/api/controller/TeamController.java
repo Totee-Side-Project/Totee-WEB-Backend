@@ -46,7 +46,7 @@ public class TeamController {
         //로그인 사용자가 해당 프로젝트의 생성자 인지 확인
         Post post = postService.loadPostIfOwner(postId, user);
         //지원자 정보 확인
-        User applyUser = userService.loadUserByUserId(123L);
+        User applyUser = userService.getUserByNickname(requestDto.getNickname());
         //지원자 승인/거절
         teamService.AcceptApplication(post, applyUser, requestDto.isAccept());
         //팀원 목록 출력
