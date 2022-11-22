@@ -48,16 +48,16 @@ public class PositionConverter {
                     break;
                 case "ML":
                     if (userInfo == null) {
-                        positionList.add(new Position(PositionType.MACHINE_LEARNING, post));
+                        positionList.add(new Position(PositionType.ML, post));
                     } else {
-                        positionList.add(new Position(PositionType.MACHINE_LEARNING, userInfo));
+                        positionList.add(new Position(PositionType.ML, userInfo));
                     }
                     break;
                 case "PM":
                     if (userInfo == null) {
-                        positionList.add(new Position(PositionType.PRODUCT_MANAGER, post));
+                        positionList.add(new Position(PositionType.PM, post));
                     } else {
-                        positionList.add(new Position(PositionType.PRODUCT_MANAGER, userInfo));
+                        positionList.add(new Position(PositionType.PM, userInfo));
                     }
                     break;
                 case "iOS":
@@ -103,10 +103,10 @@ public class PositionConverter {
                     positionTypeList.add(PositionType.GAME);
                     break;
                 case "ML":
-                    positionTypeList.add(PositionType.MACHINE_LEARNING);
+                    positionTypeList.add(PositionType.ML);
                     break;
                 case "PM":
-                    positionTypeList.add(PositionType.PRODUCT_MANAGER);
+                    positionTypeList.add(PositionType.PM);
                     break;
                 case "iOS":
                     positionTypeList.add(PositionType.iOS);
