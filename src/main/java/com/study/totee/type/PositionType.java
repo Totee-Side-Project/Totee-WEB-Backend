@@ -8,7 +8,7 @@ public enum PositionType {
     BACK_END("백엔드"),
     DESIGN("디자인"),
     GAME("게임"),
-    ML("머신러닝"),
+    ML("ML"),
     PM("PM"),
     iOS("iOS"),
     ANDROID("안드로이드"),
