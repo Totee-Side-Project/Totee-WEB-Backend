@@ -44,5 +44,6 @@ public class MemberListResponseDto {
         this.applicationDate = applicant.getCreatedAt();
         this.email = user.getEmail();
         this.profileImg = user.getUserInfo().getProfileImageUrl();
+        this.message = applicant.getMessage();
     }
 }
