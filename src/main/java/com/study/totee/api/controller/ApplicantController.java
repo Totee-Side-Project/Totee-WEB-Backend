@@ -54,8 +54,7 @@ public class ApplicantController {
 
     @ApiOperation(value = "스터디 지원현황")
     @GetMapping("/api/v1/applicant/{postId}")
-    public ApiResponse<Object> getApplicant(@PathVariable Long postId,
-                                               @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+    public ApiResponse<Object> getApplicant(@PathVariable Long postId) {
 
         Post post = postService.findByPostId(postId);
         List<MemberListResponseDto> responseDto = applicantService.getApplicant(post);
