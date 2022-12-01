@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public enum SkillType {
     JavaScript("JavaScript"),
-    Svelet("Svelet"),
+    Svelte("Svelte"),
     TypeScript("TypeScript"),
     React("React"),
     Nextjs("Nextjs"),
