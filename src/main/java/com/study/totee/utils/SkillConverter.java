@@ -19,7 +19,7 @@ public class SkillConverter {
                     skillList.add(new Skill(SkillType.JavaScript, post));
                     break;
                 case "Svelet":
-                    skillList.add(new Skill(SkillType.Svelet, post));
+                    skillList.add(new Skill(SkillType.Svelte, post));
                     break;
                 case "TypeScript":
                     skillList.add(new Skill(SkillType.TypeScript, post));
