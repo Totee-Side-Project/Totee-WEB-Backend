@@ -92,10 +92,10 @@ public class Post {
     private Set<Skill> skillList;
 
     @OneToMany(mappedBy = "post")
-    private List<Applicant> applicantList = new ArrayList<>();
+    private List<Applicant> applicantList;
 
     @OneToMany(mappedBy = "post")
-    private List<Team> teamList = new ArrayList<>();
+    private List<Team> teamList;
 
     @Column(name = "CONTACT_METHOD")
     private String contactMethod;

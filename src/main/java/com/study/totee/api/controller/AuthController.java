@@ -64,7 +64,7 @@ public class AuthController {
                 .username("12")
                 .password(passwordEncoder.encode("122"))
                 .providerType(ProviderType.LOCAL)
-                .roleType(RoleType.USER)
+                .roleType(RoleType.user)
                 .emailVerifiedYn("N")
                 .profileImageUrl("https://lh3.googleusercontent.com/a-/AOh14Gg_jYj1ka2KSZcYgcxXxasvl8_rytXHtszA-SzRwg=s96-c")
                 .createdAt(LocalDateTime.now())
