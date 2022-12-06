@@ -32,6 +32,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final SkillRepository skillRepository;
+    private final ApplicantRepository applicantRepository;
     private final NotificationRepository notificationRepository;
     private final SkillConverter skillConverter;
 
@@ -114,7 +115,8 @@ public class PostService {
 //        if(post.getImageUrl() != null){
 //            awsS3Service.fileDelete(post.getImageUrl());
 //        }
-        teamRepository.deleteAllByPost(post);
+        applicantRepository.deleteAllByPost(post);
+        teamRepository.deleteAllByPost(post);g
         notificationRepository.deleteAllByPost_Id(post.getId());
         postRepository.delete(post);
     }

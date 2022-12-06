@@ -22,6 +22,7 @@ public class Applicant {
     private Long id;
 
     @Column(name = "MESSAGE")
+    @Lob
     private String message;
 
     @ManyToOne(fetch = FetchType.LAZY)
