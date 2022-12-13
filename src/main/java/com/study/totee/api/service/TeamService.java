@@ -1,14 +1,8 @@
 package com.study.totee.api.service;
 
 import com.study.totee.api.dto.team.MemberListResponseDto;
-import com.study.totee.api.model.Applicant;
-import com.study.totee.api.model.Post;
-import com.study.totee.api.model.Team;
-import com.study.totee.api.model.User;
-import com.study.totee.api.persistence.ApplicantQueryRepository;
-import com.study.totee.api.persistence.ApplicantRepository;
-import com.study.totee.api.persistence.TeamQueryRepository;
-import com.study.totee.api.persistence.TeamRepository;
+import com.study.totee.api.model.*;
+import com.study.totee.api.persistence.*;
 import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.ForbiddenException;
@@ -31,6 +25,7 @@ public class TeamService {
     private final TeamQueryRepository teamQueryRepository;
     private final ApplicantRepository applicantRepository;
     private final ApplicantQueryRepository applicantQueryRepository;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public boolean AcceptApplication(Post post, User user, Boolean accept){
@@ -46,6 +41,8 @@ public class TeamService {
             throw new BadRequestException(ErrorCode.ALREADY_TEAM_ERROR);
         }
 
+        Notification notification = new Notification(applicant, accept);
+        notificationRepository.save(notification);
         applicant.deleteApply();
         applicantRepository.delete(applicant);
 
@@ -74,10 +71,5 @@ public class TeamService {
             team.deleteTeam();
             teamRepository.deleteByUserAndPost(user, post);
         } else throw new BadRequestException(ErrorCode.NOT_AVAILABLE_ACCESS);
-    }
-
-    public boolean isMember(Post post, User user) {
-        return teamRepository.findByUserAndPost(user, post).isPresent();
-
     }
 }

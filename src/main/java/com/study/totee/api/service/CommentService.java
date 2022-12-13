@@ -34,7 +34,6 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final NotificationRepository notificationRepository;
-    private final NotificationService notificationService;
 
     @Transactional
     public void save(CommentRequestDto commentRequestDto, String userId){
