@@ -2,6 +2,7 @@ package com.study.totee.api.service;
 
 import com.study.totee.api.dto.team.MemberListResponseDto;
 import com.study.totee.api.model.Applicant;
+import com.study.totee.api.model.Notification;
 import com.study.totee.api.model.Post;
 import com.study.totee.api.model.User;
 import com.study.totee.api.persistence.*;
@@ -24,6 +25,7 @@ public class ApplicantService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final TeamQueryRepository teamQueryRepository;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public void applyPost(String userId, Long postId, String message) {
@@ -54,6 +56,9 @@ public class ApplicantService {
                 .message(message)
                 .build();
 
+        Notification notification = new Notification(applicant, user);
+        notificationRepository.save(notification);
+
         applicantRepository.save(applicant);
     }
 
@@ -83,7 +88,4 @@ public class ApplicantService {
                 .stream().map(MemberListResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public boolean isApplicant(Post post, User user) {
-        return applicantRepository.findByUserAndPost(user,post).isPresent();
-    }
 }

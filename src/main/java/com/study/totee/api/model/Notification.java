@@ -73,4 +73,21 @@ public class Notification {
         this.isRead = "N";
         this.likeId = like.getId();
     }
+
+    // 작성자에게 알림
+    public Notification(Applicant applicant, User user){
+        this.post = applicant.getPost();
+        this.user = applicant.getPost().getUser();
+        this.content = user.getUserInfo().getNickname() + " 님이 " + applicant.getPost().getTitle() + "스터디에 지원하였습니다.";
+        this.isRead = "N";
+    }
+
+    // 지원자에게 알림
+    public Notification(Applicant applicant, boolean accept){
+        this.post = applicant.getPost();
+        this.user = applicant.getUser();
+        this.content = accept ? applicant.getPost().getTitle() + "스터디에서 지원이 승인되었습니다." :
+                applicant.getPost().getTitle() + "스터디에서 지원이 거부되었습니다.";
+        this.isRead = "N";
+    }
 }
