@@ -2,18 +2,20 @@ package com.study.totee.api.controller;
 
 import com.study.totee.api.dto.comment.CommentRequestDto;
 import com.study.totee.api.dto.mentor.MentorRequestDto;
+import com.study.totee.api.dto.mentor.MentorResponseDto;
 import com.study.totee.api.service.MentorService;
 import com.study.totee.common.ApiResponse;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.NoAuthException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -36,6 +38,13 @@ public class MentorController {
         return ApiResponse.success("message","멘토 지원에 성공하였습니다.");
     }
 
+    @ApiOperation(value = "멘토 지원자보기", notes = "kind에 따라 분류됩니다. all = 전체 지원자, n = 미승인 지원자" +
+            "y = 승인 지원자")
+    @GetMapping("/api/v1/mentor/list/{kind}")
+    public ApiResponse<Object> appliedMentorList(@PageableDefault(size = 15, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, @PathVariable String kind){
+        Page<MentorResponseDto> mentorResponseDtoPage = mentorService.appliedMentorList(pageable, kind);
 
+        return ApiResponse.success("data", mentorResponseDtoPage);
+    }
 
 }

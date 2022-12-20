@@ -49,7 +49,7 @@ public class Mentor {
         this.contact = mentorRequestDto.getContact();
         this.portfolioUrl = mentorRequestDto.getPortfolioUrl();
         this.comment = mentorRequestDto.getComment();
-        this.approval = "N";
+        this.approval = "n";
         this.user = user;
     }
 
