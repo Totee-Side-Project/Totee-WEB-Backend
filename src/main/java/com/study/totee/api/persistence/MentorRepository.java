@@ -14,4 +14,5 @@ import java.util.List;
 public interface MentorRepository extends JpaRepository<Mentor, Long> {
     boolean existsByUser(User user);
     Page<Mentor> findAll(Pageable pageable);
+    Page<Mentor> findAllByApproval(String approval, Pageable pageable);
 }

@@ -1,6 +1,7 @@
 package com.study.totee.api.service;
 
 import com.study.totee.api.dto.mentor.MentorRequestDto;
+import com.study.totee.api.dto.mentor.MentorResponseDto;
 import com.study.totee.api.model.Mentor;
 import com.study.totee.api.model.User;
 import com.study.totee.api.persistence.MentorRepository;
@@ -9,6 +10,8 @@ import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,5 +36,13 @@ public class MentorService {
         }
 
         mentorRepository.save(new Mentor(mentorRequestDto, user));
+    }
+
+    @Transactional
+    public Page<MentorResponseDto> appliedMentorList(Pageable pageable, String kind){
+        if (kind.equals("all")){
+            return mentorRepository.findAll(pageable).map(MentorResponseDto::new);
+        }
+        return mentorRepository.findAllByApproval(kind, pageable).map(MentorResponseDto::new);
     }
 }
