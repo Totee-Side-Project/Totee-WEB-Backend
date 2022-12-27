@@ -13,18 +13,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-@Builder
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "TB_POST")
 public class Post {
     @Id
@@ -127,7 +121,7 @@ public class Post {
         this.user = user;
         this.teamList = new ArrayList<>();
         this.applicantList = new ArrayList<>();
-        this.skillList = new HashSet<>();
+        this.skillList = new LinkedHashSet<>();
         this.region = postRequestDto.getRegion();
         this.detailedRegion = postRequestDto.getDetailedRegion();
     }
@@ -140,7 +134,7 @@ public class Post {
         this.recruitNum = postRequestDto.getRecruitNum();
         this.region = postRequestDto.getRegion();
         this.detailedRegion = postRequestDto.getDetailedRegion();
-        this.skillList = new HashSet<>(skillList);
+        this.skillList = new LinkedHashSet<>(skillList);
     }
 
     public void addComment(Comment comment) {
