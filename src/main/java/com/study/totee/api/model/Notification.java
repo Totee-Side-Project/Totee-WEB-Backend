@@ -74,7 +74,7 @@ public class Notification {
         this.likeId = like.getId();
     }
 
-    // 작성자에게 알림
+    // 스터디 작성자에게 알림
     public Notification(Applicant applicant, User user){
         this.post = applicant.getPost();
         this.user = applicant.getPost().getUser();
@@ -82,12 +82,19 @@ public class Notification {
         this.isRead = "N";
     }
 
-    // 지원자에게 알림
+    // 스터디 지원자에게 알림
     public Notification(Applicant applicant, boolean accept){
         this.post = applicant.getPost();
         this.user = applicant.getUser();
         this.content = accept ? applicant.getPost().getTitle() + "스터디에서 지원이 승인되었습니다." :
                 applicant.getPost().getTitle() + "스터디에서 지원이 거부되었습니다.";
+        this.isRead = "N";
+    }
+
+    // 멘토 지원자에게 알림
+    public Notification(User user, boolean accept){
+        this.user = user;
+        this.content = accept ? "축하합니다! 멘토 지원이 승인되었습니다." : "멘토 지원이 거부되었습니다. 관리자에게 문의하세요.";
         this.isRead = "N";
     }
 }

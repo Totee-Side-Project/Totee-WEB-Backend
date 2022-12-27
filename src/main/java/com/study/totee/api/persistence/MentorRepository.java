@@ -15,4 +15,6 @@ public interface MentorRepository extends JpaRepository<Mentor, Long> {
     boolean existsByUser(User user);
     Page<Mentor> findAll(Pageable pageable);
     Page<Mentor> findAllByApproval(String approval, Pageable pageable);
+    void deleteByUser(User user);
+    Mentor findByUser(User user);
 }
