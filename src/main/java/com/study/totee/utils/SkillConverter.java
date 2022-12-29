@@ -114,7 +114,7 @@ public class SkillConverter {
         return skillList;
     }
 
-    public List<String> convertSkillEntityToString(LinkedHashSet<Skill> skills){
+    public List<String> convertSkillEntityToString(Set<Skill> skills){
         List<String> skillList = new ArrayList<>();
         for (Skill skill : skills) {
             skillList.add(skill.getSkill().getSkill());
