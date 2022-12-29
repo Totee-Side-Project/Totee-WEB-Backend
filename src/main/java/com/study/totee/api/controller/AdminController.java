@@ -1,26 +1,14 @@
 package com.study.totee.api.controller;
 
 import com.study.totee.api.dto.admin.MentorApprovalRequestDto;
-import com.study.totee.api.dto.team.MemberListResponseDto;
-import com.study.totee.api.dto.team.TeamRequestDto;
 import com.study.totee.api.dto.user.RoleRequestDto;
-import com.study.totee.api.model.Post;
-import com.study.totee.api.model.User;
 import com.study.totee.api.service.AdminService;
-import com.study.totee.api.service.MentorService;
-import com.study.totee.api.service.UserService;
 import com.study.totee.common.ApiResponse;
-import com.study.totee.exption.ErrorCode;
-import com.study.totee.exption.NoAuthException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
