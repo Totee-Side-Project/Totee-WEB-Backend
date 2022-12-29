@@ -6,6 +6,7 @@ import com.study.totee.type.SkillType;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -113,7 +114,7 @@ public class SkillConverter {
         return skillList;
     }
 
-    public List<String> convertSkillEntityToString(Set<Skill> skills){
+    public List<String> convertSkillEntityToString(LinkedHashSet<Skill> skills){
         List<String> skillList = new ArrayList<>();
         for (Skill skill : skills) {
             skillList.add(skill.getSkill().getSkill());

@@ -83,7 +83,7 @@ public class Post {
     private Set<Position> positionList;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private Set<Skill> skillList;
+    private LinkedHashSet<Skill> skillList;
 
     @OneToMany(mappedBy = "post")
     private List<Applicant> applicantList;

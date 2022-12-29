@@ -44,7 +44,7 @@ public class PostService {
 
         Post savedPost = postRepository.save(new Post(user, postRequestDto));
 
-        Set<String> skillStringList = new HashSet<>(postRequestDto.getSkillList());
+        LinkedHashSet<String> skillStringList = new LinkedHashSet<>(postRequestDto.getSkillList());
         List<Skill> skillList = skillConverter.convertStringToSkillEntity(new ArrayList<>(skillStringList), savedPost);
         savedPost.setSkillList(new LinkedHashSet<>(skillList));
         teamRepository.save(new Team(user, savedPost));
@@ -97,7 +97,7 @@ public class PostService {
 
         // 기존 기술 리스트 삭제 후 새로운 리스트 저장
         skillRepository.deleteAllByPostId(post.getId());
-        Set<String> skillStringList = new LinkedHashSet<>(postRequestDto.getSkillList());
+        LinkedHashSet<String> skillStringList = new LinkedHashSet<>(postRequestDto.getSkillList());
         List<Skill> skillEntityList = skillConverter.convertStringToSkillEntity(new ArrayList<>(skillStringList), post);
 
         post.update(postRequestDto, skillEntityList);
