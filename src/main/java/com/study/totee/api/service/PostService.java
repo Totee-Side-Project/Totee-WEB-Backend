@@ -46,7 +46,7 @@ public class PostService {
 
         Set<String> skillStringList = new HashSet<>(postRequestDto.getSkillList());
         List<Skill> skillList = skillConverter.convertStringToSkillEntity(new ArrayList<>(skillStringList), savedPost);
-        savedPost.setSkillList(new HashSet<>(skillList));
+        savedPost.setSkillList(new LinkedHashSet<>(skillList));
         teamRepository.save(new Team(user, savedPost));
 //        게시글의 썸네일 디자인이 생길 시 추가!
 //        if(postRequestDto.getPostImage() != null){
@@ -97,7 +97,7 @@ public class PostService {
 
         // 기존 기술 리스트 삭제 후 새로운 리스트 저장
         skillRepository.deleteAllByPostId(post.getId());
-        Set<String> skillStringList = new HashSet<>(postRequestDto.getSkillList());
+        Set<String> skillStringList = new LinkedHashSet<>(postRequestDto.getSkillList());
         List<Skill> skillEntityList = skillConverter.convertStringToSkillEntity(new ArrayList<>(skillStringList), post);
 
         post.update(postRequestDto, skillEntityList);

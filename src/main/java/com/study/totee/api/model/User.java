@@ -89,6 +89,10 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserInfo userInfo;
 
+    @JoinColumn(name = "MENTOR_ID")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Mentor mentor;
+
     @OneToMany(mappedBy = "user")
     private List<Notification> notification;
 
