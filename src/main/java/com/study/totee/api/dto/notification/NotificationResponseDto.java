@@ -3,12 +3,14 @@ package com.study.totee.api.dto.notification;
 
 import com.study.totee.api.dto.License;
 import com.study.totee.api.model.Notification;
+import com.study.totee.exption.BadRequestException;
+import com.study.totee.exption.ErrorCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
-
+import java.util.Optional;
 
 
 @Getter
@@ -34,7 +36,7 @@ public class NotificationResponseDto extends RepresentationModel<NotificationRes
         this.notificationId = notification.getId();
         this.content = notification.getContent();
         this.isRead = notification.getIsRead();
-        this.postId = notification.getPost().getId();
         this.createdAt = notification.getCreated_at();
+        this.postId = notification.getPost() == null ? null : notification.getPost().getId();
     }
 }
