@@ -32,6 +32,9 @@ public class MentoringResponseDto {
     @ApiModelProperty(example = "닉네임")
     private String nickname;
 
+    @ApiModelProperty(example = "프로필 이미지 Url")
+    private String profileImageUrl;
+
     public MentoringResponseDto(Mentoring mentoring){
         this.mentoringId = mentoring.getId();
         this.title = mentoring.getTitle();
@@ -40,5 +43,6 @@ public class MentoringResponseDto {
         this.field = mentoring.getUser().getMentor().getField();
         this.career = mentoring.getUser().getMentor().getCareer();
         this.nickname = mentoring.getUser().getUserInfo().getNickname();
+        this.profileImageUrl = mentoring.getUser().getUserInfo().getProfileImageUrl();
     }
 }

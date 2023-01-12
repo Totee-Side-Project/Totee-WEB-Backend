@@ -2,6 +2,7 @@ package com.study.totee.api.controller;
 
 import com.study.totee.api.dto.mentoring.MentoringRequestDto;
 import com.study.totee.api.dto.mentoring.MentoringResponseDto;
+import com.study.totee.api.dto.post.PostResponseDto;
 import com.study.totee.api.service.MentoringService;
 import com.study.totee.common.ApiResponse;
 import com.study.totee.exption.ErrorCode;
@@ -9,6 +10,10 @@ import com.study.totee.exption.NoAuthException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +28,7 @@ public class MentoringController {
 
     private final MentoringService mentoringService;
 
-    @ApiOperation(value = "멘토링 글 등록" , notes = "멘토링 게시글을 등록합니다 (폼데이터 형식 필수)")
+    @ApiOperation(value = "멘토링 글 쓰기" , notes = "멘토링 게시글을 등록합니다.")
     @PostMapping("/api/v1/mentoring")
     public ApiResponse<Object> createPost(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @Valid @RequestBody MentoringRequestDto requestDto) throws IOException {
         // 로그인 정보가 없으면 예외 발생
@@ -42,5 +47,14 @@ public class MentoringController {
 
         MentoringResponseDto mentoringResponseDto = mentoringService.findByMentoringId(mentoringId);
         return ApiResponse.success("data", mentoringResponseDto);
+    }
+
+    @ApiOperation(value = "전체 멘토링 글 목록 불러오기",
+            notes = "ex : api/v1/post/list?page=0&size=5&sort=postId.desc")
+    @GetMapping("/api/v1/mentoring/list")
+    public ApiResponse<Object> findPostAll( @PageableDefault(size = 16 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable){
+        Page<MentoringResponseDto> page = mentoringService.findAll(pageable);
+
+        return ApiResponse.success("data", page);
     }
 }

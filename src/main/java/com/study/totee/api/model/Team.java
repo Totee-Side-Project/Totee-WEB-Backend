@@ -31,6 +31,10 @@ public class Team {
     @JoinColumn(name="POST_ID")
     private Post post;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MENTORING_ID")
+    private Mentoring mentoring;
+
     @Column(name = "CREATED_AT")
     @CreationTimestamp
     @ApiModelProperty
@@ -41,9 +45,20 @@ public class Team {
         this.post = post;
     }
 
-    public void deleteTeam() {
+    public Team(User user, Mentoring mentoring) {
+        this.user = user;
+        this.mentoring = mentoring;
+    }
+
+    public void deleteStudyTeam() {
         this.post.decreaseMemberNum();
         this.post.getTeamList().remove(this);
+        this.user.getTeamList().remove(this);
+    }
+
+    public void deleteMentoringTeam() {
+        this.mentoring.decreaseMenteeNum();
+        this.mentoring.getTeamList().remove(this);
         this.user.getTeamList().remove(this);
     }
 }

@@ -33,7 +33,7 @@ public class TeamService {
                 () -> new BadRequestException(ErrorCode.NO_APPLICANT_ERROR)
         );
 
-        if (accept && post.getMemberNum() == post.getRecruitNum()){
+        if (accept && post.getMemberNum() == post.getRecruitNum() + 1){
             throw new BadRequestException(ErrorCode.NO_APPLICANT_ERROR);
         }
 
@@ -68,7 +68,7 @@ public class TeamService {
             Team team = teamRepository.findByUserAndPost(user, post).orElseThrow(
                     () -> new ForbiddenException(ErrorCode.NO_TEAM_ERROR)
             );
-            team.deleteTeam();
+            team.deleteStudyTeam();
             teamRepository.deleteByUserAndPost(user, post);
         } else throw new BadRequestException(ErrorCode.NOT_AVAILABLE_ACCESS);
     }

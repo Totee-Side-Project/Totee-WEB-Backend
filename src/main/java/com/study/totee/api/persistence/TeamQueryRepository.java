@@ -28,6 +28,16 @@ public class TeamQueryRepository {
         return fetchOne != null;
     }
 
+    public boolean existsByMentoringIdAndUserId(Long mentoringId, String userId) {
+        Integer fetchOne = queryFactory.selectOne()
+                .from(team)
+                .where(team.user.id.eq(userId)
+                        .and(team.mentoring.id.eq(mentoringId)))
+                .fetchFirst();
+
+        return fetchOne != null;
+    }
+
     public List<Team> findAllByPostId(Long postId) {
         return queryFactory.selectFrom(team)
                 .where(team.post.id.eq(postId))

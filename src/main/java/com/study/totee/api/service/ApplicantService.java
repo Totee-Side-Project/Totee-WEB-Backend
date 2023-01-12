@@ -38,10 +38,11 @@ public class ApplicantService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new BadRequestException(ErrorCode.NO_POST_ERROR)
         );
-        // [예외처리] 신청했던 프로젝트에 다시 신청하는 경우
+        // [예외처리] 이미 팀에 속해 있을 경우
         if(teamQueryRepository.existsByPostIdAndUserId(postId, userId)){
             throw new BadRequestException(ErrorCode.ALREADY_TEAM_ERROR);
         }
+        // [예외처리] 신청했던 프로젝트에 다시 신청하는 경우
         if(applicantQueryRepository.existsByUserIdAndPostId(user.getUserSeq(), post.getId())) {
             throw new BadRequestException(ErrorCode.ALREADY_APPLY_POST_ERROR);
         }
