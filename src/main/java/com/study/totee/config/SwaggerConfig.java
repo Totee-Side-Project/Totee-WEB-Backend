@@ -1,5 +1,7 @@
 package com.study.totee.config;
 
+import com.nimbusds.jwt.JWT;
+import io.swagger.models.Swagger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.client.LinkDiscoverer;
@@ -74,4 +76,5 @@ public class SwaggerConfig {
         authorizationScopes[0] = authorizationScope;
         return Arrays.asList(new SecurityReference("JWT", authorizationScopes));
     }
+
 }

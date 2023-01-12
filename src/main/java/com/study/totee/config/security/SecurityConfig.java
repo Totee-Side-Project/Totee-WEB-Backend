@@ -27,21 +27,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @RequiredArgsConstructor
-@AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private AppProperties appProperties;
-    @Autowired
-    private AuthTokenProvider tokenProvider;
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
-    @Autowired
-    private CustomOAuth2UserService oAuth2UserService;
-    @Autowired
-    private TokenAccessDeniedHandler tokenAccessDeniedHandler;
-    @Autowired
-    private UserRefreshTokenRepository userRefreshTokenRepository;
+    private final AppProperties appProperties;
+    private final AuthTokenProvider tokenProvider;
+
+    private final CustomUserDetailsService userDetailsService;
+
+    private final CustomOAuth2UserService oAuth2UserService;
+
+    private final TokenAccessDeniedHandler tokenAccessDeniedHandler;
+
+    private final UserRefreshTokenRepository userRefreshTokenRepository;
 
     /*
      * UserDetailsService 설정
