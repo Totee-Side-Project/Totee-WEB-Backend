@@ -31,7 +31,7 @@ public class TeamController {
     private final PostService postService;
 
     @CacheEvict(value = "Post", allEntries=true)
-    @ApiOperation(value = "팀원 승인/거절")
+    @ApiOperation(value = "스터디 팀원 승인/거절")
     @PostMapping("/api/v1/team/{postId}")
     public ApiResponse<Object> acceptMember(@PathVariable Long postId,
                                                @RequestBody TeamRequestDto requestDto,
@@ -54,7 +54,7 @@ public class TeamController {
         return ApiResponse.success("data" , responseDto);
     }
 
-    @ApiOperation(value = "팀원 조회")
+    @ApiOperation(value = "스터디 팀원 조회")
     @GetMapping("/api/v1/team/{postId}")
     public ApiResponse<Object> getMember(@PathVariable Long postId) {
         List<MemberListResponseDto> responseDto = teamService.getMember(postId);
@@ -62,7 +62,7 @@ public class TeamController {
     }
 
     @CacheEvict(value = "Post", allEntries=true)
-    @ApiOperation(value = "팀원 강퇴")
+    @ApiOperation(value = "스터디 팀원 강퇴")
     @DeleteMapping("/api/v1/team/resignation/{postId}")
     public ApiResponse<Object> memberResignation(@RequestParam Long targetId,
                                                     @PathVariable Long postId,
@@ -82,7 +82,7 @@ public class TeamController {
     }
 
     @CacheEvict(value = "Post", allEntries=true)
-    @ApiOperation(value = "팀 탈퇴")
+    @ApiOperation(value = "스터디 팀 탈퇴")
     @DeleteMapping("/api/v1/team/secession/{postId}")
     public ApiResponse<Object> memberSecession(@PathVariable Long postId,
                                                   @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {

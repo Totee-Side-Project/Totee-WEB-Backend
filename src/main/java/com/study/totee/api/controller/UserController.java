@@ -65,7 +65,7 @@ public class UserController {
     @ApiOperation(value = "닉네임 중복 확인" , notes = "사용 가능한 닉네임이면 true 을 반환하고 사용 불가능한 닉네임이면 예외 처리" +
             "닉네임 2자 이상, 5자 이하 길이만 가능합니다.")
     @PostMapping("/api/v1/validate/nickname")
-    public ApiResponse<Object> isNicknameDuplicate(@RequestBody NicknameRequestDto nicknameRequestDto){
+    public ApiResponse<Object> isNicknameDuplicate(@Valid @RequestBody NicknameRequestDto nicknameRequestDto){
 
         // 닉네임 길이와 중복확인
         if(nicknameRequestDto.getNickname().length() < 2 || nicknameRequestDto.getNickname().length() > 5){

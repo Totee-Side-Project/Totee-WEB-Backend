@@ -26,7 +26,7 @@ public class MentorController {
 
     private final MentorService mentorService;
 
-    @ApiOperation(value = "멘토 지원하기", notes = "멘토에 지원합니다.")
+    @ApiOperation(value = "멘토 등록하기", notes = "멘토에 지원합니다.")
     @PostMapping("/api/v1/mentor/apply")
     public ApiResponse<Object> applyMentor(@AuthenticationPrincipal User principal , @Valid @RequestBody MentorRequestDto mentorRequestDto){
         // 로그인이 되어 있지 않으면 예외를 던진다.

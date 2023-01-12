@@ -6,10 +6,11 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 
 
-@Data
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class NicknameRequestDto {
     @ApiModelProperty(example = "닉네임")
+    @NotBlank
     private String nickname;
 }

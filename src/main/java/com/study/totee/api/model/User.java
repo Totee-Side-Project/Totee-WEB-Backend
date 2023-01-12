@@ -100,6 +100,9 @@ public class User {
     private List<Applicant> applicantList;
 
     @OneToMany(mappedBy = "user")
+    private List<MentoringApplicant> mentoringApplicantList;
+
+    @OneToMany(mappedBy = "user")
     private List<Team> teamList;
 
     public User(
