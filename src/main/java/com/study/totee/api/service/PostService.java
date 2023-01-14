@@ -167,6 +167,14 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public Page<PostResponseDto> findAllByMyStudyTeam(Pageable pageable, String userId){
+        User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
+
+        return postRepository.findAllByMyStudyTeam(user, pageable).map(PostResponseDto::new);
+    }
+
     public Post findByPostId(Long postId) {
         return postRepository.findById(postId).orElseThrow(
                 () -> new BadRequestException(ErrorCode.NO_POST_ERROR)
