@@ -45,16 +45,26 @@ public class MentoringController {
     @GetMapping("/api/v1/mentoring/{mentoringId}")
     public ApiResponse<Object> getPost(@PathVariable Long mentoringId){
 
-        MentoringResponseDto mentoringResponseDto = mentoringService.findByMentoringId(mentoringId);
+        MentoringResponseDto mentoringResponseDto = new MentoringResponseDto(mentoringService.findByMentoringId(mentoringId));
         return ApiResponse.success("data", mentoringResponseDto);
     }
 
     @ApiOperation(value = "전체 멘토링 글 목록 불러오기",
             notes = "ex : api/v1/post/list?page=0&size=5&sort=postId.desc")
     @GetMapping("/api/v1/mentoring/list")
-    public ApiResponse<Object> findPostAll( @PageableDefault(size = 16 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable){
-        Page<MentoringResponseDto> page = mentoringService.findAll(pageable);
+    public ApiResponse<Object> findPostAll(@RequestParam(value = "kw", defaultValue = "") String kw, @PageableDefault(size = 16 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable){
+        Page<MentoringResponseDto> page = mentoringService.findAllByTitleContaining(pageable, kw);
 
         return ApiResponse.success("data", page);
     }
+
+    @ApiOperation(value = "멘토링 게시물 제목 검색합니다.", notes = "제목에 해당하는 게시글을 조회합니다. 빈 검색어 보내면 안됩니다")
+    @GetMapping("/api/v2/mentoring/search/{title}")
+    public ApiResponse<Object> findPostAllByTitle(@PathVariable String title, @PageableDefault
+            (size = 16, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<MentoringResponseDto> page = mentoringService.findAllByTitleContaining(pageable, title);
+
+        return ApiResponse.success("data", page);
+    }
+
 }

@@ -72,8 +72,8 @@ public class PostController {
     @ApiOperation(value = "전체 스터디 글 목록 불러오기",
             notes = "글 목록 불러오기 ex : api/v1/post/list?page=0&size=5&sort=postId.desc")
     @GetMapping("/api/v1/post/list")
-    public ApiResponse<Object> findPostAll( @PageableDefault(size = 16 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable){
-        Page<PostResponseDto> page = postService.findPostAll(pageable);
+    public ApiResponse<Object> findPostAll(@RequestParam(value = "kw", defaultValue = "") String kw, @PageableDefault(size = 16 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable){
+        Page<PostResponseDto> page = postService.searchTitle(kw, pageable);
 
         return ApiResponse.success("data", page);
     }
