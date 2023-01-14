@@ -125,9 +125,6 @@ public class PostService {
     // 게시글 제목 검색
     @Transactional(readOnly = true)
     public Page<PostResponseDto> searchTitle(String keyword, Pageable pageable){
-        if(keyword.length() < 1){
-            throw new BadRequestException(ErrorCode.BAD_KEYWORD_ERROR);
-        }
         return postRepository.findAllByTitleContaining(keyword, pageable).map(PostResponseDto::new);
     }
 
