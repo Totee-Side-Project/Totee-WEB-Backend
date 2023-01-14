@@ -49,6 +49,7 @@ public class TeamService {
         if(accept) {
             Team team = new Team(user, post);
             teamRepository.save(team);
+            user.getUserInfo().increaseStudyNum();
             return true;
         }
         return false;
@@ -69,6 +70,7 @@ public class TeamService {
                     () -> new ForbiddenException(ErrorCode.NO_TEAM_ERROR)
             );
             team.deleteStudyTeam();
+            user.getUserInfo().decreaseStudyNum();
             teamRepository.deleteByUserAndPost(user, post);
         } else throw new BadRequestException(ErrorCode.NOT_AVAILABLE_ACCESS);
     }

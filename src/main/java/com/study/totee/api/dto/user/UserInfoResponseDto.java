@@ -26,6 +26,10 @@ public class UserInfoResponseDto {
     private String intro;
     @ApiModelProperty(example = "배경 이미지")
     private String backgroundImageUrl;
+    @ApiModelProperty(example = "1")
+    private int StudyNum;
+    @ApiModelProperty(example = "1")
+    private int MentoringNum;
 
     public UserInfoResponseDto(User user){
         this.email = user.getEmail();
@@ -35,6 +39,8 @@ public class UserInfoResponseDto {
         this.intro = user.getUserInfo().getIntro();
         this.profileImageUrl = user.getUserInfo().getProfileImageUrl();
         this.backgroundImageUrl = user.getUserInfo().getBackgroundImageUrl();
+        this.StudyNum = user.getUserInfo().getStudyNum();
+        this.MentoringNum = user.getUserInfo().getMentoringNum();
     }
 
     public UserInfoResponseDto(UserInfo userInfo){

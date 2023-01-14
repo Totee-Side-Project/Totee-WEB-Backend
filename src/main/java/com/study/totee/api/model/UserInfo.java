@@ -60,12 +60,35 @@ public class UserInfo {
     @Column(name = "MODIFIED_AT")
     private LocalDateTime modifiedAt;
 
+    @Column(name = "STUDY_NUM")
+    private int studyNum;
+
+    @Column(name = "MENTORING_NUM")
+    private int mentoringNum;
+
+    public void increaseStudyNum(){
+        this.studyNum += 1;
+    }
+
+    public void decreaseStudyNum(){
+        this.studyNum -= 1;
+    }
+
+    public void increaseMentoringNum(){
+        this.mentoringNum += 1;
+    }
+
+    public void decreaseMentoringNum(){
+        this.mentoringNum -= 1;
+    }
     public void setUserInfo(UserInfoRequestDto userInfoRequestDto, String profileImageUrl) {
         this.nickname = userInfoRequestDto.getNickname();
         this.profileImageUrl = profileImageUrl;
         this.position = userInfoRequestDto.getPosition();
         this.intro = "";
         this.backgroundImageUrl = null;
+        this.studyNum = 0;
+        this.mentoringNum = 0;
     }
 
     public void updateUserInfo(UserInfoUpdateRequestDto userInfoUpdateRequestDto,

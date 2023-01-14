@@ -52,7 +52,7 @@ public class PostService {
 //        if(postRequestDto.getPostImage() != null){
 //            post.setImageUrl(awsS3Service.upload(postRequestDto.getPostImage(), "static"));
 //        }
-
+        user.getUserInfo().increaseStudyNum();
         skillRepository.saveAll(skillList);
     }
 
@@ -115,6 +115,7 @@ public class PostService {
 //        if(post.getImageUrl() != null){
 //            awsS3Service.fileDelete(post.getImageUrl());
 //        }
+        user.getUserInfo().decreaseStudyNum();
         applicantRepository.deleteAllByPost(post);
         teamRepository.deleteAllByPost(post);
         notificationRepository.deleteAllByPost_Id(post.getId());
