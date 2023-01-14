@@ -23,6 +23,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllByUser_Id(String userId);
 
-    @Query(value = "SELECT p FROM Post p LEFT JOIN Team t ON t.post.id = p.id WHERE p.user = ?1")
+    @Query(value = "SELECT p FROM Post p WHERE p.id IN (SELECT t.post.id FROM Team t WHERE t.user = ?1)")
     Page<Post> findAllByMyStudyTeam(User user, Pageable pageable);
 }
