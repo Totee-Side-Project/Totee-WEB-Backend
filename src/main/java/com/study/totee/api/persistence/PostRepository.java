@@ -22,4 +22,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByLikedPost(User user);
 
     List<Post> findAllByUser_Id(String userId);
+
+    @Query(value = "SELECT p FROM Post p LEFT JOIN Team t ON t.post.id = p.id WHERE p.user = ?1")
+    Page<Post> findAllByMyStudyTeam(User user, Pageable pageable);
 }

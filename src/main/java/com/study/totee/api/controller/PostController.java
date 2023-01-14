@@ -100,7 +100,8 @@ public class PostController {
 
     @ApiOperation(value = "내가 작성한 스터디 게시글 목록 불러오기", notes = "로그인한 유저의 게시글을 모두 조회합니다.")
     @GetMapping("/api/v1/post/mypost")
-    public ApiResponse<Object> findPostMyPost(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
+    public ApiResponse<Object> findPostMyPost(@PageableDefault(size = 16 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable,
+                                              @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
         // 로그인 정보가 없으면 예외 발생
         String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
 
@@ -116,6 +117,18 @@ public class PostController {
         String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
 
         List<PostResponseDto> page = postService.findAllByLikedPost(id);
+
+        return ApiResponse.success("data", page);
+    }
+
+    @ApiOperation(value = "내가 참여중인 스터디 글 리스트", notes = "내가 참여중인 스터디 글 리스트를 조회합니다.")
+    @GetMapping("/api/v1/post/like")
+    public ApiResponse<Object> findAllByMyStudyTeam(@PageableDefault(size = 16 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable,
+                                                    @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
+        // 로그인 정보가 없으면 예외 발생
+        String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+
+        Page<PostResponseDto> page = postService.findAllByMyStudyTeam(pageable, id);
 
         return ApiResponse.success("data", page);
     }
