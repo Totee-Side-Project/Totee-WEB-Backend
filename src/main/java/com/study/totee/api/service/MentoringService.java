@@ -41,15 +41,21 @@ public class MentoringService {
         teamRepository.save(new Team(user, savedMentoring));
     }
 
-    @Transactional
-    public MentoringResponseDto findByMentoringId(Long id){
+    @Transactional(readOnly = true)
+    public Mentoring findByMentoringId(Long id){
         Mentoring mentoring = mentoringRepository.findById(id).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
-        return new MentoringResponseDto(mentoring);
+        return mentoring;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<MentoringResponseDto> findAll(Pageable pageable){
         return mentoringRepository.findAll(pageable).map(MentoringResponseDto::new);
     }
+
+    @Transactional(readOnly = true)
+    public Page<MentoringResponseDto> findAllByTitleContaining(Pageable pageable, String title){
+        return mentoringRepository.findAllByTitleContaining(title, pageable).map(MentoringResponseDto::new);
+    }
+
 }

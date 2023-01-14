@@ -12,4 +12,5 @@ public interface MentoringRepository extends JpaRepository<Mentoring, Long> {
 
     void deleteByUser(User user);
     Page<Mentoring> findAll(Pageable pageable);
+    Page<Mentoring> findAllByTitleContaining(String keyword, Pageable pageable);
 }
