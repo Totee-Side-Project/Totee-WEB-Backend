@@ -122,7 +122,7 @@ public class PostController {
     }
 
     @ApiOperation(value = "내가 참여중인 스터디 글 리스트", notes = "내가 참여중인 스터디 글 리스트를 조회합니다.")
-    @GetMapping("/api/v1/post/like")
+    @GetMapping("/api/v1/post/mystudy")
     public ApiResponse<Object> findAllByMyStudyTeam(@PageableDefault(size = 16 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable,
                                                     @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
         // 로그인 정보가 없으면 예외 발생
