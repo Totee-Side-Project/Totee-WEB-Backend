@@ -88,7 +88,7 @@ public class UserInfo {
     }
 
     public void updateUserInfo(UserInfoUpdateRequestDto userInfoUpdateRequestDto,
-                               String profileImageUrl, String backgroundImageUrl) {
+                               String profileImageUrl) {
         this.nickname = userInfoUpdateRequestDto.getNickname();
         this.position = userInfoUpdateRequestDto.getPosition();
         this.intro = userInfoUpdateRequestDto.getIntro();
