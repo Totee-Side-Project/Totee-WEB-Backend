@@ -24,8 +24,6 @@ public class UserInfoResponseDto {
     private RoleType roleType;
     @ApiModelProperty(example = "자기소개")
     private String intro;
-    @ApiModelProperty(example = "배경 이미지")
-    private String backgroundImageUrl;
     @ApiModelProperty(example = "1")
     private int StudyNum;
     @ApiModelProperty(example = "1")
@@ -38,7 +36,6 @@ public class UserInfoResponseDto {
         this.roleType = user.getRoleType();
         this.intro = user.getUserInfo().getIntro();
         this.profileImageUrl = user.getUserInfo().getProfileImageUrl();
-        this.backgroundImageUrl = user.getUserInfo().getBackgroundImageUrl();
         this.StudyNum = user.getUserInfo().getStudyNum();
         this.MentoringNum = user.getUserInfo().getMentoringNum();
     }
@@ -48,9 +45,8 @@ public class UserInfoResponseDto {
         this.position = userInfo.getPosition();
         this.intro = userInfo.getIntro();
         this.profileImageUrl = userInfo.getProfileImageUrl();
-        this.backgroundImageUrl = userInfo.getBackgroundImageUrl();
-//        this.roleType = userInfo.getUser().getRoleType();
-//        this.email = userInfo.getUser().getEmail();
+        this.roleType = userInfo.getUser().getRoleType();
+        this.email = userInfo.getUser().getEmail();
     }
 
     public UserInfoResponseDto(UserInfo userInfo, User user){
@@ -58,7 +54,6 @@ public class UserInfoResponseDto {
         this.position = userInfo.getPosition();
         this.intro = userInfo.getIntro();
         this.profileImageUrl = userInfo.getProfileImageUrl();
-        this.backgroundImageUrl = userInfo.getBackgroundImageUrl();
         this.roleType = user.getRoleType();
         this.email = user.getEmail();
     }
