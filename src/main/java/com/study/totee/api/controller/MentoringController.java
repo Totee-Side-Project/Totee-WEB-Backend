@@ -52,7 +52,7 @@ public class MentoringController {
     @ApiOperation(value = "전체 멘토링 글 목록 불러오기",
             notes = "ex : api/v1/post/list?page=0&size=5&sort=postId.desc")
     @GetMapping("/api/v1/mentoring/list")
-    public ApiResponse<Object> findPostAll(@RequestParam(value = "kw", defaultValue = "") String kw, @PageableDefault(size = 16 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable){
+    public ApiResponse<Object> findPostAll(@RequestParam(value = "kw", defaultValue = "") String kw, @PageableDefault(size = 20 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable){
         Page<MentoringResponseDto> page = mentoringService.findAllByTitleContaining(pageable, kw);
 
         return ApiResponse.success("data", page);
