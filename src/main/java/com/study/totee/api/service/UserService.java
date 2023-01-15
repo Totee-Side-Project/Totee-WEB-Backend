@@ -67,7 +67,6 @@ public class UserService {
 
         // 프로필 이미지 수정&삭제
         String profileImageUrl = null;
-        String backgroundImageUrl = null;
 
         if(!userInfoUpdateRequestDto.getKeepProfileImage().equals("Y")){
             if(userInfo.getProfileImageUrl() != null){
@@ -78,19 +77,6 @@ public class UserService {
         } else{
             profileImageUrl = userInfo.getProfileImageUrl();
         }
-
-        // 배경 이미지 수정&삭제
-        if(!userInfoUpdateRequestDto.getKeepBackgroundImage().equals("Y")){
-            if(userInfo.getBackgroundImageUrl() != null){
-                awsS3Service.fileDelete(userInfo.getBackgroundImageUrl());
-            }
-            backgroundImageUrl = userInfoUpdateRequestDto.getBackgroundImage().isEmpty() ?
-                    null : awsS3Service.upload(userInfoUpdateRequestDto.getBackgroundImage(), "static");
-        } else{
-            backgroundImageUrl = userInfo.getBackgroundImageUrl();
-        }
-
-        userInfo.updateUserInfo(userInfoUpdateRequestDto, profileImageUrl, backgroundImageUrl);
         return new UserInfoResponseDto(userInfo);
     }
 
@@ -103,7 +89,8 @@ public class UserService {
     // 닉네임으로 유저 조회
     @Transactional(readOnly = true)
     public User getUserByNickname(final String nickname){
-        return userQueryRepository.findByUserInfo_Nickname(nickname);
+        return Optional.ofNullable(userQueryRepository.findByUserInfo_Nickname(nickname)).orElseThrow(
+                () -> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
     }
 
     // 유저 아이디로 유저 조회
@@ -120,13 +107,22 @@ public class UserService {
 
     // 포스트맨 회원가입 (테스트 용 삭제 예정)
     @Transactional
-    public void create(final User userEntity) {
+    public void create(final User userEntity1, final User userEntity2) {
         UserInfo userInfo = new UserInfo();
-        userInfo.setUser(userEntity);
+        userInfo.setUser(userEntity1);
         userInfo.setNickname("테스트3");
-        userInfo.setUser(userEntity);
+        userInfo.setUser(userEntity1);
         UserInfo savedUserInfo = userInfoRepository.save(userInfo);
-        userEntity.setUserInfo(savedUserInfo);
-        userRepository.save(userEntity);
+        userEntity1.setUserInfo(savedUserInfo);
+
+        UserInfo userInfo2 = new UserInfo();
+        userInfo2.setUser(userEntity2);
+        userInfo2.setNickname("테스트2");
+        userInfo2.setUser(userEntity2);
+        UserInfo savedUserInfo2 = userInfoRepository.save(userInfo2);
+        userEntity2.setUserInfo(savedUserInfo2);
+
+        userRepository.save(userEntity1);
+        userRepository.save(userEntity2);
     }
 }

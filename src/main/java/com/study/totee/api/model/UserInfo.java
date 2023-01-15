@@ -41,9 +41,6 @@ public class UserInfo {
     @Column(name = "PROFILE_IMAGE_URL", length = 512)
     private String profileImageUrl;
 
-    @Column(name = "BACKGROUND_IMAGE_URL", length = 512)
-    private String backgroundImageUrl;
-
     @Column(name = "POSITION", length = 20)
     @Enumerated(EnumType.STRING)
     private PositionType position;
@@ -86,7 +83,6 @@ public class UserInfo {
         this.profileImageUrl = profileImageUrl;
         this.position = userInfoRequestDto.getPosition();
         this.intro = "";
-        this.backgroundImageUrl = null;
         this.studyNum = 0;
         this.mentoringNum = 0;
     }
@@ -97,6 +93,5 @@ public class UserInfo {
         this.position = userInfoUpdateRequestDto.getPosition();
         this.intro = userInfoUpdateRequestDto.getIntro();
         this.profileImageUrl = profileImageUrl;
-        this.backgroundImageUrl = backgroundImageUrl;
     }
 }
