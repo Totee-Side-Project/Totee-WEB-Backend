@@ -66,9 +66,9 @@ public class UserService {
         }
 
         // 프로필 이미지 수정&삭제
-        String profileImageUrl = null;
+        String profileImageUrl;
 
-        if(!userInfoUpdateRequestDto.getKeepProfileImage().equals("Y")){
+        if(!userInfoUpdateRequestDto.isKeepProfileImage()){
             if(userInfo.getProfileImageUrl() != null){
                 awsS3Service.fileDelete(userInfo.getProfileImageUrl());
             }
@@ -77,6 +77,7 @@ public class UserService {
         } else{
             profileImageUrl = userInfo.getProfileImageUrl();
         }
+        userInfo.updateUserInfo(userInfoUpdateRequestDto, profileImageUrl);
         return new UserInfoResponseDto(userInfo);
     }
 
