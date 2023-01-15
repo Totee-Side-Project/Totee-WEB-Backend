@@ -58,11 +58,24 @@ public class AuthController {
     public ApiResponse<Object> registerUser(@RequestBody SignupDto signUpDTO){
         // 요청을 이용해 저장할 사용자 만들기
 
-        User userEntity = User.builder()
+        User userEntity1 = User.builder()
                 .id("12")
                 .email("12")
                 .username("12")
-                .password(passwordEncoder.encode("122"))
+                .password(passwordEncoder.encode("12"))
+                .providerType(ProviderType.LOCAL)
+                .roleType(RoleType.user)
+                .emailVerifiedYn("N")
+                .profileImageUrl("https://lh3.googleusercontent.com/a-/AOh14Gg_jYj1ka2KSZcYgcxXxasvl8_rytXHtszA-SzRwg=s96-c")
+                .createdAt(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
+                .build();
+
+        User userEntity2 = User.builder()
+                .id("123")
+                .email("123")
+                .username("123")
+                .password(passwordEncoder.encode("123"))
                 .providerType(ProviderType.LOCAL)
                 .roleType(RoleType.user)
                 .emailVerifiedYn("N")
@@ -72,7 +85,7 @@ public class AuthController {
                 .build();
 
         // 서비스를 이용해 리포지토리에 사용자 저장
-        userService.create(userEntity);
+        userService.create(userEntity1, userEntity2);
 
         return ApiResponse.success("message" , "회원가입이 성공적으로 완료되었습니다.");
     }
