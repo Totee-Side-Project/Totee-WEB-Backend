@@ -33,6 +33,7 @@ public enum ErrorCode {
     ALREADY_TEAM_ERROR("이미 팀원에 속해 있습니다."),
     NOT_AVAILABLE_ACCESS("잘못된 접근입니다."),
     NO_TEAM_ERROR("팀원이 아닌 사용자입니다."),
+    NOT_EXPEL_ERROR("방장을 추방할 수 없습니다."),
     NO_EXCEED_MEMBER_ERROR("더이상 멤버를 받을 수 없습니다");
     private String message;
 }
