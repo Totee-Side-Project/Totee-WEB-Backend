@@ -2,6 +2,7 @@ package com.study.totee.api.controller;
 
 import com.study.totee.api.dto.team.MemberListResponseDto;
 import com.study.totee.api.dto.team.TeamRequestDto;
+import com.study.totee.api.dto.user.NicknameRequestDto;
 import com.study.totee.api.model.Post;
 import com.study.totee.api.model.User;
 import com.study.totee.api.service.PostService;
@@ -64,7 +65,7 @@ public class TeamController {
     @CacheEvict(value = "Post", allEntries=true)
     @ApiOperation(value = "스터디 팀원 강퇴")
     @DeleteMapping("/api/v1/team/resignation/{postId}")
-    public ApiResponse<Object> memberResignation(@RequestParam Long targetId,
+    public ApiResponse<Object> memberResignation(@RequestBody List<NicknameRequestDto> nicknameRequestDtoList,
                                                     @PathVariable Long postId,
                                                     @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         Post post = postService.findByPostId(postId);
@@ -72,13 +73,8 @@ public class TeamController {
                 () -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)
         );
         User user = userService.getUser(userId);
-
-        if (post.getUser().getId().equals(user.getId())) {
-            User member = userService.loadUserByUserId(targetId);
-            teamService.memberDelete(member, post);
-            return ApiResponse.success("message" , "팀원을 강퇴했습니다.");
-            // [예외처리] 팀원 강퇴를 요청한 사용자가 게시물 작성자가 아닐 때
-        } else throw new ForbiddenException(ErrorCode.NO_AUTHORIZATION_ERROR);
+        teamService.memberDelete(user, post, nicknameRequestDtoList);
+        return ApiResponse.success("message" , "팀원을 강퇴했습니다.");
     }
 
     @CacheEvict(value = "Post", allEntries=true)
@@ -86,10 +82,10 @@ public class TeamController {
     @DeleteMapping("/api/v1/team/secession/{postId}")
     public ApiResponse<Object> memberSecession(@PathVariable Long postId,
                                                   @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        Post post = postService.findByPostId(postId);
         String userId = Optional.ofNullable(principal.getUsername()).orElseThrow(
                 () -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)
         );
+        Post post = postService.findByPostId(postId);
         User user = userService.getUser(userId);
         teamService.memberDelete(user, post);
         return ApiResponse.success("message" , "해당 팀에서 탈퇴되었습니다.");

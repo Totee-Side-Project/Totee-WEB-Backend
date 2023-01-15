@@ -1,6 +1,7 @@
 package com.study.totee.api.service;
 
 import com.study.totee.api.dto.team.MemberListResponseDto;
+import com.study.totee.api.dto.user.NicknameRequestDto;
 import com.study.totee.api.model.*;
 import com.study.totee.api.persistence.*;
 import com.study.totee.exption.BadRequestException;
@@ -26,6 +27,7 @@ public class TeamService {
     private final ApplicantRepository applicantRepository;
     private final ApplicantQueryRepository applicantQueryRepository;
     private final NotificationRepository notificationRepository;
+    private final UserService userService;
 
     @Transactional
     public boolean AcceptApplication(Post post, User user, Boolean accept){
@@ -62,16 +64,35 @@ public class TeamService {
     }
 
     @Transactional
-    public void memberDelete(User user, Post post) {
-        if (post.getUser().getId().equals(user.getId())) {
+    public void memberDelete(User user, Post post, List<NicknameRequestDto> nicknameRequestDtoList) {
+        if (!post.getUser().getId().equals(user.getId())) {
             throw new BadRequestException(ErrorCode.NOT_AVAILABLE_ACCESS);
-        } else if (post.getStatus().equals("N")) {
-            Team team = teamRepository.findByUserAndPost(user, post).orElseThrow(
+        }
+        for(NicknameRequestDto dto : nicknameRequestDtoList){
+            User member = userService.getUserByNickname(dto.getNickname());
+            if (member.getId().equals(user.getId())){
+                throw new BadRequestException(ErrorCode.NOT_EXPEL_ERROR);
+            }
+            Team team = teamRepository.findByUserAndPost(member, post).orElseThrow(
                     () -> new ForbiddenException(ErrorCode.NO_TEAM_ERROR)
             );
             team.deleteStudyTeam();
-            user.getUserInfo().decreaseStudyNum();
-            teamRepository.deleteByUserAndPost(user, post);
-        } else throw new BadRequestException(ErrorCode.NOT_AVAILABLE_ACCESS);
+            member.getUserInfo().decreaseStudyNum();
+            teamRepository.deleteByUserAndPost(member, post);
+        }
+
+    }
+
+    @Transactional
+    public void memberDelete(User user, Post post) {
+        if(user.getId().equals(post.getUser().getId())){
+            throw new BadRequestException(ErrorCode.NOT_EXPEL_ERROR);
+        }
+        Team team = teamRepository.findByUserAndPost(user, post).orElseThrow(
+                () -> new BadRequestException(ErrorCode.NO_TEAM_ERROR)
+        );
+        team.deleteStudyTeam();
+        user.getUserInfo().decreaseStudyNum();
+        teamRepository.deleteByUserAndPost(user, post);
     }
 }
