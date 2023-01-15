@@ -25,8 +25,8 @@ public class UserInfoUpdateRequestDto {
     @ApiModelProperty(example = "유저 프로필 이미지")
     private MultipartFile profileImage;
 
-    @ApiModelProperty(example = "Y")
-    private String keepProfileImage;
+    @ApiModelProperty(example = "true")
+    private boolean keepProfileImage;
 
 
     public UserInfoUpdateRequestDto(String nickname, PositionType position, MultipartFile profileImage, String intro) {
