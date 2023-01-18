@@ -46,6 +46,10 @@ public class Notification {
     @JoinColumn(name = "POST_ID")
     private Post post;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MENTORING_ID")
+    private Mentoring mentoring;
+
     @Column(name = "CREATED_AT")
     @CreationTimestamp
     private LocalDateTime created_at;

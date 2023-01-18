@@ -41,14 +41,22 @@ public class Mentoring {
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "mentoring", cascade = CascadeType.ALL)
+    private List<Like> like;
+
     @OneToMany(mappedBy = "mentoring")
     private List<MentoringApplicant> mentoringApplicants;
+
+    @Column(name = "LIKE_NUM")
+    @NotNull
+    private int likeNum;
 
     public Mentoring(MentoringRequestDto mentoringRequestDto, User user) {
         this.cost = mentoringRequestDto.getCost();
         this.title = mentoringRequestDto.getTitle();
         this.content = mentoringRequestDto.getContent();
         this.menteeNum = 0;
+        this.likeNum = 0;
         this.user = user;
         this.user.getUserInfo().increaseMentoringNum();
     }
@@ -60,5 +68,12 @@ public class Mentoring {
     }
 
     public void decreaseMenteeNum() {this.menteeNum -= 1;}
-    
+
+    public void increaseLikeNum() {
+        this.likeNum += 1;
+    }
+
+    public void decreaseLikeNum() {
+        this.likeNum -= 1;
+    }
 }

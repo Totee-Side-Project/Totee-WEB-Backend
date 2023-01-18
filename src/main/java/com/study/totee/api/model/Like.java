@@ -22,8 +22,12 @@ public class Like {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "POST_ID", nullable = false)
+    @JoinColumn(name = "POST_ID")
     private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MENTORING_ID")
+    private Mentoring mentoring;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID", nullable = false)
@@ -36,5 +40,10 @@ public class Like {
     public Like(User user, Post post) {
         this.user = user;
         this.post = post;
+    }
+
+    public Like(User user, Mentoring mentoring){
+        this.user = user;
+        this.mentoring = mentoring;
     }
 }
