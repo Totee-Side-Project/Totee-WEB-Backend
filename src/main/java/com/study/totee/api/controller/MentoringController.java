@@ -90,4 +90,15 @@ public class MentoringController {
         return ApiResponse.success("data", page);
     }
 
+    @ApiOperation(value = "내가 참여중인 멘토링 글 리스트", notes = "내가 참여중인 멘토링 글 리스트를 조회합니다.")
+    @GetMapping("/api/v1/mentoring/myMentoring")
+    public ApiResponse<Object> findAllByMyStudyTeam(@PageableDefault(size = 20 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable,
+                                                    @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
+        // 로그인 정보가 없으면 예외 발생
+        String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+
+        Page<MentoringResponseDto> page = mentoringService.findAllByMyMentoringTeam(pageable, id);
+
+        return ApiResponse.success("data", page);
+    }
 }

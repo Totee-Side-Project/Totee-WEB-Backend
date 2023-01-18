@@ -2,6 +2,7 @@ package com.study.totee.api.service;
 
 import com.study.totee.api.dto.mentoring.MentoringRequestDto;
 import com.study.totee.api.dto.mentoring.MentoringResponseDto;
+import com.study.totee.api.dto.post.PostResponseDto;
 import com.study.totee.api.model.*;
 import com.study.totee.api.persistence.MentoringApplicantRepository;
 import com.study.totee.api.persistence.MentoringRepository;
@@ -82,6 +83,14 @@ public class MentoringService {
     @Transactional(readOnly = true)
     public Page<MentoringResponseDto> findAllByTitleContaining(Pageable pageable, String title){
         return mentoringRepository.findAllByTitleContaining(title, pageable).map(MentoringResponseDto::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MentoringResponseDto> findAllByMyMentoringTeam(Pageable pageable, String userId){
+        User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
+
+        return mentoringRepository.findAllByMyMentoringTeam(user, pageable).map(MentoringResponseDto::new);
     }
 
 }
