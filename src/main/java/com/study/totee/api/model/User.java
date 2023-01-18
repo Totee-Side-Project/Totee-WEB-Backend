@@ -105,6 +105,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Team> teamList;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Review> reviewList;
+
     public User(
             @NotNull @Size(max = 64) String id,
             @NotNull @Size(max = 100) String username,

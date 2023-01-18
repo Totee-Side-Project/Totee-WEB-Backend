@@ -1,5 +1,6 @@
 package com.study.totee.api.persistence;
 
+import com.study.totee.api.model.Mentoring;
 import com.study.totee.api.model.Notification;
 import com.study.totee.api.model.Post;
 import com.study.totee.api.model.User;
@@ -16,4 +17,5 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     Notification findByPostAndUserAndReplyId(Post post, User user, Long replyId);
     Notification findByPostAndUserAndCommentId(Post post, User user, Long commentId);
 
+    Notification findByMentoringAndUserAndLikeId(Mentoring mentoring, User user, Long id);
 }

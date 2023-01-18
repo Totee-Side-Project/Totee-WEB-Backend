@@ -2,7 +2,6 @@ package com.study.totee.api.controller;
 
 import com.study.totee.api.dto.mentoring.MentoringRequestDto;
 import com.study.totee.api.dto.mentoring.MentoringResponseDto;
-import com.study.totee.api.dto.post.PostResponseDto;
 import com.study.totee.api.service.MentoringService;
 import com.study.totee.common.ApiResponse;
 import com.study.totee.exption.ErrorCode;
@@ -30,13 +29,35 @@ public class MentoringController {
 
     @ApiOperation(value = "멘토링 글 쓰기" , notes = "멘토링 게시글을 등록합니다.")
     @PostMapping("/api/v1/mentoring")
-    public ApiResponse<Object> createPost(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @Valid @RequestBody MentoringRequestDto requestDto) throws IOException {
+    public ApiResponse<Object> create(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @Valid @RequestBody MentoringRequestDto requestDto) throws IOException {
         // 로그인 정보가 없으면 예외 발생
         String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
 
         mentoringService.save(id, requestDto);
 
         return ApiResponse.success("message" , "멘토링 게시글이 성공적으로 등록되었습니다.");
+    }
+
+    @ApiOperation(value = "멘토링 게시글 업데이트", notes = "게시글을 수정합니다")
+    @PutMapping("/api/v1/mentoring/{mentoringId}")
+    public ApiResponse<Object> update(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @RequestBody @Valid MentoringRequestDto mentoringRequestDto, @PathVariable Long mentoringId) throws IOException {
+        // 로그인 정보가 없으면 예외 발생
+        String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+
+        mentoringService.update(id, mentoringRequestDto, mentoringId);
+
+        return ApiResponse.success("message", "게시글이 성공적으로 업데이트되었습니다.");
+    }
+
+    @ApiOperation(value = "멘토링 게시글 삭제" , notes = "게시글을 삭제합니다")
+    @DeleteMapping("/api/v1/mentoring/{mentoringId}")
+    public ApiResponse<Object> deletePost(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @PathVariable Long mentoringId) {
+        // 로그인 정보가 없으면 예외 발생
+        String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+
+        mentoringService.delete(mentoringId, id);
+
+        return ApiResponse.success("message", "게시글이 성공적으로 삭제되었습니다.");
     }
 
     @ApiOperation(value = "멘토링 게시글 상세보기",
@@ -52,7 +73,7 @@ public class MentoringController {
     @ApiOperation(value = "전체 멘토링 글 목록 불러오기",
             notes = "ex : api/v1/post/list?page=0&size=5&sort=postId.desc")
     @GetMapping("/api/v1/mentoring/list")
-    public ApiResponse<Object> findPostAll(@RequestParam(value = "kw", defaultValue = "") String kw, @PageableDefault(size = 16 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable){
+    public ApiResponse<Object> findPostAll(@RequestParam(value = "kw", defaultValue = "") String kw, @PageableDefault(size = 20 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable){
         Page<MentoringResponseDto> page = mentoringService.findAllByTitleContaining(pageable, kw);
 
         return ApiResponse.success("data", page);
@@ -67,4 +88,39 @@ public class MentoringController {
         return ApiResponse.success("data", page);
     }
 
+    @ApiOperation(value = "내가 참여중인 멘토링 글 리스트", notes = "내가 참여중인 멘토링 글 리스트를 조회합니다.")
+    @GetMapping("/api/v1/mentoring/mymentoring")
+    public ApiResponse<Object> findAllByMyStudyTeam(@PageableDefault(size = 20 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable,
+                                                    @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
+        // 로그인 정보가 없으면 예외 발생
+        String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+
+        Page<MentoringResponseDto> page = mentoringService.findAllByMyMentoringTeam(pageable, id);
+
+        return ApiResponse.success("data", page);
+    }
+
+    @ApiOperation(value = "좋아요한 멘토링 글 리스트", notes = "로그인 한 유저의 좋아요 누른 글의 리스트를 조회합니다")
+    @GetMapping("/api/v1/mentoring/like")
+    public ApiResponse<Object> myLikePost(@PageableDefault(size = 20 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable,
+                                          @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
+        // 로그인 정보가 없으면 예외 발생
+        String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+
+        Page<MentoringResponseDto> page = mentoringService.findAllByLikedPost(id, pageable);
+
+        return ApiResponse.success("data", page);
+    }
+
+    @ApiOperation(value = "내가 작성한 멘토링 게시글 목록 불러오기", notes = "로그인한 유저의 게시글을 모두 조회합니다.")
+    @GetMapping("/api/v1/mentoring/mypost")
+    public ApiResponse<Object> findPostMyPost(@PageableDefault(size = 20 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable,
+                                              @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
+        // 로그인 정보가 없으면 예외 발생
+        String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+
+        Page<MentoringResponseDto> page = mentoringService.findAllByUser(id, pageable);
+
+        return ApiResponse.success("data", page);
+    }
 }

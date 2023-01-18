@@ -1,6 +1,8 @@
 package com.study.totee.api.service;
 
 import com.study.totee.api.dto.mentoringApplicant.MentoringApplicantRequestDto;
+import com.study.totee.api.dto.team.MemberListResponseDto;
+import com.study.totee.api.dto.team.MenteeListResponseDto;
 import com.study.totee.api.model.Mentoring;
 import com.study.totee.api.model.MentoringApplicant;
 import com.study.totee.api.model.Post;
@@ -12,7 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +48,11 @@ public class MentoringApplicantService {
 
         MentoringApplicant mentoringApplicant = new MentoringApplicant(user, mentoring, dto);
         mentoringApplicantRepository.save(mentoringApplicant);
+    }
+
+    @Transactional
+    public List<MenteeListResponseDto> getMentoringApplicant(Mentoring mentoring) {
+        return mentoringApplicantRepository.findAllByMentoring(mentoring)
+                .stream().map(MenteeListResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
     }
 }

@@ -41,17 +41,51 @@ public class Mentoring {
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "mentoring", cascade = CascadeType.ALL)
+    private List<Like> like;
+
     @OneToMany(mappedBy = "mentoring")
     private List<MentoringApplicant> mentoringApplicants;
+
+    @Column(name = "LIKE_NUM")
+    @NotNull
+    private int likeNum;
+
+    @Column(name = "REVIEW_SCORE")
+    private float reviewScore;
+
+    @OneToMany(mappedBy = "mentoring", cascade = CascadeType.ALL)
+    private List<Review> reviewList;
 
     public Mentoring(MentoringRequestDto mentoringRequestDto, User user) {
         this.cost = mentoringRequestDto.getCost();
         this.title = mentoringRequestDto.getTitle();
         this.content = mentoringRequestDto.getContent();
         this.menteeNum = 0;
+        this.likeNum = 0;
+        this.reviewScore = 0f;
         this.user = user;
+        this.user.getUserInfo().increaseMentoringNum();
+    }
+
+    public void update(MentoringRequestDto mentoringRequestDto){
+        this.cost = mentoringRequestDto.getCost();
+        this.title = mentoringRequestDto.getTitle();
+        this.content = mentoringRequestDto.getContent();
     }
 
     public void decreaseMenteeNum() {this.menteeNum -= 1;}
-    
+
+    public void increaseLikeNum() {
+        this.likeNum += 1;
+    }
+
+    public void decreaseLikeNum() {
+        this.likeNum -= 1;
+    }
+
+    public void addReview(Review review){
+        this.reviewList.add(review);
+        this.reviewScore += review.getScore();
+    }
 }

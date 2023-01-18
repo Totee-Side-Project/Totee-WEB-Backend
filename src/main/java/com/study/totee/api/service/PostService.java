@@ -136,13 +136,11 @@ public class PostService {
 
     // 내가 작성한 게시글 전체 조회
     @Transactional(readOnly = true)
-    public List<PostResponseDto> findAllByUserId(String userId){
+    public Page<PostResponseDto> findAllByUserId(String userId, Pageable pageable){
         Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
-        return postRepository.findAllByUser_Id(userId).stream()
-                .map(PostResponseDto::new)
-                .collect(Collectors.toList());
+        return postRepository.findAllByUser_Id(pageable, userId).map(PostResponseDto::new);
     }
 
     // 추천 게시글 전체 조회 (로그인한 유저의 포지션과 등록된 게시글의 모집분야가 같은 글을 조회)
@@ -156,13 +154,11 @@ public class PostService {
 
     // 내가 좋아요 한 게시글 전체 조회
     @Transactional(readOnly = true)
-    public List<PostResponseDto> findAllByLikedPost(String userId){
+    public Page<PostResponseDto> findAllByLikedPost(String userId, Pageable pageable){
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
-        return postRepository.findAllByLikedPost(user).stream()
-                .map(PostResponseDto::new)
-                .collect(Collectors.toList());
+        return postRepository.findAllByLikedPost(user, pageable).map(PostResponseDto::new);
     }
 
     @Transactional(readOnly = true)

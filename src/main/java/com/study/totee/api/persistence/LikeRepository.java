@@ -1,6 +1,7 @@
 package com.study.totee.api.persistence;
 
 import com.study.totee.api.model.Like;
+import com.study.totee.api.model.Mentoring;
 import com.study.totee.api.model.Post;
 import com.study.totee.api.model.User;
 import org.springframework.data.domain.Page;
@@ -11,4 +12,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface LikeRepository extends JpaRepository<Like, Long> {
     Like findByUserAndPost_Id(User user, Long postId);
     Like findByUserAndPost(User user, Post post);
+
+    Like findByUserAndMentoring(User user, Mentoring mentoring);
 }

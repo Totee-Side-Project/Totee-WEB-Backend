@@ -1,13 +1,7 @@
 package com.study.totee.api.service;
 
-import com.study.totee.api.model.Like;
-import com.study.totee.api.model.Notification;
-import com.study.totee.api.model.Post;
-import com.study.totee.api.model.User;
-import com.study.totee.api.persistence.LikeRepository;
-import com.study.totee.api.persistence.NotificationRepository;
-import com.study.totee.api.persistence.PostRepository;
-import com.study.totee.api.persistence.UserRepository;
+import com.study.totee.api.model.*;
+import com.study.totee.api.persistence.*;
 import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +19,7 @@ public class LikeService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final NotificationRepository notificationRepository;
+    private final MentoringRepository mentoringRepository;
 
     @Transactional
     public void like(String userId, Long postId){
@@ -51,6 +46,31 @@ public class LikeService {
 
     }
 
+    @Transactional
+    public void mentoringLike(String userId, Long mentoringId){
+        User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
+        Mentoring mentoring = mentoringRepository.findById(mentoringId).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
+
+        Like like = likeRepository.findByUserAndMentoring(user , mentoring);
+        if(like == null){
+            mentoring.increaseLikeNum();
+            Like savedLike = likeRepository.save(new Like(user, mentoring));
+            if (!mentoring.getUser().getId().equals(userId)) {
+                notificationRepository.save(new Notification(savedLike, user));
+            }
+        }else {
+            Notification notification = notificationRepository.findByMentoringAndUserAndLikeId(mentoring, user, like.getId());
+            if(notification != null){
+                notificationRepository.delete(notification);
+            }
+            mentoring.decreaseLikeNum();
+            likeRepository.delete(like);
+        }
+
+    }
+
     @Transactional(readOnly = true)
     public boolean isLike(String userId, Long postId){
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
@@ -62,4 +82,14 @@ public class LikeService {
         return like != null;
     }
 
+    @Transactional(readOnly = true)
+    public boolean isMentoringLike(String userId, Long mentoringId){
+        User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
+        Mentoring mentoring = mentoringRepository.findById(mentoringId).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
+
+        Like like = likeRepository.findByUserAndMentoring(user, mentoring);
+        return like != null;
+    }
 }

@@ -1,6 +1,8 @@
 package com.study.totee.api.service;
 
 import com.study.totee.api.dto.team.MemberListResponseDto;
+import com.study.totee.api.dto.team.MenteeListResponseDto;
+import com.study.totee.api.dto.user.NicknameRequestDto;
 import com.study.totee.api.model.*;
 import com.study.totee.api.persistence.*;
 import com.study.totee.exption.BadRequestException;
@@ -26,6 +28,8 @@ public class TeamService {
     private final ApplicantRepository applicantRepository;
     private final ApplicantQueryRepository applicantQueryRepository;
     private final NotificationRepository notificationRepository;
+    private final UserService userService;
+    private final MentoringApplicantRepository mentoringApplicantRepository;
 
     @Transactional
     public boolean AcceptApplication(Post post, User user, Boolean accept){
@@ -56,22 +60,69 @@ public class TeamService {
     }
 
     @Transactional
+    public boolean AcceptApplication(Mentoring mentoring, User user, Boolean accept){
+        MentoringApplicant applicant = Optional.ofNullable(mentoringApplicantRepository.findByUserAndMentoring(user, mentoring)).orElseThrow(
+                () -> new BadRequestException(ErrorCode.NO_APPLICANT_ERROR)
+        );
+
+        if (teamQueryRepository.existsByMentoringIdAndUserId(mentoring.getId(), user.getId())) {
+            throw new BadRequestException(ErrorCode.ALREADY_TEAM_ERROR);
+        }
+
+        applicant.deleteApply();
+        mentoringApplicantRepository.delete(applicant);
+
+        if(accept) {
+            Team team = new Team(user, mentoring);
+            teamRepository.save(team);
+            user.getUserInfo().increaseMentoringNum();
+            return true;
+        }
+        return false;
+    }
+
+    @Transactional
     public List<MemberListResponseDto> getMember(Long postId) {
         return teamQueryRepository.findAllByPostId(postId)
                 .stream().map(MemberListResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Transactional
-    public void memberDelete(User user, Post post) {
-        if (post.getUser().getId().equals(user.getId())) {
+    public List<MenteeListResponseDto> getMentee(Long mentoringId) {
+        return teamQueryRepository.findAllByMentoringId(mentoringId)
+                .stream().map(MenteeListResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Transactional
+    public void memberDelete(User user, Post post, List<NicknameRequestDto> nicknameRequestDtoList) {
+        if (!post.getUser().getId().equals(user.getId())) {
             throw new BadRequestException(ErrorCode.NOT_AVAILABLE_ACCESS);
-        } else if (post.getStatus().equals("N")) {
-            Team team = teamRepository.findByUserAndPost(user, post).orElseThrow(
+        }
+        for(NicknameRequestDto dto : nicknameRequestDtoList){
+            User member = userService.getUserByNickname(dto.getNickname());
+            if (member.getId().equals(user.getId())){
+                throw new BadRequestException(ErrorCode.NOT_EXPEL_ERROR);
+            }
+            Team team = teamRepository.findByUserAndPost(member, post).orElseThrow(
                     () -> new ForbiddenException(ErrorCode.NO_TEAM_ERROR)
             );
             team.deleteStudyTeam();
-            user.getUserInfo().decreaseStudyNum();
-            teamRepository.deleteByUserAndPost(user, post);
-        } else throw new BadRequestException(ErrorCode.NOT_AVAILABLE_ACCESS);
+            member.getUserInfo().decreaseStudyNum();
+            teamRepository.deleteByUserAndPost(member, post);
+        }
+
+    }
+
+    @Transactional
+    public void memberDelete(User user, Post post) {
+        if(user.getId().equals(post.getUser().getId())){
+            throw new BadRequestException(ErrorCode.NOT_EXPEL_ERROR);
+        }
+        Team team = teamRepository.findByUserAndPost(user, post).orElseThrow(
+                () -> new BadRequestException(ErrorCode.NO_TEAM_ERROR)
+        );
+        team.deleteStudyTeam();
+        user.getUserInfo().decreaseStudyNum();
+        teamRepository.deleteByUserAndPost(user, post);
     }
 }
