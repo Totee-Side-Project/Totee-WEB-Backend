@@ -1,6 +1,7 @@
 package com.study.totee.api.service;
 
 import com.study.totee.api.dto.team.MemberListResponseDto;
+import com.study.totee.api.dto.team.MenteeListResponseDto;
 import com.study.totee.api.dto.user.NicknameRequestDto;
 import com.study.totee.api.model.*;
 import com.study.totee.api.persistence.*;
@@ -28,6 +29,7 @@ public class TeamService {
     private final ApplicantQueryRepository applicantQueryRepository;
     private final NotificationRepository notificationRepository;
     private final UserService userService;
+    private final MentoringApplicantRepository mentoringApplicantRepository;
 
     @Transactional
     public boolean AcceptApplication(Post post, User user, Boolean accept){
@@ -58,9 +60,37 @@ public class TeamService {
     }
 
     @Transactional
+    public boolean AcceptApplication(Mentoring mentoring, User user, Boolean accept){
+        MentoringApplicant applicant = Optional.ofNullable(mentoringApplicantRepository.findByUserAndMentoring(user, mentoring)).orElseThrow(
+                () -> new BadRequestException(ErrorCode.NO_APPLICANT_ERROR)
+        );
+
+        if (teamQueryRepository.existsByMentoringIdAndUserId(mentoring.getId(), user.getId())) {
+            throw new BadRequestException(ErrorCode.ALREADY_TEAM_ERROR);
+        }
+
+        applicant.deleteApply();
+        mentoringApplicantRepository.delete(applicant);
+
+        if(accept) {
+            Team team = new Team(user, mentoring);
+            teamRepository.save(team);
+            user.getUserInfo().increaseMentoringNum();
+            return true;
+        }
+        return false;
+    }
+
+    @Transactional
     public List<MemberListResponseDto> getMember(Long postId) {
         return teamQueryRepository.findAllByPostId(postId)
                 .stream().map(MemberListResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Transactional
+    public List<MenteeListResponseDto> getMentee(Long mentoringId) {
+        return teamQueryRepository.findAllByMentoringId(mentoringId)
+                .stream().map(MenteeListResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Transactional

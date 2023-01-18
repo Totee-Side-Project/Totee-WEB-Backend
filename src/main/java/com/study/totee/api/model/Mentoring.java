@@ -51,12 +51,19 @@ public class Mentoring {
     @NotNull
     private int likeNum;
 
+    @Column(name = "REVIEW_SCORE")
+    private float reviewScore;
+
+    @OneToMany(mappedBy = "mentoring", cascade = CascadeType.ALL)
+    private List<Review> reviewList;
+
     public Mentoring(MentoringRequestDto mentoringRequestDto, User user) {
         this.cost = mentoringRequestDto.getCost();
         this.title = mentoringRequestDto.getTitle();
         this.content = mentoringRequestDto.getContent();
         this.menteeNum = 0;
         this.likeNum = 0;
+        this.reviewScore = 0f;
         this.user = user;
         this.user.getUserInfo().increaseMentoringNum();
     }
@@ -75,5 +82,10 @@ public class Mentoring {
 
     public void decreaseLikeNum() {
         this.likeNum -= 1;
+    }
+
+    public void addReview(Review review){
+        this.reviewList.add(review);
+        this.reviewScore += review.getScore();
     }
 }

@@ -2,11 +2,8 @@ package com.study.totee.api.controller;
 
 import com.study.totee.api.dto.mentoring.MentoringRequestDto;
 import com.study.totee.api.dto.mentoring.MentoringResponseDto;
-import com.study.totee.api.dto.post.PostRequestDto;
-import com.study.totee.api.dto.post.PostResponseDto;
 import com.study.totee.api.service.MentoringService;
 import com.study.totee.common.ApiResponse;
-import com.study.totee.common.ResponseDto;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.NoAuthException;
 import io.swagger.annotations.ApiOperation;

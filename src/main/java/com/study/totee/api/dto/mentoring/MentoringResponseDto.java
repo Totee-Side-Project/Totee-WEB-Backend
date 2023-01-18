@@ -35,6 +35,9 @@ public class MentoringResponseDto {
     @ApiModelProperty(example = "프로필 이미지 Url")
     private String profileImageUrl;
 
+    @ApiModelProperty(example = "리뷰 스코어")
+    private String score;
+
     public MentoringResponseDto(Mentoring mentoring){
         this.mentoringId = mentoring.getId();
         this.title = mentoring.getTitle();
@@ -44,5 +47,7 @@ public class MentoringResponseDto {
         this.career = mentoring.getUser().getMentor().getCareer();
         this.nickname = mentoring.getUser().getUserInfo().getNickname();
         this.profileImageUrl = mentoring.getUser().getUserInfo().getProfileImageUrl();
+        this.score = mentoring.getReviewScore() == 0 ? null :
+                String.format("%.1f", mentoring.getReviewScore() / mentoring.getReviewList().size());
     }
 }

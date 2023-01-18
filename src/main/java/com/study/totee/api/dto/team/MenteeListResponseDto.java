@@ -1,6 +1,8 @@
 package com.study.totee.api.dto.team;
 
 import com.study.totee.api.model.MentoringApplicant;
+import com.study.totee.api.model.Team;
+import com.study.totee.api.model.User;
 import com.study.totee.type.PositionType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -51,5 +53,15 @@ public class MenteeListResponseDto {
         this.email = applicant.getUser().getEmail();
         this.profileImg = applicant.getUser().getUserInfo().getProfileImageUrl();
         this.position = applicant.getUser().getUserInfo().getPosition();
+    }
+
+    public MenteeListResponseDto(Team team) {
+        User user = team.getUser();
+        this.nickname = user.getUserInfo().getNickname();
+        this.comment = user.getUserInfo().getIntro();
+        this.applicationDate = team.getCreatedAt();
+        this.email = user.getEmail();
+        this.profileImg = user.getUserInfo().getProfileImageUrl();
+        this.position = user.getUserInfo().getPosition();
     }
 }

@@ -10,6 +10,7 @@ import com.study.totee.api.persistence.TeamRepository;
 import com.study.totee.api.persistence.UserRepository;
 import com.study.totee.exption.BadRequestException;
 import com.study.totee.exption.ErrorCode;
+import com.study.totee.exption.ForbiddenException;
 import com.study.totee.type.RoleType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -109,5 +110,12 @@ public class MentoringService {
                 ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
         return mentoringRepository.findAllByUser(pageable, user).map(MentoringResponseDto::new);
+    }
+
+    @Transactional
+    public Mentoring loadMentoringIfOwner(Long mentoringId, User user) {
+        return Optional.ofNullable(mentoringRepository.findByIdAndUser(mentoringId, user)).orElseThrow(
+                () -> new ForbiddenException(ErrorCode.NO_AUTHORIZATION_ERROR)
+        );
     }
 }

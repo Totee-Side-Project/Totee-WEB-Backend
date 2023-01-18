@@ -5,8 +5,10 @@ import com.study.totee.api.model.Team;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
+import static com.study.totee.api.model.QMentoring.mentoring;
 import static com.study.totee.api.model.QPost.post;
 import static com.study.totee.api.model.QTeam.team;
 import static com.study.totee.api.model.QUser.user;
@@ -43,6 +45,15 @@ public class TeamQueryRepository {
                 .where(team.post.id.eq(postId))
                 .leftJoin(team.user, user).fetchJoin()
                 .leftJoin(team.post, post).fetchJoin()
+                .distinct()
+                .fetch();
+    }
+
+    public List<Team> findAllByMentoringId(Long mentoringId) {
+        return queryFactory.selectFrom(team)
+                .where(team.mentoring.id.eq(mentoringId))
+                .leftJoin(team.user, user).fetchJoin()
+                .leftJoin(team.mentoring, mentoring).fetchJoin()
                 .distinct()
                 .fetch();
     }

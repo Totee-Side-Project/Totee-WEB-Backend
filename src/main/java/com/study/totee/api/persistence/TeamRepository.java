@@ -13,4 +13,5 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     void deleteByUserAndPost(User user, Post post);
     void deleteAllByPost(Post post);
     void deleteAllByMentoring(Mentoring mentoring);
+    Optional<Team> findByUserAndMentoring(User user, Mentoring mentoring);
 }
