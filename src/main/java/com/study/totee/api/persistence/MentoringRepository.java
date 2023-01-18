@@ -23,4 +23,6 @@ public interface MentoringRepository extends JpaRepository<Mentoring, Long> {
 
     @Query(value = "SELECT p FROM Mentoring p WHERE p.id IN (SELECT t.mentoring.id FROM Team t WHERE t.user = ?1)")
     Page<Mentoring> findAllByLikedMentoring(User user, Pageable pageable);
+
+    Page<Mentoring> findAllByUser(Pageable pageable, User user);
 }

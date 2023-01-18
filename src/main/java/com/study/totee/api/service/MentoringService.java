@@ -31,6 +31,8 @@ public class MentoringService {
     private final MentoringApplicantRepository mentoringApplicantRepository;
     private final TeamRepository teamRepository;
 
+
+
     @Transactional
     public void save(String userId, MentoringRequestDto requestDto) throws IOException {
         User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
@@ -93,10 +95,19 @@ public class MentoringService {
         return mentoringRepository.findAllByMyMentoringTeam(user, pageable).map(MentoringResponseDto::new);
     }
 
+    @Transactional(readOnly = true)
     public Page<MentoringResponseDto> findAllByLikedPost(String id, Pageable pageable) {
         User user = Optional.ofNullable(userRepository.findById(id)).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
         return mentoringRepository.findAllByLikedMentoring(user, pageable).map(MentoringResponseDto::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MentoringResponseDto> findAllByUser(String id, Pageable pageable) {
+        User user = Optional.ofNullable(userRepository.findById(id)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
+
+        return mentoringRepository.findAllByUser(pageable, user).map(MentoringResponseDto::new);
     }
 }
