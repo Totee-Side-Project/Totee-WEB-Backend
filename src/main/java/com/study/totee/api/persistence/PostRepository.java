@@ -19,9 +19,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllByPosition(PositionType position, Pageable pageable);
 
     @Query(value = "SELECT p FROM Post p LEFT JOIN Like l " + "ON l.post.id = p.id WHERE l.user = ?1")
-    List<Post> findAllByLikedPost(User user);
+    Page<Post> findAllByLikedPost(User user, Pageable pageable);
 
-    List<Post> findAllByUser_Id(String userId);
+    Page<Post> findAllByUser_Id(Pageable pageable, String userId);
 
     @Query(value = "SELECT p FROM Post p WHERE p.id IN (SELECT t.post.id FROM Team t WHERE t.user = ?1)")
     Page<Post> findAllByMyStudyTeam(User user, Pageable pageable);

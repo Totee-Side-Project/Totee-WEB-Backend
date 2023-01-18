@@ -93,4 +93,10 @@ public class MentoringService {
         return mentoringRepository.findAllByMyMentoringTeam(user, pageable).map(MentoringResponseDto::new);
     }
 
+    public Page<MentoringResponseDto> findAllByLikedPost(String id, Pageable pageable) {
+        User user = Optional.ofNullable(userRepository.findById(id)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
+
+        return mentoringRepository.findAllByLikedMentoring(user, pageable).map(MentoringResponseDto::new);
+    }
 }

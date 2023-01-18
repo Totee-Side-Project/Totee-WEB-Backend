@@ -105,18 +105,19 @@ public class PostController {
         // 로그인 정보가 없으면 예외 발생
         String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
 
-        List<PostResponseDto> page = postService.findAllByUserId(id);
+        Page<PostResponseDto> page = postService.findAllByUserId(id, pageable);
 
         return ApiResponse.success("data", page);
     }
 
     @ApiOperation(value = "좋아요한 스터디 글 리스트", notes = "로그인 한 유저의 좋아요 누른 글의 리스트를 조회합니다")
     @GetMapping("/api/v1/post/like")
-    public ApiResponse<Object> myLikePost(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
+    public ApiResponse<Object> myLikePost(@PageableDefault(size = 16 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable,
+                                          @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
         // 로그인 정보가 없으면 예외 발생
         String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
 
-        List<PostResponseDto> page = postService.findAllByLikedPost(id);
+        Page<PostResponseDto> page = postService.findAllByLikedPost(id, pageable);
 
         return ApiResponse.success("data", page);
     }

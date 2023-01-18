@@ -1,5 +1,6 @@
 package com.study.totee.api.persistence;
 
+import com.google.common.io.Files;
 import com.study.totee.api.model.Mentoring;
 import com.study.totee.api.model.Post;
 import com.study.totee.api.model.User;
@@ -19,4 +20,7 @@ public interface MentoringRepository extends JpaRepository<Mentoring, Long> {
 
     @Query(value = "SELECT p FROM Mentoring p WHERE p.id IN (SELECT t.mentoring.id FROM Team t WHERE t.user = ?1)")
     Page<Mentoring> findAllByMyMentoringTeam(User user, Pageable pageable);
+
+    @Query(value = "SELECT p FROM Mentoring p WHERE p.id IN (SELECT t.mentoring.id FROM Team t WHERE t.user = ?1)")
+    Page<Mentoring> findAllByLikedMentoring(User user, Pageable pageable);
 }

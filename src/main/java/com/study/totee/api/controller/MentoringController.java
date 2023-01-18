@@ -6,6 +6,7 @@ import com.study.totee.api.dto.post.PostRequestDto;
 import com.study.totee.api.dto.post.PostResponseDto;
 import com.study.totee.api.service.MentoringService;
 import com.study.totee.common.ApiResponse;
+import com.study.totee.common.ResponseDto;
 import com.study.totee.exption.ErrorCode;
 import com.study.totee.exption.NoAuthException;
 import io.swagger.annotations.ApiOperation;
@@ -98,6 +99,18 @@ public class MentoringController {
         String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
 
         Page<MentoringResponseDto> page = mentoringService.findAllByMyMentoringTeam(pageable, id);
+
+        return ApiResponse.success("data", page);
+    }
+
+    @ApiOperation(value = "좋아요한 멘토링 글 리스트", notes = "로그인 한 유저의 좋아요 누른 글의 리스트를 조회합니다")
+    @GetMapping("/api/v1/mentoring/like")
+    public ApiResponse<Object> myLikePost(@PageableDefault(size = 20 , sort = "id",direction = Sort.Direction.DESC ) Pageable pageable,
+                                          @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal){
+        // 로그인 정보가 없으면 예외 발생
+        String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+
+        Page<MentoringResponseDto> page = mentoringService.findAllByLikedPost(id, pageable);
 
         return ApiResponse.success("data", page);
     }
