@@ -3,6 +3,7 @@ package com.study.totee.api.service;
 import com.study.totee.api.dto.mentoring.MentoringRequestDto;
 import com.study.totee.api.dto.mentoring.MentoringResponseDto;
 import com.study.totee.api.model.*;
+import com.study.totee.api.persistence.MentoringApplicantRepository;
 import com.study.totee.api.persistence.MentoringRepository;
 import com.study.totee.api.persistence.TeamRepository;
 import com.study.totee.api.persistence.UserRepository;
@@ -26,6 +27,7 @@ public class MentoringService {
 
     private final UserRepository userRepository;
     private final MentoringRepository mentoringRepository;
+    private final MentoringApplicantRepository mentoringApplicantRepository;
     private final TeamRepository teamRepository;
 
     @Transactional
@@ -41,11 +43,35 @@ public class MentoringService {
         teamRepository.save(new Team(user, savedMentoring));
     }
 
+    @Transactional
+    public void update(String userId, MentoringRequestDto mentoringRequestDto, Long mentoringId){
+        User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
+
+        Mentoring mentoring = Optional.ofNullable(mentoringRepository.findByIdAndUser(mentoringId, user)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
+
+        mentoring.update(mentoringRequestDto);
+    }
+
+    @Transactional
+    public void delete(Long mentoringId, String userId){
+        User user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
+
+        Mentoring mentoring = Optional.ofNullable(mentoringRepository.findByIdAndUser(mentoringId, user)).orElseThrow(
+                ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
+
+        user.getUserInfo().decreaseMentoringNum();
+        mentoringApplicantRepository.deleteAllByMentoring(mentoring);
+        teamRepository.deleteAllByMentoring(mentoring);
+        mentoringRepository.delete(mentoring);
+    }
+
     @Transactional(readOnly = true)
     public Mentoring findByMentoringId(Long id){
-        Mentoring mentoring = mentoringRepository.findById(id).orElseThrow(
+        return mentoringRepository.findById(id).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NO_POST_ERROR));
-        return mentoring;
     }
 
     @Transactional(readOnly = true)

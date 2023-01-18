@@ -10,4 +10,5 @@ import java.util.List;
 public interface MentoringApplicantRepository extends JpaRepository<MentoringApplicant, Long> {
     boolean existsByUserAndMentoring_Id(User user, Long mentoringId);
     List<MentoringApplicant> findAllByMentoring(Mentoring mentoring);
+    void deleteAllByMentoring(Mentoring mentoring);
 }

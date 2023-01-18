@@ -2,6 +2,7 @@ package com.study.totee.api.controller;
 
 import com.study.totee.api.dto.mentoring.MentoringRequestDto;
 import com.study.totee.api.dto.mentoring.MentoringResponseDto;
+import com.study.totee.api.dto.post.PostRequestDto;
 import com.study.totee.api.dto.post.PostResponseDto;
 import com.study.totee.api.service.MentoringService;
 import com.study.totee.common.ApiResponse;
@@ -30,13 +31,35 @@ public class MentoringController {
 
     @ApiOperation(value = "멘토링 글 쓰기" , notes = "멘토링 게시글을 등록합니다.")
     @PostMapping("/api/v1/mentoring")
-    public ApiResponse<Object> createPost(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @Valid @RequestBody MentoringRequestDto requestDto) throws IOException {
+    public ApiResponse<Object> create(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @Valid @RequestBody MentoringRequestDto requestDto) throws IOException {
         // 로그인 정보가 없으면 예외 발생
         String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
 
         mentoringService.save(id, requestDto);
 
         return ApiResponse.success("message" , "멘토링 게시글이 성공적으로 등록되었습니다.");
+    }
+
+    @ApiOperation(value = "멘토링 게시글 업데이트", notes = "게시글을 수정합니다")
+    @PutMapping("/api/v1/mentoring/{mentoringId}")
+    public ApiResponse<Object> update(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @RequestBody @Valid MentoringRequestDto mentoringRequestDto, @PathVariable Long mentoringId) throws IOException {
+        // 로그인 정보가 없으면 예외 발생
+        String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+
+        mentoringService.update(id, mentoringRequestDto, mentoringId);
+
+        return ApiResponse.success("message", "게시글이 성공적으로 업데이트되었습니다.");
+    }
+
+    @ApiOperation(value = "멘토링 게시글 삭제" , notes = "게시글을 삭제합니다")
+    @DeleteMapping("/api/v1/mentoring/{mentoringId}")
+    public ApiResponse<Object> deletePost(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal, @PathVariable Long mentoringId) {
+        // 로그인 정보가 없으면 예외 발생
+        String id = Optional.ofNullable(principal).orElseThrow(() -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)).getUsername();
+
+        mentoringService.delete(mentoringId, id);
+
+        return ApiResponse.success("message", "게시글이 성공적으로 삭제되었습니다.");
     }
 
     @ApiOperation(value = "멘토링 게시글 상세보기",

@@ -50,6 +50,13 @@ public class Mentoring {
         this.content = mentoringRequestDto.getContent();
         this.menteeNum = 0;
         this.user = user;
+        this.user.getUserInfo().increaseMentoringNum();
+    }
+
+    public void update(MentoringRequestDto mentoringRequestDto){
+        this.cost = mentoringRequestDto.getCost();
+        this.title = mentoringRequestDto.getTitle();
+        this.content = mentoringRequestDto.getContent();
     }
 
     public void decreaseMenteeNum() {this.menteeNum -= 1;}

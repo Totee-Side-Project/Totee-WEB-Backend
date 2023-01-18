@@ -1,5 +1,6 @@
 package com.study.totee.api.persistence;
 
+import com.study.totee.api.model.Mentoring;
 import com.study.totee.api.model.Post;
 import com.study.totee.api.model.Team;
 import com.study.totee.api.model.User;
@@ -11,4 +12,5 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     Optional<Team> findByUserAndPost(User user, Post post);
     void deleteByUserAndPost(User user, Post post);
     void deleteAllByPost(Post post);
+    void deleteAllByMentoring(Mentoring mentoring);
 }

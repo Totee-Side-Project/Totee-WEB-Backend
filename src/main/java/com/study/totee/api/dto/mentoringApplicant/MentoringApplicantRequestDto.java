@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MentoringApplicantRequestDto {
-    @ApiModelProperty(example = "수 (삭제 예정)")
+    @ApiModelProperty(example = "월, 화, 수, 금")
     private String week;
 
     @ApiModelProperty(example = "12:00")
