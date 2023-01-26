@@ -1,5 +1,4 @@
-FROM adoptopenjdk/openjdk11
-LABEL maintainer="Totee <rnjstmdals6@google.com>"
-ARG JAR_FILE=build/libs/*.jar
+FROM openjdk:11
+ARG JAR_FILE=./build/libs/totee-webservice=0.0.1-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar","/app.jar", "--spring.profiles.active=prod"]

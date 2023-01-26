@@ -32,7 +32,7 @@ out
 gen
 build
 rebel.xml
-*.yml
+application-prod.yml
 
 /build/classes/java/main/
 /.idea/
@@ -44,3 +44,5 @@ src/main/resources/application-aws.yml
 
 src/test/resources/application.yml
 src/test/resources/application.properties
+
+src/main/generated
