@@ -30,6 +30,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'temurin'
         
         # gradle 캐싱
       - name: Gradle Caching
