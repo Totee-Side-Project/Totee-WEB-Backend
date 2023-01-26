@@ -51,32 +51,8 @@ jobs:
       - name: Build With Gradle
         run: ./gradlew build -x test
 
-      #test를 위한 mysql설정
-      - name: Start MariaDB
-        uses: action/mariadb-action@v1.3
-        with:
-          host port: 3305
-          container port: 3305
-          mariadb database: '{database name}'
-          mariadb user: '{database user}'
-          mariadb password: '{database pwd}'
-
-      #테스트를 위한 test properties 설정
-      - name: Make application-test.properties
-        run: |
-          cd ./src/test/resources
-          touch ./application.properties
-          echo "${{ secrets.PROPERTIES_TEST }}" > ./application.properties
-        shell: bash
-
       #test코드 빌드
       - name: Build With Test
         run: ./gradlew test
 
-      #테스트 결과 파일 생성
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: ${{ always() }}
-        with:
-          files: build/test-results/**/*.xml
         
