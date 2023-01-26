@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jboss.logging.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,7 +24,6 @@ public class RestApiExceptionHandler {
     @ExceptionHandler(value = {BadRequestException.class})
     public ResponseEntity<Object> handleBadRequestException(BadRequestException ex) {
         log.info("!!!Bad Request Error, [{}], message={}", MDC.get("UUID"), ex.getMessage());
-        log.info("{}", ex.getLocalizedMessage());
         ResponseDto restApiException = new ResponseDto(ex.getMessage(), "");
         return new ResponseEntity<>(
                 restApiException,
@@ -32,8 +33,7 @@ public class RestApiExceptionHandler {
 
     @ExceptionHandler(value = {NoAuthException.class})
     public ResponseEntity<Object> handleNoAuthException(NoAuthException ex) {
-        log.info("!!!Bad Request Error, [{}], message={}", MDC.get("UUID"), ex.getMessage());
-        log.info("{}", ex.getLocalizedMessage());
+        log.info("!!!UnAuth Error, [{}], message={}", MDC.get("UUID"), ex.getMessage());
         ResponseDto restApiException = new ResponseDto(ex.getMessage(), "");
         return new ResponseEntity<>(
                 restApiException,
@@ -43,8 +43,7 @@ public class RestApiExceptionHandler {
 
     @ExceptionHandler(value = {ForbiddenException.class})
     public ResponseEntity<Object> handleForbiddenException(ForbiddenException ex) {
-        log.info("!!!Bad Request Error, [{}], message={}", MDC.get("UUID"), ex.getMessage());
-        log.info("{}", ex.getLocalizedMessage());
+        log.info("!!!Forbidden Error, [{}], message={}", MDC.get("UUID"), ex.getMessage());
         ResponseDto restApiException = new ResponseDto(ex.getMessage(), "");
         return new ResponseEntity<>(
                 restApiException,
@@ -55,8 +54,7 @@ public class RestApiExceptionHandler {
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     public ResponseEntity<Object> handleApiRequestErrorException(MethodArgumentNotValidException ex) {
         String msg = Objects.requireNonNull(ex.getMessage());
-        log.info("!!!Bad Request Error, [{}], message={}", MDC.get("UUID"), ex.getMessage());
-        log.info("{}", ex.getLocalizedMessage());
+        log.info("!!!Parameter Error, [{}], message={}", MDC.get("UUID"), msg);
         ResponseDto restApiException = new ResponseDto(msg, "");
         return new ResponseEntity<>(
                 restApiException,
@@ -67,12 +65,13 @@ public class RestApiExceptionHandler {
     @ExceptionHandler(value = {RuntimeException.class})
     public ResponseEntity<Object> handleBadRequestErrorException(RuntimeException ex) {
         String msg = ErrorCode.INVALID_INPUT_ERROR.getMessage();
-        log.info("!!!Bad Request Error, [{}], message={}", MDC.get("UUID"), ex.getMessage());
-        log.info("{}", ex.getLocalizedMessage());
+        log.info("!!!Runtime Error, [{}], message={}", MDC.get("UUID"), ex.getMessage());
         ResponseDto restApiException = new ResponseDto(msg, "");
         return new ResponseEntity<>(
                 restApiException,
                 HttpStatus.BAD_REQUEST
         );
     }
+
+
 }

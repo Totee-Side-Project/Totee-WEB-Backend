@@ -1,0 +1,29 @@
+version: "3" # 버전 지정
+
+services: # 컨테이너 설정
+  database:
+    container_name: mariadb # 컨테이너 이름
+    image: mariadb:10 # 컨테이너에서 사용하는 base image 지정
+    environment: # 컨테이너 안의 환경변수 설정
+      MARIADB_DATABASE: 'toteedb'
+      MARIADB_USER: 'rnjstmdals6'
+      MARIADB_PASSWORD: '%rnjs6078'
+      MARIADB_ROOT_HOST: '%'
+      MARIADB_ROOT_PASSWORD: '%rnjs6078'
+    command: # 명령어 설정
+      - --default-authentication-plugin=mysql_native_password
+    ports: # 접근 포트 설정
+      - 3305:3306 # Host:Container
+    networks:
+      - db_network
+    restart: always  # 컨테이너 실행 시 재시작
+  totee:
+    build: .
+    expose:
+      - 8080
+    depends_on:
+      - database
+
+networks: # 커스텀 네트워크 추가
+  db_network: # 네트워크 이름
+    driver: bridge
