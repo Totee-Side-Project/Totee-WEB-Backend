@@ -53,13 +53,13 @@ jobs:
 
       #test를 위한 mysql설정
       - name: Start MariaDB
-        uses: samin/mariadb-action@v1.3
+        uses: action/mariadb-action@v1.3
         with:
           host port: 3305
           container port: 3305
-          mysql database: '{database name}'
-          mysql user: '{database user}'
-          mysql password: '{database pwd}'
+          mariadb database: '{database name}'
+          mariadb user: '{database user}'
+          mariadb password: '{database pwd}'
 
       #테스트를 위한 test properties 설정
       - name: Make application-test.properties
