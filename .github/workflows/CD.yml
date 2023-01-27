@@ -38,6 +38,9 @@ jobs:
           touch ./application-prod.properties
           echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.properties
         shell: bash
+      #gradlew 권한 추가
+      - name: Grant Execute Permission For Gradlew
+        run: chmod +x gradlew
 
       #test를 제외한 프로젝트 빌드
       - name: Build With Gradle
