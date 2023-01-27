@@ -32,11 +32,11 @@ jobs:
             ${{ runner.os }}-gradle-
       ### CD
       #배포를 위한 prod properties 설정
-      - name: Make application-prod.properties
+      - name: Make application-prod.yml
         run: |
           cd ./src/main/resources
-          touch ./application-prod.properties
-          echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.properties
+          touch ./application-prod.yml
+          echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
         shell: bash
       #gradlew 권한 추가
       - name: Grant Execute Permission For Gradlew
