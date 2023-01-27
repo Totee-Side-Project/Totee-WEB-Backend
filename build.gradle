@@ -2,7 +2,6 @@ plugins {
     id 'org.springframework.boot' version '2.5.6'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'java'
-    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 configurations {
@@ -22,6 +21,7 @@ jar {
 group 'org.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+def querydslVersion = '4.3.1'
 
 dependencies {
     implementation "com.h2database:h2"
@@ -69,55 +69,20 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.5.1")
     testRuntimeOnly("org.junit.platform:junit-platform-commons:1.5.1")
 
-    implementation "com.querydsl:querydsl-jpa"
-    implementation "com.querydsl:querydsl-core"
-    implementation "com.querydsl:querydsl-collections"
-    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    implementation group: 'com.querydsl', name: 'querydsl-jpa', version: querydslVersion
+    implementation group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion
+    implementation group: 'com.querydsl', name: 'querydsl-core', version: querydslVersion
+
+    annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion
+    annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion, classifier: 'jpa'
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
 }
 
 test {
     useJUnitPlatform()
 }
 
-// Querydsl 설정부
-def generated = 'src/main/generated'
-
-querydsl {
-    library = "com.querydsl:querydsl-apt"
-    jpa = true
-    querydslSourcesDir = generated
-}
-
-compileQuerydsl{ // querydsl 컴파일시 사용하는 애노테이션프로세서('com.querydsl.apt.jpa.JPAAnnotationProcessor')의 경로를 querydsl 이 지정한 경로를 이용한다는 선언
-    options.annotationProcessorPath = configurations.querydsl
-}
-
-configurations {
-    querydsl.extendsFrom compileClasspath
-}
-
-// Querydsl QClass 파일 생성 위치를 지정
-tasks.withType(JavaCompile) {
-    options.getGeneratedSourceOutputDirectory().set(file(generated))
-}
-
-// java source set 에 Querydsl QClass 위치 추가
-sourceSets {
-    main.java.srcDir generated
-}
-
-// gradle clean 시에 QClass 디렉토리 삭제
 clean {
-    delete file(generated)
-}
-
-compileQuerydsl.doFirst {
-    if(file(generated).exists() )
-        delete(file(generated))
-}
-
-clean.doLast {
-    delete file(generated)
+    delete file('src/main/generated') // 인텔리제이 Annotation processor 생성물 생성위치
 }

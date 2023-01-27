@@ -55,5 +55,3 @@ jobs:
       #test코드 빌드
       - name: Build With Test
         run: ./gradlew test
-
-        
