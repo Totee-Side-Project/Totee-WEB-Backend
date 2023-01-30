@@ -55,7 +55,7 @@ public class CookieUtil {
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("None")
-                .domain("api.totee.link")
+                .domain("api.totee.store")
                 .path("/")
                 .build();
         response.addHeader("Set-Cookie", cookie.toString());
@@ -70,7 +70,7 @@ public class CookieUtil {
                     ResponseCookie responseCookie = ResponseCookie.from(name, "")
                             .path("/")
                             .maxAge(0)
-                            .domain("api.totee.link")
+                            .domain("api.totee.store")
                             .secure(true)
                             .sameSite("None")
                             .build();
