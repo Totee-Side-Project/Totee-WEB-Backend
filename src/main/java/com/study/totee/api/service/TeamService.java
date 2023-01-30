@@ -94,22 +94,20 @@ public class TeamService {
     }
 
     @Transactional
-    public void memberDelete(User user, Post post, List<NicknameRequestDto> nicknameRequestDtoList) {
+    public void memberDelete(User user, Post post, NicknameRequestDto dto) {
         if (!post.getUser().getId().equals(user.getId())) {
             throw new BadRequestException(ErrorCode.NOT_AVAILABLE_ACCESS);
         }
-        for(NicknameRequestDto dto : nicknameRequestDtoList){
-            User member = userService.getUserByNickname(dto.getNickname());
-            if (member.getId().equals(user.getId())){
-                throw new BadRequestException(ErrorCode.NOT_EXPEL_ERROR);
-            }
-            Team team = teamRepository.findByUserAndPost(member, post).orElseThrow(
-                    () -> new ForbiddenException(ErrorCode.NO_TEAM_ERROR)
-            );
-            team.deleteStudyTeam();
-            member.getUserInfo().decreaseStudyNum();
-            teamRepository.deleteByUserAndPost(member, post);
+        User member = userService.getUserByNickname(dto.getNickname());
+        if (member.getId().equals(user.getId())){
+            throw new BadRequestException(ErrorCode.NOT_EXPEL_ERROR);
         }
+        Team team = teamRepository.findByUserAndPost(member, post).orElseThrow(
+                () -> new ForbiddenException(ErrorCode.NO_TEAM_ERROR)
+        );
+        team.deleteStudyTeam();
+        member.getUserInfo().decreaseStudyNum();
+        teamRepository.deleteByUserAndPost(member, post);
 
     }
 

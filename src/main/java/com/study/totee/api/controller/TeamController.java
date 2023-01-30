@@ -100,7 +100,7 @@ public class TeamController {
     @CacheEvict(value = "Post", allEntries=true)
     @ApiOperation(value = "스터디 팀원 강퇴")
     @DeleteMapping("/api/v1/team/resignation/{postId}")
-    public ApiResponse<Object> memberResignation(@RequestBody List<NicknameRequestDto> nicknameRequestDtoList,
+    public ApiResponse<Object> memberResignation(@RequestBody NicknameRequestDto nicknameRequestDto,
                                                     @PathVariable Long postId,
                                                     @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         Post post = postService.findByPostId(postId);
@@ -108,7 +108,7 @@ public class TeamController {
                 () -> new NoAuthException(ErrorCode.NO_AUTHENTICATION_ERROR)
         );
         User user = userService.getUser(userId);
-        teamService.memberDelete(user, post, nicknameRequestDtoList);
+        teamService.memberDelete(user, post, nicknameRequestDto);
         return ApiResponse.success("message" , "팀원을 강퇴했습니다.");
     }
 
