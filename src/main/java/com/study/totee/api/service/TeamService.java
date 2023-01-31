@@ -76,6 +76,7 @@ public class TeamService {
             Team team = new Team(user, mentoring);
             teamRepository.save(team);
             user.getUserInfo().increaseMentoringNum();
+            mentoring.increaseScore();
             return true;
         }
         return false;
