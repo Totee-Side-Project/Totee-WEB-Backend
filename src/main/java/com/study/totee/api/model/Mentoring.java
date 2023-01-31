@@ -31,6 +31,9 @@ public class Mentoring {
     @Lob
     private String content;
 
+    @Column
+    private int score;
+
     @Column(name = "MENTEE_NUM")
     private int menteeNum;
 
@@ -59,6 +62,7 @@ public class Mentoring {
 
     public Mentoring(MentoringRequestDto mentoringRequestDto, User user) {
         this.cost = mentoringRequestDto.getCost();
+        this.score = 0;
         this.title = mentoringRequestDto.getTitle();
         this.content = mentoringRequestDto.getContent();
         this.menteeNum = 0;
@@ -74,6 +78,7 @@ public class Mentoring {
         this.content = mentoringRequestDto.getContent();
     }
 
+    public void increaseScore() {this.score += 1f;}
     public void decreaseMenteeNum() {this.menteeNum -= 1;}
 
     public void increaseLikeNum() {
@@ -87,5 +92,6 @@ public class Mentoring {
     public void addReview(Review review){
         this.reviewList.add(review);
         this.reviewScore += review.getScore();
+        this.score += review.getScore() - 2f;
     }
 }

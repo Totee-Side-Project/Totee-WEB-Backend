@@ -21,7 +21,7 @@ public class Review {
     private Long id;
 
     @Column(name = "SCORE")
-    private Float score;
+    private float score;
 
     @Column(name = "COMMENT")
     @Lob
