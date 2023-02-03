@@ -93,7 +93,7 @@ public class TeamController {
     @ApiOperation(value = "멘토링 팀원 조회")
     @GetMapping("/api/v2/team/{mentoringId}")
     public ApiResponse<Object> getMentee(@PathVariable Long mentoringId) {
-        List<MemberListResponseDto> responseDto = teamService.getMember(mentoringId);
+        List<MenteeListResponseDto> responseDto = teamService.getMentee(mentoringId);
         return ApiResponse.success("data" , responseDto);
     }
 
