@@ -34,6 +34,12 @@ public class MentoringApplicant {
     @Column
     private String contact;
 
+    @Column
+    private String week;
+
+    @Column
+    private boolean check;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_SEQ")
     private User user;
@@ -54,6 +60,8 @@ public class MentoringApplicant {
         this.contact = dto.getContact();
         this.startTime = dto.getStartTime();
         this.endTime = dto.getEndTime();
+        this.week = dto.getWeek();
+        this.check = false;
         mentoring.getMentoringApplicants().add(this);
         user.getMentoringApplicantList().add(this);
     }
@@ -61,5 +69,9 @@ public class MentoringApplicant {
     public void deleteApply() {
         mentoring.getMentoringApplicants().remove(this);
         user.getMentoringApplicantList().remove(this);
+    }
+
+    public void check(){
+        this.check = true;
     }
 }

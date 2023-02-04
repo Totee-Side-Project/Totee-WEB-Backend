@@ -42,6 +42,7 @@ public class MentoringApplicantService {
         if(teamQueryRepository.existsByMentoringIdAndUserId(mentoringId, userId)){
             throw new BadRequestException(ErrorCode.ALREADY_TEAM_ERROR);
         }
+        // [예외처리] 신청이 현재 처리중일 경우 또는 현재 해당 멘토링의 멘티일 경우
         if(mentoringApplicantRepository.existsByUserAndMentoring_Id(user, mentoringId)) {
             throw new BadRequestException(ErrorCode.ALREADY_APPLY_POST_ERROR);
         }
@@ -53,6 +54,6 @@ public class MentoringApplicantService {
     @Transactional
     public List<MenteeListResponseDto> getMentoringApplicant(Mentoring mentoring) {
         return mentoringApplicantRepository.findAllByMentoring(mentoring)
-                .stream().map(MenteeListResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
+                .stream().filter(h -> !h.isCheck()).map(MenteeListResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
     }
 }

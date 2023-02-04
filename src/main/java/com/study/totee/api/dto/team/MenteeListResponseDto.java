@@ -43,6 +43,9 @@ public class MenteeListResponseDto {
     @ApiModelProperty(example = "분야")
     private PositionType position;
 
+    @ApiModelProperty(example = "희망요일")
+    private String week;
+
     public MenteeListResponseDto(MentoringApplicant applicant){
         this.nickname = applicant.getUser().getUserInfo().getNickname();
         this.comment = applicant.getComment();
@@ -53,9 +56,11 @@ public class MenteeListResponseDto {
         this.email = applicant.getUser().getEmail();
         this.profileImg = applicant.getUser().getUserInfo().getProfileImageUrl();
         this.position = applicant.getUser().getUserInfo().getPosition();
+        this.week = applicant.getWeek();
     }
 
     public MenteeListResponseDto(Team team) {
+        MentoringApplicant mentoringApplicant = team.getMentoringApplicant();
         User user = team.getUser();
         this.nickname = user.getUserInfo().getNickname();
         this.comment = user.getUserInfo().getIntro();
@@ -63,5 +68,8 @@ public class MenteeListResponseDto {
         this.email = user.getEmail();
         this.profileImg = user.getUserInfo().getProfileImageUrl();
         this.position = user.getUserInfo().getPosition();
+        this.startTime = mentoringApplicant.getStartTime();
+        this.endTime = mentoringApplicant.getEndTime();
+        this.week = mentoringApplicant.getWeek();
     }
 }

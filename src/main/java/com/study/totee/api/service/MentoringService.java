@@ -44,7 +44,7 @@ public class MentoringService {
         }
 
         Mentoring savedMentoring = mentoringRepository.save(new Mentoring(requestDto, user));
-        teamRepository.save(new Team(user, savedMentoring));
+        teamRepository.save(new Team(user, savedMentoring, null));
     }
 
     @Transactional

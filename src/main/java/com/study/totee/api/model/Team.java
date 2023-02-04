@@ -28,6 +28,10 @@ public class Team {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MENTORING_APPLICANT_ID")
+    private MentoringApplicant mentoringApplicant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="POST_ID")
     private Post post;
 
@@ -45,11 +49,11 @@ public class Team {
         this.post = post;
     }
 
-    public Team(User user, Mentoring mentoring) {
-        this.user = user;
+    public Team(User user, Mentoring mentoring, MentoringApplicant mentoringApplicant){
         this.mentoring = mentoring;
+        this.mentoringApplicant = mentoringApplicant;
+        this.user = user;
     }
-
     public void deleteStudyTeam() {
         this.post.decreaseMemberNum();
         this.post.getTeamList().remove(this);

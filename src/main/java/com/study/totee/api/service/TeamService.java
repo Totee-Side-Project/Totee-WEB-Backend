@@ -69,16 +69,16 @@ public class TeamService {
             throw new BadRequestException(ErrorCode.ALREADY_TEAM_ERROR);
         }
 
-        applicant.deleteApply();
-        mentoringApplicantRepository.delete(applicant);
-
         if(accept) {
-            Team team = new Team(user, mentoring);
+            Team team = new Team(user, mentoring, applicant);
             teamRepository.save(team);
+            applicant.check();
             user.getUserInfo().increaseMentoringNum();
             mentoring.increaseScore();
             return true;
         }
+        applicant.deleteApply();
+        mentoringApplicantRepository.delete(applicant);
         return false;
     }
 
