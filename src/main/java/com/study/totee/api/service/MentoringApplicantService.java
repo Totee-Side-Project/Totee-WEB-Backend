@@ -54,6 +54,6 @@ public class MentoringApplicantService {
     @Transactional
     public List<MenteeListResponseDto> getMentoringApplicant(Mentoring mentoring) {
         return mentoringApplicantRepository.findAllByMentoring(mentoring)
-                .stream().filter(h -> !h.isCheck()).map(MenteeListResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
+                .stream().filter(h -> h.getChecking().equals("false")).map(MenteeListResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
     }
 }

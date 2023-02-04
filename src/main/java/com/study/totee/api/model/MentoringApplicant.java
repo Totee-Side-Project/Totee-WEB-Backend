@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -37,9 +39,6 @@ public class MentoringApplicant {
     @Column
     private String week;
 
-    @Column
-    private boolean check;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_SEQ")
     private User user;
@@ -50,8 +49,10 @@ public class MentoringApplicant {
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp
-    @ApiModelProperty
     private LocalDateTime createdAt;
+
+    @Column
+    private String checking;
 
     public MentoringApplicant(User user, Mentoring mentoring, MentoringApplicantRequestDto dto){
         this.mentoring = mentoring;
@@ -61,7 +62,7 @@ public class MentoringApplicant {
         this.startTime = dto.getStartTime();
         this.endTime = dto.getEndTime();
         this.week = dto.getWeek();
-        this.check = false;
+        this.checking = "false";
         mentoring.getMentoringApplicants().add(this);
         user.getMentoringApplicantList().add(this);
     }
@@ -71,7 +72,7 @@ public class MentoringApplicant {
         user.getMentoringApplicantList().remove(this);
     }
 
-    public void check(){
-        this.check = true;
+    public void setChecking(){
+        this.checking = "true";
     }
 }
