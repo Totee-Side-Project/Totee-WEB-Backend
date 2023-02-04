@@ -54,7 +54,6 @@ public class Team {
         this.mentoringApplicant = mentoringApplicant;
         this.user = user;
     }
-
     public void deleteStudyTeam() {
         this.post.decreaseMemberNum();
         this.post.getTeamList().remove(this);
