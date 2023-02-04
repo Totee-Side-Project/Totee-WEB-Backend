@@ -72,7 +72,7 @@ public class TeamService {
         if(accept) {
             Team team = new Team(user, mentoring, applicant);
             teamRepository.save(team);
-            applicant.check();
+            applicant.setChecking();
             user.getUserInfo().increaseMentoringNum();
             mentoring.increaseScore();
             return true;
@@ -91,7 +91,7 @@ public class TeamService {
     @Transactional
     public List<MenteeListResponseDto> getMentee(Long mentoringId) {
         return teamQueryRepository.findAllByMentoringId(mentoringId)
-                .stream().map(MenteeListResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
+                .stream().filter(m -> !m.getUser().equals(m.getMentoring().getUser())).map(MenteeListResponseDto::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Transactional
