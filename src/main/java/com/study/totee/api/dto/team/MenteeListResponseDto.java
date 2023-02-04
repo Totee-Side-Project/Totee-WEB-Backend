@@ -71,5 +71,6 @@ public class MenteeListResponseDto {
         this.startTime = mentoringApplicant.getStartTime();
         this.endTime = mentoringApplicant.getEndTime();
         this.week = mentoringApplicant.getWeek();
+        this.contact = mentoringApplicant.getContact();
     }
 }
