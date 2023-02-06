@@ -25,8 +25,10 @@ public class AdminController {
 
     @ApiOperation(value = "멘토 지원 승인/거절")
     @PostMapping("/api/v1/admin/mentor")
-    public ApiResponse<Object> acceptMember(@RequestBody MentorApprovalRequestDto requestDto){
-        adminService.approvalMentor(requestDto);
-        return ApiResponse.success("message" , "성공적으로 멘토 지원 승인/거절을 하였습니다.");
+    public ApiResponse<Object> acceptMentor(@RequestBody MentorApprovalRequestDto requestDto){
+        if (adminService.approvalMentor(requestDto)){
+            return ApiResponse.success("message" , "성공적으로 멘토 지원 승인하였습니다.");
+        }
+        return ApiResponse.success("message" , "성공적으로 멘토 지원 거절 하였습니다.");
     }
 }
