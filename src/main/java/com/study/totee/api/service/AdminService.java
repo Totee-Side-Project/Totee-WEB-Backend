@@ -2,6 +2,7 @@ package com.study.totee.api.service;
 
 import com.study.totee.api.dto.admin.MentorApprovalRequestDto;
 import com.study.totee.api.dto.user.RoleRequestDto;
+import com.study.totee.api.model.Mentor;
 import com.study.totee.api.model.Notification;
 import com.study.totee.api.model.User;
 import com.study.totee.api.persistence.*;
@@ -34,19 +35,25 @@ public class AdminService {
     }
 
     @Transactional
-    public void approvalMentor(MentorApprovalRequestDto requestDto){
+    public boolean approvalMentor(MentorApprovalRequestDto requestDto){
         // 존재하지 않는 유저이면 예외를 던짐.
         User user = Optional.ofNullable(userQueryRepository.findByUserInfo_Nickname(requestDto.getNickname())).orElseThrow(
                 ()-> new BadRequestException(ErrorCode.NOT_EXIST_USER_ERROR));
 
-        if(requestDto.isAccept()) {
-            mentorRepository.findByUser(user).setApproval("y");
-            user.setRoleType(RoleType.totee);
-        }else{
-            mentorRepository.deleteByUser(user);
-        }
-
         Notification notification = new Notification(user, requestDto.isAccept());
         notificationRepository.save(notification);
+        Mentor mentor = mentorRepository.findByUser(user);
+
+        if(mentor.getApproval().equals("y")){
+            throw new BadRequestException(ErrorCode.ALREADY_MENTOR);
+        }
+
+        if(requestDto.isAccept()) {
+            mentor.setApproval("y");
+            user.setRoleType(RoleType.totee);
+            return true;
+        }
+        mentorRepository.deleteByUser(user);
+        return false;
     }
 }

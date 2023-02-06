@@ -35,6 +35,7 @@ public enum ErrorCode {
     NO_TEAM_ERROR("팀원이 아닌 사용자입니다."),
     NOT_EXPEL_ERROR("방장을 추방할 수 없습니다."),
     NO_EXCEED_MEMBER_ERROR("더이상 멤버를 받을 수 없습니다."),
-    ALREADY_EXIST_REVIEW("이미 리뷰를 작성하였습니다.");
+    ALREADY_EXIST_REVIEW("이미 리뷰를 작성하였습니다."),
+    ALREADY_MENTOR("이미 멘토 입니다");
     private String message;
 }
