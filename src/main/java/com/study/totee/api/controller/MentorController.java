@@ -38,8 +38,8 @@ public class MentorController {
         return ApiResponse.success("message","멘토 지원에 성공하였습니다.");
     }
 
-    @ApiOperation(value = "멘토 지원자보기", notes = "kind에 따라 분류됩니다. all = 전체 지원자, n = 미승인 지원자" +
-            "y = 승인 지원자")
+    @ApiOperation(value = "멘토 지원자보기", notes = "kind에 따라 분류됩니다. all = 전체 지원자, pending = 승인 대기중인 지원자" +
+            " approved = 승인된 지원자")
     @GetMapping("/api/v1/mentor/list/{kind}")
     public ApiResponse<Object> appliedMentorList(@PageableDefault(size = 15, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, @PathVariable String kind){
         Page<MentorResponseDto> mentorResponseDtoPage = mentorService.appliedMentorList(pageable, kind);
