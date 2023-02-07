@@ -44,12 +44,12 @@ public class AdminService {
         notificationRepository.save(notification);
         Mentor mentor = mentorRepository.findByUser(user);
 
-        if(mentor.getApproval().equals("y")){
+        if(mentor.getApproval().equals("approved")){
             throw new BadRequestException(ErrorCode.ALREADY_MENTOR);
         }
 
         if(requestDto.isAccept()) {
-            mentor.setApproval("y");
+            mentor.setApproval("approved");
             user.setRoleType(RoleType.totee);
             return true;
         }
