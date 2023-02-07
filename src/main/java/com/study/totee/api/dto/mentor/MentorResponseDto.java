@@ -35,6 +35,9 @@ public class MentorResponseDto {
     @ApiModelProperty(example = "멘토 지원 승인 여부")
     private String approval;
 
+    @ApiModelProperty(example = "프로필 이미지")
+    private String profileImageUrl;
+
     public MentorResponseDto(Mentor mentor){
         User user = mentor.getUser();
         this.nickname = user.getUserInfo().getNickname();
@@ -45,5 +48,6 @@ public class MentorResponseDto {
         this.portfolioUrl = mentor.getPortfolioUrl();
         this.comment = mentor.getComment();
         this.approval = mentor.getApproval();
+        this.profileImageUrl = user.getUserInfo().getProfileImageUrl();
     }
 }
