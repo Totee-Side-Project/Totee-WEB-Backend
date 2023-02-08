@@ -33,7 +33,7 @@ public class MentorResponseDto {
     private String comment;
 
     @ApiModelProperty(example = "멘토 지원 승인 여부")
-    private String approval;
+    private boolean approval;
 
     @ApiModelProperty(example = "프로필 이미지")
     private String profileImageUrl;
@@ -47,7 +47,7 @@ public class MentorResponseDto {
         this.contact = mentor.getContact();
         this.portfolioUrl = mentor.getPortfolioUrl();
         this.comment = mentor.getComment();
-        this.approval = mentor.getApproval();
+        this.approval = mentor.getApproval().equals("approved");
         this.profileImageUrl = user.getUserInfo().getProfileImageUrl();
     }
 }

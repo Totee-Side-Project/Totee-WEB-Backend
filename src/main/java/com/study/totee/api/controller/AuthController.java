@@ -45,7 +45,7 @@ import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterN
 public class AuthController {
 
     private final UserService userService;
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
     private final AppProperties appProperties;
     private final AuthTokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
