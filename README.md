@@ -1,6 +1,6 @@
 ![image](https://user-images.githubusercontent.com/59470153/220554294-fd8cd540-d6b1-4636-8a29-a184ef16f562.png)
 
-# :sunny: 스터디, 멘토링 매칭 웹 서비스 [토티](totee-fe-omega.netlify.app)
+# :sunny: 스터디, 멘토링 매칭 웹 서비스 [토티](https://totee-fe-omega.netlify.app/)
 
 커리어 성장을 위한 스터디를 찾으시나요?<br>
 토티에는 이런저런 여러분야의 스터디가 모여있어요.
