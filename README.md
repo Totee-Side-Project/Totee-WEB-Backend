@@ -8,6 +8,10 @@
 커리어 성장을 위한 멘토링을 찾으시나요?<br>
 멘토와 멘토를 잇는 토티가 여러분께 딱맞는 멘토링을 추천해드려요.<br>
 
+![image](https://github.com/Totee-Side-Project/Totee-WEB-Backend/assets/59470153/673a65f1-856a-426a-b266-4a9a910d71ab)
+
+
+
 ## :umbrella: 소개
 토티는 IT 관련 종사자 또는 학습자를 대상으로 하여 개발 관련<br>
 스터디를 도모하고, 멘토링 연결을 도와주는 웹 기반 서비스입니다.<br>
